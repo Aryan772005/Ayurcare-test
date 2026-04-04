@@ -106,9 +106,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       jsonText = jsonMatch[0];
     }
 
-    // Repair common LLM JSON errors: unquoted values with units like 120g or 2500kcal
-    // This finds patterns like : 120g and replaces with : "120g"
-    jsonText = jsonText.replace(/:\s*(\d+(?:\.\d+)?(?:g|kcal|mg|kg|ml))\b/gi, ': "$1"');
+    // Repair common LLM JSON errors: unquoted values with units like 120 g or 2500 kcal
+    // This finds patterns like : 120g or : 120 g and replaces with : "120g"
+    jsonText = jsonText.replace(/:\s*(\d+(?:\.\d+)?\s*(?:g|kcal|mg|kg|ml|mcg|IU|cup|item|cal|calories))\b/gi, ': "$1"');
 
     // JSON Safe Parse
     let parsed;
