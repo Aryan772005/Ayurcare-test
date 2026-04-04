@@ -49,12 +49,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   Profile: Age ${age}, ${gender}, ${height}cm, ${weight}kg, Goal: ${goal}, Activity: ${activityLevel}, Diet: ${foodPreference}, Med: ${conditions || 'None'}.
   Real-time: BPM ${bpm || 'N/A'}, Cals Today ${caloriesToday || '0'}, Food: ${foodList || 'None'}, Skin: ${skinType}, Hair: ${hairCondition}.
 
-  JSON Map:
+  JSON Map (Use strings for all numeric values with units):
   {
     "healthAnalysis": "Section 1+7 (BPM/Dosha analysis)",
-    "calories": { "required": 0, "protein": 0, "carbs": 0, "fats": 0 },
+    "calories": { "required": "0 kcal", "protein": "0g", "carbs": "0g", "fats": "0g" },
     "dietPlan": { "breakfast": "item+cal", "lunch": "item+cal", "dinner": "item+cal", "snacks": "item+cal" },
-    "foodAnalysis": "Detailed section 5 (Consumed vs Required)",
+    "foodAnalysis": "Detailed section 5 report.",
     "recommendations": ["3-5 actionable steps"],
     "hairCare": { "issue": "cause from sec 8", "remedies": ["routine", "herbs"] },
     "skinCare": { "routine": "am/pm", "remedies": ["packs"] },
@@ -105,6 +105,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (jsonMatch) {
       jsonText = jsonMatch[0];
     }
+
+    // Repair common LLM JSON errors: unquoted values with units like 120g or 2500kcal
+    // This finds patterns like : 120g and replaces with : "120g"
+    jsonText = jsonText.replace(/:\s*(\d+(?:\.\d+)?(?:g|kcal|mg|kg|ml))\b/gi, ': "$1"');
 
     // JSON Safe Parse
     let parsed;
