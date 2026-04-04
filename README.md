@@ -1,20 +1,46 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+<img width="1200" height="475" alt="Ayurcare Banner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Run and deploy your AI Studio app
+# Ayurcare
 
-This contains everything you need to run your app locally.
+A comprehensive Ayurveda healthcare application built with TypeScript and modern web technologies.
 
-View your app in AI Studio: https://ai.studio/apps/f66ab875-973c-481b-9072-e2baa5a77106
+**Live Demo:** https://ayurcare-test.vercel.app
 
-## Run Locally
+## Getting Started
 
-**Prerequisites:**  Node.js
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
 
+### Installation
 
 1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+   ```
+   npm install
+   ```
+
+2. Set up environment variables:
+   Create a `.env.local` file and add your configuration:
+   ```
+   GEMINI_API_KEY=your_api_key_here
+   ```
+
+3. Run the development server:
+   ```
+   npm run dev
+   ```
+
+The application will start at `http://localhost:5173`
+
+## Technologies Used
+
+- **Frontend:** TypeScript, React, Vite
+- **Backend:** Node.js, Express
+- **Database:** Firebase/Firestore
+- **Deployment:** Vercel
+
+## License
+
+MIT
