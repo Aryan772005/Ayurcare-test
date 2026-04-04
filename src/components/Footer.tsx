@@ -10,90 +10,12 @@ const WhatsAppIcon = () => (
 );
 
 export default function Footer() {
-  const whatsappUrl = `https://wa.me/919475002048?text=Hello%20AyurCare%2B%2C%20I%20need%20support%20with%20my%20appointment.`;
-
   return (
-    <footer className="bg-moss/20 border-t border-white/5 py-12 px-6 mt-auto">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 md:gap-6">
-
-        {/* Brand & Location */}
-        <div className="flex flex-col items-center md:items-start gap-2">
-          <div className="flex items-center gap-2 opacity-50">
-            <Leaf size={24} className="text-emerald-accent" />
-            <span className="font-display font-bold text-xl text-cream">Ayurcare+</span>
-          </div>
-          <p className="text-xs text-emerald-accent/30 flex items-center gap-1 mt-1">
-            <MapPin size={12} /> Desh Bhagat University, Mandi Govindgarh
-          </p>
-        </div>
-
-        {/* Core Team Details */}
-        <div className="flex flex-col items-center md:items-start text-sm text-emerald-accent/60 gap-1.5 bg-forest/40 p-5 rounded-2xl border border-white/5 shadow-inner">
-          <p className="flex items-center gap-2 font-bold text-cream mb-1 text-base">
-            <Users size={16} className="text-emerald-accent" /> Team Leadership
-          </p>
-          <p><strong className="text-cream/90">CEO:</strong> Aryan Singh Tariani</p>
-          <p><strong className="text-cream/90">Business Analyst:</strong> Rounak</p>
-          <p><strong className="text-cream/90">Data Management:</strong> Nitin Gupta</p>
-          <a href="tel:+919475002048" className="flex items-center gap-2 mt-2 pt-2 border-t border-white/10 text-emerald-accent hover:text-white transition-colors font-medium">
-            <Phone size={14} /> +91 94750 02048
-          </a>
-        </div>
-
-        {/* Support Section */}
-        <div className="flex flex-col items-center md:items-end gap-4">
-
-          {/* WhatsApp Button */}
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              background: 'linear-gradient(135deg, #25d366 0%, #128c4a 100%)',
-              color: '#fff',
-              padding: '10px 20px',
-              borderRadius: '14px',
-              fontWeight: 700,
-              fontSize: '14px',
-              textDecoration: 'none',
-              boxShadow: '0 4px 16px rgba(37,211,102,0.35)',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-            }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.transform = 'scale(1.05)';
-              (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 24px rgba(37,211,102,0.5)';
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
-              (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px rgba(37,211,102,0.35)';
-            }}
-          >
-            <WhatsAppIcon />
-            Chat with us
-          </a>
-
-          {/* Email Support */}
-          <a
-            href="mailto:aryansinghtariani@gmail.com"
-            className="flex items-center gap-2 text-sm text-emerald-accent/60 hover:text-emerald-accent transition-colors"
-          >
-            <Mail size={14} />
-            aryansinghtariani@gmail.com
-          </a>
-
-          {/* Links + Copyright */}
-          <div className="flex items-center gap-4 text-sm font-medium text-emerald-accent/60">
-            <a href="#" className="hover:text-emerald-accent transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-emerald-accent transition-colors">Terms of Service</a>
-          </div>
-          <p className="text-sm text-emerald-accent/40 text-center md:text-right">
-            &copy; {new Date().getFullYear()} Aryan Singh Tariani.<br />All rights reserved.
-          </p>
-        </div>
-
+    <footer className="bg-forest border-t border-white/5 py-8 mt-auto">
+      <div className="max-w-7xl mx-auto px-6 text-center">
+        <p className="text-sm font-medium text-cream/70 tracking-wide">
+          &copy; 2026 Ayurcare+. All rights reserved.
+        </p>
       </div>
     </footer>
   );

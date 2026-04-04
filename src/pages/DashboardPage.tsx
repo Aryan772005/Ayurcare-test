@@ -1,106 +1,232 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User as FirebaseUser } from 'firebase/auth';
-import { 
-  Shield, Activity, Brain, Zap, Heart, TrendingUp, Sparkles, 
-  AlertTriangle, CheckCircle, Flame, Moon, ArrowRight, Clock 
+import {
+  Shield, Activity, Brain, Zap, Heart, TrendingUp, Sparkles,
+  AlertTriangle, CheckCircle, Flame, Moon, ArrowRight, Clock,
+  ReceiptText, BarChart2, Download, FileText, Eye,
+  CreditCard, Package, Stethoscope,
+  Calendar, IndianRupee, LayoutDashboard, Loader2,
+  ShoppingBag, UserCircle,
 } from 'lucide-react';
 import { WellnessRing, MiniLineChart, RadarChart, HistoryChart } from '../components/dashboard/DashboardCharts';
+import { BarChart, MultiLineChart, DonutChart } from '../components/dashboard/AnalyticsCharts';
+import { useUserDashboard, DashInvoice } from '../hooks/useUserDashboard';
 import { useNavigate } from 'react-router-dom';
 import '../components/dashboard/dashboard.css';
 
-// ─── Sub-Components ───
-
-const StatCard = ({ label, value, icon, color, variants, desc }: any) => (
-  <motion.div 
-    variants={variants}
-    className="stat-widget group hover:border-emerald-accent/30 transition-all cursor-default"
-  >
-    <div className="flex items-center justify-between mb-2">
-      <div className={`w-9 h-9 rounded-xl flex items-center justify-center bg-${color}-500/10`}>
-        {React.cloneElement(icon, { size: 16, className: `text-${color}-400` })}
-      </div>
-      <span className="text-[10px] uppercase tracking-widest text-cream/30">{label}</span>
-    </div>
-    <p className="text-2xl font-bold text-cream underline-offset-4 group-hover:underline decoration-emerald-accent/30">{value}</p>
-    <p className="text-[10px] text-emerald-accent/40 mt-1">{desc}</p>
-  </motion.div>
-);
-
-// ─── Animated counter hook ───
-function useCountUp(target: number, duration = 2000) {
+// ─── Animated counter ───
+function useCountUp(target: number, duration = 1600) {
   const [val, setVal] = useState(0);
   useEffect(() => {
+    if (target === 0) { setVal(0); return; }
     let start = 0;
     const step = target / (duration / 16);
     const id = setInterval(() => {
       start += step;
-      if (start >= target) {
-        setVal(target);
-        clearInterval(id);
-      } else setVal(Math.round(start));
+      if (start >= target) { setVal(target); clearInterval(id); }
+      else setVal(Math.round(start));
     }, 16);
     return () => clearInterval(id);
   }, [target]);
   return val;
 }
 
-// ─── Mock Data ───
-const immunityData = [72, 74, 71, 76, 78, 75, 80];
-const energyData = [65, 68, 62, 70, 73, 69, 75];
-const historyData = Array.from({ length: 30 }, (_, i) => 60 + Math.round(Math.sin(i / 4) * 15 + Math.random() * 10));
-const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+// ─── Invoice PDF Generator ───
+function generateInvoicePDF(inv: DashInvoice, userName: string) {
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice ${inv.id.slice(0, 8).toUpperCase()}</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #fff; color: #111; padding: 40px; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; border-bottom: 2px solid #10B981; padding-bottom: 20px; }
+    .brand-name { font-size: 26px; font-weight: 800; }
+    .brand-name span { color: #10B981; }
+    .brand-sub { font-size: 11px; color: #6B7280; margin-top: 3px; }
+    .inv-id { font-size: 20px; font-weight: 700; color: #10B981; }
+    .inv-date { font-size: 12px; color: #6B7280; margin-top: 4px; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; background: ${inv.status === 'paid' ? '#D1FAE5' : '#FEF3C7'}; color: ${inv.status === 'paid' ? '#065F46' : '#92400E'}; margin-top: 6px; }
+    .billing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+    .billing-box { background: #F9FAFB; border-radius: 10px; padding: 16px; }
+    .billing-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #6B7280; margin-bottom: 6px; }
+    .billing-name { font-weight: 700; font-size: 14px; }
+    .billing-detail { font-size: 12px; color: #6B7280; margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: #0A0F0D; color: #fff; }
+    thead th { padding: 12px 14px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    tbody tr { border-bottom: 1px solid #E5E7EB; }
+    tbody td { padding: 12px 14px; font-size: 13px; color: #374151; }
+    .total-row td { font-weight: 700; color: #065F46; font-size: 14px; background: #F0FDF4; padding: 14px; }
+    .footer { margin-top: 40px; text-align: center; font-size: 11px; color: #9CA3AF; border-top: 1px solid #E5E7EB; padding-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="brand-name">🌿 Ayur<span>Care</span><sup style="font-size:12px;color:#10B981">+</sup></div>
+      <div class="brand-sub">Holistic Ayurvedic Health & Wellness Platform</div>
+      <div class="brand-sub">support@ayurcare.health | www.ayurcare.health</div>
+    </div>
+    <div style="text-align:right">
+      <div class="inv-id">INV-${inv.id.slice(0, 8).toUpperCase()}</div>
+      <div class="inv-date">${new Date(inv.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+      <span class="badge">${inv.status.toUpperCase()}</span>
+    </div>
+  </div>
+  <div class="billing-grid">
+    <div class="billing-box">
+      <div class="billing-label">Billed To</div>
+      <div class="billing-name">${userName || 'Valued Customer'}</div>
+      <div class="billing-detail">AyurCare+ Member</div>
+    </div>
+    <div class="billing-box">
+      <div class="billing-label">Service</div>
+      <div class="billing-name">${inv.service}</div>
+      ${inv.doctor ? `<div class="billing-detail">${inv.doctor}</div>` : ''}
+    </div>
+  </div>
+  <table>
+    <thead><tr><th>Description</th><th>Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Total</th></tr></thead>
+    <tbody>
+      ${inv.items.map(item => `<tr><td>${item.name}</td><td>${item.qty}</td><td style="text-align:right">₹${item.price.toLocaleString()}</td><td style="text-align:right">₹${(item.price * item.qty).toLocaleString()}</td></tr>`).join('')}
+      <tr class="total-row"><td colspan="3" style="text-align:right">Total Amount</td><td style="text-align:right">₹${inv.amount.toLocaleString()}</td></tr>
+    </tbody>
+  </table>
+  <div class="footer">
+    <p>Thank you for choosing AyurCare+. Computer-generated invoice — no signature required.</p>
+    <p style="margin-top:6px">Queries: support@ayurcare.health | +91 1800-AYUR-CARE</p>
+  </div>
+</body>
+</html>`;
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url, '_blank');
+  if (win) win.onload = () => { win.print(); URL.revokeObjectURL(url); };
+}
 
-const activityFeed = [
-  { time: '2m ago', text: 'AI detected elevated Pitta dosha levels', tag: 'Dosha', tagColor: 'gold' as const },
-  { time: '15m ago', text: 'Heart rate returned to optimal range', tag: 'Vital', tagColor: 'green' as const },
-  { time: '1h ago', text: 'Recommended Ashwagandha for stress reduction', tag: 'Herb', tagColor: 'green' as const },
-  { time: '2h ago', text: 'Calorie intake below target by 320 kcal', tag: 'Alert', tagColor: 'red' as const },
-  { time: '3h ago', text: 'Morning yoga session completed +12 wellness pts', tag: 'Activity', tagColor: 'blue' as const },
+// ─── Tab type ───
+type Tab = 'overview' | 'analytics' | 'invoices';
+const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
+  { id: 'overview',  label: 'Overview',  icon: <LayoutDashboard size={15} /> },
+  { id: 'analytics', label: 'Analytics', icon: <BarChart2 size={15} /> },
+  { id: 'invoices',  label: 'Invoices',  icon: <ReceiptText size={15} /> },
 ];
 
+// ─── Empty State Component ───
+const EmptyState = ({ icon, title, sub, cta, onCta }: {
+  icon: React.ReactNode; title: string; sub: string; cta?: string; onCta?: () => void;
+}) => (
+  <div className="text-center py-16">
+    <div className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-4" style={{ background: 'rgba(16,185,129,0.08)' }}>
+      <span className="text-emerald-accent/40">{icon}</span>
+    </div>
+    <h3 className="text-sm font-bold text-cream/60 mb-1">{title}</h3>
+    <p className="text-xs text-cream/30 mb-4">{sub}</p>
+    {cta && onCta && (
+      <button onClick={onCta} className="px-5 py-2 rounded-xl bg-emerald-accent text-forest text-xs font-bold uppercase tracking-widest hover:bg-emerald-accent/90 transition-colors">
+        {cta}
+      </button>
+    )}
+  </div>
+);
+
+// ─── Main Dashboard ───
 export default function DashboardPage({ user }: { user: FirebaseUser | null }) {
   const navigate = useNavigate();
+  const [tab, setTab] = useState<Tab>('overview');
+  const [invoiceFilter, setInvoiceFilter] = useState<'all' | 'paid' | 'pending'>('all');
+  const [previewInvoice, setPreviewInvoice] = useState<DashInvoice | null>(null);
   const [anomalyState, setAnomalyState] = useState<'stable' | 'alert'>('stable');
-  
-  const wellnessScore = useCountUp(87);
-  const heartRate = useCountUp(72);
-  const calories = useCountUp(1840);
-  const streak = useCountUp(14);
-  const sleepScore = useCountUp(82);
+
+  // ── Real Firestore data ──
+  const { invoices, stats, heartLogs, loading } = useUserDashboard(user?.uid);
+
+  const userName = user?.displayName || 'Guest';
+  const firstName = userName.split(' ')[0];
+
+  // Animated counters from real stats
+  const wellnessScore   = useCountUp(loading ? 0 : stats.wellnessScore);
+  const heartRateVal    = useCountUp(loading ? 0 : (stats.latestHeartRate || 0));
+  const streakVal       = useCountUp(loading ? 0 : stats.streak);
+  const totalSpendVal   = useCountUp(loading ? 0 : stats.totalSpend);
+  const sessionCountVal = useCountUp(loading ? 0 : stats.totalAppointments);
+  const orderCountVal   = useCountUp(loading ? 0 : stats.totalOrders);
 
   useEffect(() => {
-    const id = setInterval(() => setAnomalyState(s => s === 'stable' ? 'alert' : 'stable'), 8000);
+    const id = setInterval(() => setAnomalyState(s => s === 'stable' ? 'alert' : 'stable'), 9000);
     return () => clearInterval(id);
   }, []);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.08, delayChildren: 0.1 }
-    }
+  // Chart data derived from real stats
+  const barData = stats.monthlySpend.map(m => ({ label: m.month, value: m.amount, color: '#10B981' }));
+  const heartTrend = stats.weeklyHeartRates;
+  const heartLabels = stats.weekLabels;
+  const metricDatasets = [
+    { label: 'Heart Rate', data: heartTrend, color: '#F87171' },
+    { label: 'Sessions',   data: stats.monthlySpend.map(m => m.sessions * 10), color: '#10B981' },
+  ];
+
+  // Filtered invoices
+  const filteredInvoices = invoices.filter(inv => invoiceFilter === 'all' || inv.status === invoiceFilter);
+
+  const fadeUp = (delay = 0) => ({
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+  });
+  const slideIn = {
+    initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -16 }, transition: { duration: 0.35 },
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }
-  };
+  // Loading skeleton
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 size={40} className="text-emerald-accent animate-spin mx-auto mb-4" />
+          <p className="text-cream/50 text-sm">Loading your health data…</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Not logged in
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <motion.div {...fadeUp()} className="glass-card p-12 text-center max-w-sm">
+          <UserCircle size={48} className="text-emerald-accent/50 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-cream mb-2">Sign In to View Dashboard</h2>
+          <p className="text-cream/40 text-sm mb-6">Your personal health data, invoices, and analytics are waiting.</p>
+          <button
+            onClick={() => navigate('/')}
+            className="px-8 py-3 rounded-xl bg-emerald-accent text-forest font-bold text-sm hover:bg-emerald-accent/90 transition-colors"
+          >
+            Go to Sign In
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
-    <motion.div 
-      initial="hidden" animate="visible" exit="hidden" variants={containerVariants}
-      className="min-h-screen pb-20 px-6 max-w-[1440px] mx-auto"
-    >
-      {/* Header Section */}
-      <motion.div variants={itemVariants} className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 mt-6 gap-6">
+    <div className="min-h-screen pb-20 px-4 md:px-6 max-w-[1440px] mx-auto">
+
+      {/* Header */}
+      <motion.div {...fadeUp()} className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 mt-6 gap-4">
         <div>
           <h1 className="text-4xl font-display font-bold text-cream tracking-tight">
-            Welcome, <span className="text-gradient">{user?.displayName ? user.displayName.split(' ')[0] : 'Guest'}</span>
+            Welcome, <span className="text-gradient">{firstName}</span>
           </h1>
           <p className="text-emerald-accent/50 text-sm mt-1 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-accent animate-pulse" />
-            {user ? 'Neural Analysis Active — Syncing Vitals' : 'Demo Mode — Sign in for Personalized Tracking'}
+            {invoices.length > 0
+              ? `${invoices.length} Record${invoices.length !== 1 ? 's' : ''} found — Live Firestore Sync`
+              : 'No activity yet — Book a consultation to get started'}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -108,159 +234,651 @@ export default function DashboardPage({ user }: { user: FirebaseUser | null }) {
             <Clock size={14} className="text-emerald-accent" />
             {new Date().toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })}
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-accent/20 to-emerald-accent/5 border border-emerald-accent/20 flex items-center justify-center text-cream font-bold overflow-hidden shadow-xl shadow-emerald-accent/5">
-            {user?.photoURL ? <img src={user.photoURL} alt="" /> : <Activity size={20} className="text-emerald-accent" />}
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-accent/20 to-emerald-accent/5 border border-emerald-accent/20 flex items-center justify-center overflow-hidden shadow-xl shadow-emerald-accent/5">
+            {user.photoURL ? <img src={user.photoURL} alt="" className="w-full h-full object-cover" /> : <Activity size={20} className="text-emerald-accent" />}
           </div>
         </div>
       </motion.div>
 
-      {/* Main Grid System */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        {/* Top Feature: AI Wellness Index */}
-        <motion.div variants={itemVariants} className="lg:col-span-8 glass-card relative overflow-hidden group min-h-[340px] flex flex-col justify-center items-center">
-            <div className="pulse-ring opacity-20" />
-            <div className="pulse-ring opacity-10" />
-            <div className="absolute inset-0 bg-gradient-to-t from-emerald-accent/5 to-transparent pointer-events-none" />
-            
-            <div className="relative z-10 flex flex-col items-center">
-              <WellnessRing score={wellnessScore} size={200} />
-              <div className="mt-6 text-center">
-                 <h2 className="text-2xl font-display font-bold text-cream">AI Wellness Index</h2>
-                 <p className="text-xs text-emerald-accent/60 mt-1 px-8">Real-time neural synthesis of your metabolic and Ayurvedic factors.</p>
-              </div>
-              <div className="flex items-center gap-3 mt-6">
-                <span className="smart-tag green py-1 px-4 text-[10px]">Optimal Range</span>
-                <span className="text-[10px] text-cream/30 font-bold uppercase tracking-widest">+1.2% Trend</span>
-              </div>
-            </div>
-        </motion.div>
-
-        {/* Predictive Insights */}
-        <motion.div variants={itemVariants} className="lg:col-span-4 glass-card p-6">
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-9 h-9 rounded-xl bg-emerald-accent/10 flex items-center justify-center"><TrendingUp size={16} className="text-emerald-accent" /></div>
-            <h3 className="text-sm font-bold text-cream uppercase tracking-widest">Predictive Forecast</h3>
-          </div>
-          
-          <div className="space-y-8">
-            <div className="relative">
-              <div className="flex justify-between mb-2"><span className="text-xs text-cream/40">Immunity Strength</span><span className="text-xs text-emerald-accent font-bold">84%</span></div>
-              <MiniLineChart data={immunityData} color="#10B981" height={70} />
-            </div>
-            <div className="relative">
-              <div className="flex justify-between mb-2"><span className="text-xs text-cream/40">Metabolic Energy</span><span className="text-xs text-amber-400 font-bold">92%</span></div>
-              <MiniLineChart data={energyData} color="#F59E0B" height={70} />
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Stats Grid */}
-        <div className="lg:col-span-12 grid grid-cols-2 md:grid-cols-4 gap-4">
-           <StatCard label="Heart Rate" value={`${heartRate} BPM`} icon={<Heart />} color="rose" variants={itemVariants} desc="Vata Balanced" />
-           <StatCard label="Burn" value={`${calories} kcal`} icon={<Flame />} color="orange" variants={itemVariants} desc="Pitta Active" />
-           <StatCard label="Streak" value={`${streak} Days`} icon={<Zap />} color="emerald" variants={itemVariants} desc="Consistency" />
-           <StatCard label="Sleep" value={`${sleepScore}/100`} icon={<Moon />} color="indigo" variants={itemVariants} desc="Deep REM" />
-        </div>
-
-        {/* Dosha Radar & Activity */}
-        <motion.div variants={itemVariants} className="lg:col-span-4 glass-card p-6">
-           <div className="flex items-center gap-2 mb-6">
-            <div className="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center"><Brain size={16} className="text-amber-400" /></div>
-            <h3 className="text-sm font-bold text-cream uppercase tracking-widest">Prakriti Hub</h3>
-          </div>
-          <div className="flex justify-center -mt-4">
-            <RadarChart vata={45} pitta={72} kapha={32} />
-          </div>
-          <div className="space-y-2 mt-4">
-             <p className="text-[10px] font-bold text-amber-400/80 uppercase tracking-widest mb-3">AI Suggestions</p>
-             <div className="p-3 rounded-xl bg-forest/40 border border-white/5 flex items-center gap-3">
-                <span className="text-xl">🌿</span>
-                <span className="text-xs text-cream/70">Drink Warm Tulsi Tea for Pitta balance.</span>
-             </div>
-             <div className="p-3 rounded-xl bg-forest/40 border border-white/5 flex items-center gap-3">
-                <span className="text-xl">🫚</span>
-                <span className="text-xs text-cream/70">Morning ginger for Vata grounding.</span>
-             </div>
-          </div>
-        </motion.div>
-
-        {/* History Chart */}
-        <motion.div variants={itemVariants} className="lg:col-span-8 glass-card p-6">
-           <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-emerald-accent/10 flex items-center justify-center"><Activity size={16} className="text-emerald-accent" /></div>
-                <h3 className="text-sm font-bold text-cream uppercase tracking-widest">30-Day Health Trend</h3>
-              </div>
-              <div className="smart-tag green text-[9px] uppercase tracking-tighter">Verified data</div>
-           </div>
-           <HistoryChart data={historyData} height={180} />
-           <div className="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-white/5">
-              <div className="text-center"><p className="text-xs text-cream/30 uppercase tracking-widest mb-1">Peak</p><p className="text-xl font-bold text-cream">94%</p></div>
-              <div className="text-center"><p className="text-xs text-cream/30 uppercase tracking-widest mb-1">Avg</p><p className="text-xl font-bold text-cream">78%</p></div>
-              <div className="text-center"><p className="text-xs text-cream/30 uppercase tracking-widest mb-1">Growth</p><p className="text-xl font-bold text-emerald-accent">+12.4%</p></div>
-           </div>
-        </motion.div>
-
-        {/* Anomaly & Activity Feed */}
-        <motion.div variants={itemVariants} className="lg:col-span-6 glass-card p-6">
-          <div className="flex items-center gap-2 mb-6">
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${anomalyState === 'alert' ? 'bg-red-500/10' : 'bg-emerald-accent/10'}`}>
-               {anomalyState === 'alert' ? <AlertTriangle size={16} className="text-red-400" /> : <Shield size={16} className="text-emerald-accent" />}
-            </div>
-            <h3 className="text-sm font-bold text-cream uppercase tracking-widest">Neural Anomaly Scan</h3>
-          </div>
-          <AnimatePresence mode="wait">
-             <motion.div 
-               key={anomalyState}
-               initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }}
-               className="text-center py-8"
-             >
-                <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-5 border-2 ${anomalyState === 'alert' ? 'bg-red-500/5 border-red-500/20 pulse-red' : 'bg-emerald-accent/5 border-emerald-accent/20 breathe shadow-lg shadow-emerald-accent/10'}`}>
-                   {anomalyState === 'alert' ? <ShieldAlert size={32} className="text-red-400" /> : <CheckCircle size={32} className="text-emerald-accent" />}
-                </div>
-                <h4 className={`text-xl font-display font-bold ${anomalyState === 'alert' ? 'text-red-400' : 'text-emerald-accent'}`}>
-                  {anomalyState === 'alert' ? 'Anomaly Detected' : 'Vitals Stable'}
-                </h4>
-                <p className="text-xs text-cream/40 mt-2 max-w-[240px] mx-auto">
-                   {anomalyState === 'alert' ? 'Irregular sleep cycle detected (REM shift).' : 'All biomarkers within standard Ayurvedic deviation.'}
-                </p>
-             </motion.div>
-          </AnimatePresence>
-        </motion.div>
-
-        {/* Activity Feed */}
-        <motion.div variants={itemVariants} className="lg:col-span-6 glass-card p-6">
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-9 h-9 rounded-xl bg-violet-500/10 flex items-center justify-center"><Sparkles size={16} className="text-violet-400" /></div>
-            <h3 className="text-sm font-bold text-cream uppercase tracking-widest">Neural Log</h3>
-          </div>
-          <div className="space-y-4">
-             {activityFeed.map((item, i) => (
-                <div key={i} className="flex justify-between items-start pb-4 border-b border-white/3 last:border-0 last:pb-0">
-                   <div className="flex gap-3">
-                      <div className={`w-1 h-8 rounded-full ${item.tagColor === 'red' ? 'bg-red-400' : item.tagColor === 'gold' ? 'bg-amber-400' : 'bg-emerald-accent'}`} />
-                      <div>
-                         <p className="text-xs text-cream font-medium">{item.text}</p>
-                         <p className="text-[10px] text-cream/20 mt-0.5">{item.time} — {item.tag}</p>
-                      </div>
-                   </div>
-                   <ArrowRight size={12} className="text-cream/10 mt-1" />
-                </div>
-             ))}
-          </div>
-          <button 
-            onClick={() => navigate('/health-coach')}
-            className="w-full mt-6 py-4 rounded-xl bg-forest/40 border border-white/5 text-emerald-accent text-xs font-bold uppercase tracking-widest hover:bg-emerald-accent/10 transition-all flex items-center justify-center gap-2 group"
+      {/* Tab Bar */}
+      <motion.div {...fadeUp(0.05)} className="flex gap-1 mb-8 p-1 rounded-2xl bg-forest/60 border border-white/5 backdrop-blur-md w-fit">
+        {TABS.map(t => (
+          <button
+            key={t.id}
+            id={`tab-${t.id}`}
+            onClick={() => { setTab(t.id); setPreviewInvoice(null); }}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${
+              tab === t.id ? 'bg-emerald-accent text-forest shadow-lg shadow-emerald-accent/20' : 'text-cream/40 hover:text-cream/70'
+            }`}
           >
-            Launch AI Blueprint <Sparkles size={14} className="group-hover:animate-spin" />
+            {t.icon}{t.label}
+            {t.id === 'invoices' && invoices.length > 0 && (
+              <span className="ml-1 w-5 h-5 rounded-full bg-emerald-accent/20 text-emerald-accent text-[10px] font-bold flex items-center justify-center">
+                {invoices.length}
+              </span>
+            )}
           </button>
-        </motion.div>
+        ))}
+      </motion.div>
 
-      </div>
-    </motion.div>
+      {/* ─── Tab Content ─── */}
+      <AnimatePresence mode="wait">
+
+        {/* ══════════════ OVERVIEW TAB ══════════════ */}
+        {tab === 'overview' && (
+          <motion.div key="overview" {...slideIn}>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+              {/* Wellness Ring */}
+              <motion.div {...fadeUp(0.05)} className="lg:col-span-8 glass-card relative overflow-hidden min-h-[300px] flex items-center justify-center">
+                <div className="pulse-ring opacity-20" />
+                <div className="pulse-ring opacity-10" />
+                <div className="absolute inset-0 bg-gradient-to-t from-emerald-accent/5 to-transparent pointer-events-none" />
+                <div className="relative z-10 flex flex-col items-center py-8">
+                  <WellnessRing score={wellnessScore} size={190} />
+                  <div className="mt-6 text-center px-8">
+                    <h2 className="text-2xl font-display font-bold text-cream">AI Wellness Index</h2>
+                    <p className="text-xs text-emerald-accent/60 mt-1">
+                      {stats.totalAppointments + stats.totalOrders > 0
+                        ? `Derived from ${stats.totalAppointments} consultations & ${stats.totalOrders} orders`
+                        : 'Book your first consultation to build your wellness score'}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 mt-4">
+                    <span className={`smart-tag py-1 px-4 text-[10px] ${wellnessScore >= 80 ? 'green' : wellnessScore >= 60 ? 'gold' : 'red'}`}>
+                      {wellnessScore >= 80 ? 'Optimal' : wellnessScore >= 60 ? 'Fair' : 'Needs Attention'}
+                    </span>
+                    {stats.totalAppointments > 0 && (
+                      <span className="text-[10px] text-cream/30 font-bold uppercase tracking-widest">
+                        {stats.totalAppointments} Session{stats.totalAppointments !== 1 ? 's' : ''} Tracked
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Heart Rate Trend */}
+              <motion.div {...fadeUp(0.1)} className="lg:col-span-4 glass-card p-6">
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(248,113,113,0.1)' }}>
+                    <Heart size={16} style={{ color: '#F87171' }} />
+                  </div>
+                  <h3 className="text-sm font-bold text-cream uppercase tracking-widest">Heart Trend</h3>
+                </div>
+                {heartLogs.length > 0 ? (
+                  <>
+                    <div className="text-center mb-4">
+                      <p className="text-4xl font-bold text-cream">{heartRateVal}</p>
+                      <p className="text-xs text-cream/30 mt-1">BPM — Latest reading</p>
+                    </div>
+                    <MiniLineChart data={heartLogs.slice(0, 7).reverse().map(l => l.heartRate)} color="#F87171" height={80} />
+                    <div className="flex justify-between mt-4 pt-4 border-t border-white/5">
+                      <div className="text-center">
+                        <p className="text-[10px] text-cream/30">Avg</p>
+                        <p className="text-sm font-bold text-cream">{stats.avgHeartRate} BPM</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-[10px] text-cream/30">Readings</p>
+                        <p className="text-sm font-bold text-cream">{heartLogs.length}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-[10px] text-cream/30">Status</p>
+                        <p className="text-sm font-bold text-emerald-accent">
+                          {stats.avgHeartRate && stats.avgHeartRate >= 60 && stats.avgHeartRate <= 100 ? 'Normal' : 'Monitor'}
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <EmptyState
+                    icon={<Heart size={24} />}
+                    title="No Heart Data Yet"
+                    sub="Record your heart rate using the health tools"
+                    cta="Log Heart Rate"
+                    onCta={() => navigate('/tools')}
+                  />
+                )}
+              </motion.div>
+
+              {/* Stats Row */}
+              {[
+                { label: 'Consultations', value: `${sessionCountVal}`, iconEl: <Stethoscope size={16} />, iconColor: '#60A5FA', bg: 'rgba(96,165,250,0.1)', desc: 'Total sessions', trend: stats.totalAppointments > 0 ? 'Paid & Verified' : 'Book one!', delay: 0.12 },
+                { label: 'Orders', value: `${orderCountVal}`, iconEl: <ShoppingBag size={16} />, iconColor: '#FBBF24', bg: 'rgba(245,158,11,0.1)', desc: 'Product orders', trend: stats.totalOrders > 0 ? `₹${stats.totalOrders * 100}+ est.` : 'Shop now', delay: 0.16 },
+                { label: 'Streak', value: `${streakVal}d`, iconEl: <Zap size={16} />, iconColor: '#34D399', bg: 'rgba(52,211,153,0.1)', desc: 'Active days', trend: streakVal > 0 ? '🔥 Keep going' : 'Start today', delay: 0.2 },
+                { label: 'Wellness', value: `${wellnessScore}%`, iconEl: <TrendingUp size={16} />, iconColor: '#A78BFA', bg: 'rgba(167,139,250,0.1)', desc: 'Score', trend: wellnessScore >= 80 ? '↑ Excellent' : '↑ Improving', delay: 0.24 },
+              ].map((c, i) => (
+                <motion.div key={i} {...fadeUp(c.delay)} className="lg:col-span-3 stat-widget">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: c.bg }}>
+                      <span style={{ color: c.iconColor }}>{c.iconEl}</span>
+                    </div>
+                    <span className="text-[10px] uppercase tracking-widest text-cream/30">{c.label}</span>
+                  </div>
+                  <p className="text-2xl font-bold text-cream">{c.value}</p>
+                  <div className="flex items-center justify-between mt-1">
+                    <p className="text-[10px] text-emerald-accent/40">{c.desc}</p>
+                    <span className="text-[10px] font-bold text-emerald-accent">{c.trend}</span>
+                  </div>
+                </motion.div>
+              ))}
+
+              {/* Dosha Radar */}
+              <motion.div {...fadeUp(0.2)} className="lg:col-span-4 glass-card p-6">
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(245,158,11,0.1)' }}>
+                    <Brain size={16} style={{ color: '#FBBF24' }} />
+                  </div>
+                  <h3 className="text-sm font-bold text-cream uppercase tracking-widest">Prakriti Hub</h3>
+                </div>
+                <div className="flex justify-center -mt-4">
+                  <RadarChart vata={45} pitta={72} kapha={32} />
+                </div>
+                <div className="space-y-2 mt-4">
+                  <p className="text-[10px] font-bold text-amber-400/80 uppercase tracking-widest mb-3">AI Suggestions</p>
+                  <div className="p-3 rounded-xl bg-forest/40 border border-white/5 flex items-center gap-3">
+                    <span className="text-xl">🌿</span>
+                    <span className="text-xs text-cream/70">Warm Tulsi Tea for Pitta balance.</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-forest/40 border border-white/5 flex items-center gap-3">
+                    <span className="text-xl">🫚</span>
+                    <span className="text-xs text-cream/70">Morning ginger for Vata grounding.</span>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Recent Activity */}
+              <motion.div {...fadeUp(0.25)} className="lg:col-span-8 glass-card p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(167,139,250,0.1)' }}>
+                      <Activity size={16} style={{ color: '#A78BFA' }} />
+                    </div>
+                    <h3 className="text-sm font-bold text-cream uppercase tracking-widest">Recent Activity</h3>
+                  </div>
+                  {invoices.length > 0 && (
+                    <button
+                      onClick={() => setTab('invoices')}
+                      className="text-[10px] text-emerald-accent font-bold uppercase tracking-widest hover:opacity-70 transition-opacity flex items-center gap-1"
+                    >
+                      View All <ArrowRight size={10} />
+                    </button>
+                  )}
+                </div>
+                {invoices.length > 0 ? (
+                  <div className="space-y-3">
+                    {invoices.slice(0, 5).map((inv, i) => (
+                      <motion.div
+                        key={inv.id}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.05 }}
+                        className="flex items-center justify-between p-3 rounded-xl bg-forest/30 border border-white/5 hover:bg-white/[0.02] transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: inv.type === 'consultation' ? 'rgba(96,165,250,0.1)' : 'rgba(245,158,11,0.1)' }}>
+                            {inv.type === 'consultation'
+                              ? <Stethoscope size={13} style={{ color: '#60A5FA' }} />
+                              : <ShoppingBag size={13} style={{ color: '#FBBF24' }} />}
+                          </div>
+                          <div>
+                            <p className="text-xs font-medium text-cream">{inv.service}</p>
+                            <p className="text-[10px] text-cream/30">{new Date(inv.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-cream">₹{inv.amount.toLocaleString()}</p>
+                          <span className={`text-[9px] font-bold uppercase ${inv.status === 'paid' ? 'text-emerald-accent' : 'text-amber-400'}`}>
+                            {inv.status}
+                          </span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyState
+                    icon={<ReceiptText size={24} />}
+                    title="No Activity Yet"
+                    sub="Your consultations and orders will appear here"
+                    cta="Book a Consultation"
+                    onCta={() => navigate('/doctors')}
+                  />
+                )}
+                <button
+                  onClick={() => navigate('/health-coach')}
+                  className="w-full mt-6 py-4 rounded-xl bg-forest/40 border border-white/5 text-emerald-accent text-xs font-bold uppercase tracking-widest hover:bg-emerald-accent/10 transition-all flex items-center justify-center gap-2 group"
+                >
+                  Launch AI Health Blueprint <Sparkles size={14} className="group-hover:animate-spin" />
+                </button>
+              </motion.div>
+
+              {/* Anomaly Scan */}
+              <motion.div {...fadeUp(0.3)} className={`lg:col-span-6 glass-card p-6 ${anomalyState === 'alert' ? 'anomaly-card alert' : 'anomaly-card stable'}`}>
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: anomalyState === 'alert' ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)' }}>
+                    {anomalyState === 'alert' ? <AlertTriangle size={16} className="text-red-400" /> : <Shield size={16} className="text-emerald-accent" />}
+                  </div>
+                  <h3 className="text-sm font-bold text-cream uppercase tracking-widest">Neural Scan</h3>
+                </div>
+                <AnimatePresence mode="wait">
+                  <motion.div key={anomalyState} initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.97 }} className="text-center py-6">
+                    <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-5 border-2 ${anomalyState === 'alert' ? 'bg-red-500/5 border-red-500/20' : 'bg-emerald-accent/5 border-emerald-accent/20 breathe'}`}>
+                      {anomalyState === 'alert' ? <Shield size={32} className="text-red-400" /> : <CheckCircle size={32} className="text-emerald-accent" />}
+                    </div>
+                    <h4 className={`text-xl font-display font-bold ${anomalyState === 'alert' ? 'text-red-400' : 'text-emerald-accent'}`}>
+                      {anomalyState === 'alert' ? 'Anomaly Detected' : 'Vitals Stable'}
+                    </h4>
+                    <p className="text-xs text-cream/40 mt-2 max-w-[220px] mx-auto">
+                      {anomalyState === 'alert'
+                        ? stats.latestHeartRate && (stats.latestHeartRate < 60 || stats.latestHeartRate > 100)
+                          ? `Heart rate ${stats.latestHeartRate} BPM is outside optimal range.`
+                          : 'Irregular pattern detected. Consider scheduling a check-up.'
+                        : 'All tracked biomarkers within standard Ayurvedic range.'}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+              </motion.div>
+
+              {/* Spend Summary */}
+              <motion.div {...fadeUp(0.35)} className="lg:col-span-6 glass-card p-6">
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(16,185,129,0.1)' }}>
+                    <IndianRupee size={16} className="text-emerald-accent" />
+                  </div>
+                  <h3 className="text-sm font-bold text-cream uppercase tracking-widest">Spend Overview</h3>
+                </div>
+                {stats.totalSpend > 0 ? (
+                  <>
+                    <div className="text-center mb-6">
+                      <p className="text-4xl font-bold text-cream">₹{totalSpendVal.toLocaleString()}</p>
+                      <p className="text-xs text-cream/30 mt-1">Total lifetime spend on AyurCare+</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 rounded-xl bg-forest/40 border border-white/5">
+                        <p className="text-[10px] text-cream/30 uppercase tracking-widest mb-1">Consultations</p>
+                        <p className="text-lg font-bold text-blue-400">₹{invoices.filter(i => i.type === 'consultation').reduce((s, i) => s + i.amount, 0).toLocaleString()}</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-forest/40 border border-white/5">
+                        <p className="text-[10px] text-cream/30 uppercase tracking-widest mb-1">Products</p>
+                        <p className="text-lg font-bold text-amber-400">₹{invoices.filter(i => i.type === 'order').reduce((s, i) => s + i.amount, 0).toLocaleString()}</p>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <EmptyState
+                    icon={<IndianRupee size={24} />}
+                    title="No Transactions Yet"
+                    sub="Your spending history will appear here after your first booking"
+                    cta="Book Consultation"
+                    onCta={() => navigate('/doctors')}
+                  />
+                )}
+              </motion.div>
+
+            </div>
+          </motion.div>
+        )}
+
+        {/* ══════════════ ANALYTICS TAB ══════════════ */}
+        {tab === 'analytics' && (
+          <motion.div key="analytics" {...slideIn}>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+              {/* KPI Cards */}
+              {[
+                { label: 'Total Spend',    value: `₹${totalSpendVal.toLocaleString()}`,   iconEl: <IndianRupee size={16} />, iconColor: '#34D399', bg: 'rgba(16,185,129,0.1)',   desc: 'Lifetime',    trend: stats.totalSpend > 0 ? 'From real data' : 'No spend yet',   delay: 0 },
+                { label: 'Consultations',  value: `${sessionCountVal}`,                    iconEl: <Stethoscope size={16} />, iconColor: '#60A5FA', bg: 'rgba(96,165,250,0.1)',   desc: 'All time',    trend: stats.totalAppointments > 0 ? 'Paid & Confirmed' : 'Book one!', delay: 0.06 },
+                { label: 'Orders',         value: `${orderCountVal}`,                      iconEl: <Package size={16} />,     iconColor: '#FBBF24', bg: 'rgba(245,158,11,0.1)',   desc: 'Purchased',   trend: stats.totalOrders > 0 ? 'Via AyurCare+' : 'Shop now',         delay: 0.12 },
+                { label: 'Wellness Score', value: `${wellnessScore}/100`,                  iconEl: <TrendingUp size={16} />,  iconColor: '#A78BFA', bg: 'rgba(167,139,250,0.1)', desc: 'Computed',    trend: wellnessScore >= 60 ? '↑ Good' : '↑ Improve',                  delay: 0.18 },
+              ].map((c, i) => (
+                <motion.div key={i} {...fadeUp(c.delay)} className="lg:col-span-3 stat-widget">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: c.bg }}>
+                      <span style={{ color: c.iconColor }}>{c.iconEl}</span>
+                    </div>
+                    <span className="text-[10px] uppercase tracking-widest text-cream/30">{c.label}</span>
+                  </div>
+                  <p className="text-2xl font-bold text-cream">{c.value}</p>
+                  <div className="flex items-center justify-between mt-1">
+                    <p className="text-[10px] text-emerald-accent/40">{c.desc}</p>
+                    <span className="text-[10px] font-bold text-emerald-accent">{c.trend}</span>
+                  </div>
+                </motion.div>
+              ))}
+
+              {/* Monthly Spend Bar Chart */}
+              <motion.div {...fadeUp(0.1)} className="lg:col-span-7 glass-card p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(16,185,129,0.1)' }}>
+                      <BarChart2 size={16} className="text-emerald-accent" />
+                    </div>
+                    <h3 className="text-sm font-bold text-cream uppercase tracking-widest">Monthly Spend</h3>
+                  </div>
+                  <span className="smart-tag green text-[9px]">Real data</span>
+                </div>
+                {stats.totalSpend > 0 ? (
+                  <BarChart data={barData} height={180} unit="₹" />
+                ) : (
+                  <EmptyState icon={<BarChart2 size={24} />} title="No Spend Data" sub="Data appears after your first consultation or order" />
+                )}
+              </motion.div>
+
+              {/* Spend Breakdown Donut */}
+              <motion.div {...fadeUp(0.15)} className="lg:col-span-5 glass-card p-6">
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(245,158,11,0.1)' }}>
+                    <CreditCard size={16} style={{ color: '#FBBF24' }} />
+                  </div>
+                  <h3 className="text-sm font-bold text-cream uppercase tracking-widest">Spend Breakdown</h3>
+                </div>
+                {stats.totalSpend > 0 ? (
+                  <DonutChart segments={stats.categoryBreakdown} size={180} />
+                ) : (
+                  <EmptyState icon={<CreditCard size={24} />} title="No Data Yet" sub="Breakdown appears once you have transactions" />
+                )}
+              </motion.div>
+
+              {/* Heart Rate Trend (12-week) */}
+              <motion.div {...fadeUp(0.2)} className="lg:col-span-12 glass-card p-6">
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-2">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(248,113,113,0.1)' }}>
+                      <Activity size={16} style={{ color: '#F87171' }} />
+                    </div>
+                    <h3 className="text-sm font-bold text-cream uppercase tracking-widest">12-Week Health Trend</h3>
+                  </div>
+                  <span className="smart-tag blue text-[9px]">{heartLogs.length} readings</span>
+                </div>
+                {heartLogs.length > 0 ? (
+                  <MultiLineChart datasets={metricDatasets} labels={heartLabels} height={200} />
+                ) : (
+                  <EmptyState
+                    icon={<Activity size={24} />}
+                    title="No Heart Rate Data"
+                    sub="Log your heart rate via Health Tools to see your weekly trend"
+                    cta="Log Heart Rate"
+                    onCta={() => navigate('/tools')}
+                  />
+                )}
+              </motion.div>
+
+              {/* Consultations by Month */}
+              <motion.div {...fadeUp(0.25)} className="lg:col-span-6 glass-card p-6">
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(96,165,250,0.1)' }}>
+                    <Calendar size={16} style={{ color: '#60A5FA' }} />
+                  </div>
+                  <h3 className="text-sm font-bold text-cream uppercase tracking-widest">Sessions / Month</h3>
+                </div>
+                {stats.totalAppointments > 0 ? (
+                  <BarChart
+                    data={stats.monthlySpend.map(m => ({ label: m.month, value: m.sessions, color: '#60A5FA' }))}
+                    height={160}
+                    label="Consultations per month"
+                  />
+                ) : (
+                  <EmptyState icon={<Calendar size={24} />} title="No Sessions Yet" sub="Book a consultation to track your visit history" />
+                )}
+              </motion.div>
+
+              {/* Orders by Month */}
+              <motion.div {...fadeUp(0.3)} className="lg:col-span-6 glass-card p-6">
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(245,158,11,0.1)' }}>
+                    <ShoppingBag size={16} style={{ color: '#FBBF24' }} />
+                  </div>
+                  <h3 className="text-sm font-bold text-cream uppercase tracking-widest">Spend / Month</h3>
+                </div>
+                {stats.totalSpend > 0 ? (
+                  <BarChart
+                    data={stats.monthlySpend.map(m => ({ label: m.month, value: m.amount, color: '#FBBF24' }))}
+                    height={160}
+                    unit="₹"
+                    label="Monthly spend"
+                  />
+                ) : (
+                  <EmptyState icon={<ShoppingBag size={24} />} title="No Spend Data" sub="Order herbal products to track spending trends" />
+                )}
+              </motion.div>
+
+            </div>
+          </motion.div>
+        )}
+
+        {/* ══════════════ INVOICES TAB ══════════════ */}
+        {tab === 'invoices' && (
+          <motion.div key="invoices" {...slideIn}>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+              {/* Summary KPIs */}
+              {[
+                { label: 'Total Records',  value: invoices.length,                                    iconEl: <FileText size={16} />,   iconColor: '#34D399', bg: 'rgba(16,185,129,0.1)', delay: 0 },
+                { label: 'Consultations',  value: invoices.filter(i => i.type === 'consultation').length, iconEl: <Stethoscope size={16} />, iconColor: '#60A5FA', bg: 'rgba(96,165,250,0.1)', delay: 0.06 },
+                { label: 'Product Orders', value: invoices.filter(i => i.type === 'order').length,    iconEl: <Package size={16} />,    iconColor: '#FBBF24', bg: 'rgba(245,158,11,0.1)', delay: 0.12 },
+                { label: 'Total Billed',   value: `₹${invoices.reduce((s, i) => s + i.amount, 0).toLocaleString()}`, iconEl: <IndianRupee size={16} />, iconColor: '#A78BFA', bg: 'rgba(167,139,250,0.1)', delay: 0.18 },
+              ].map((c, i) => (
+                <motion.div key={i} {...fadeUp(c.delay)} className="lg:col-span-3 stat-widget">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: c.bg }}>
+                      <span style={{ color: c.iconColor }}>{c.iconEl}</span>
+                    </div>
+                    <span className="text-[10px] uppercase tracking-widest text-cream/30">{c.label}</span>
+                  </div>
+                  <p className="text-2xl font-bold text-cream">{c.value}</p>
+                </motion.div>
+              ))}
+
+              {/* Filter Chips */}
+              <div className="lg:col-span-12 flex items-center gap-3">
+                <span className="text-xs text-cream/40 uppercase tracking-widest">Filter:</span>
+                {(['all', 'paid', 'pending'] as const).map(f => (
+                  <button
+                    key={f}
+                    onClick={() => setInvoiceFilter(f)}
+                    className={`px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${
+                      invoiceFilter === f
+                        ? 'bg-emerald-accent text-forest'
+                        : 'bg-forest/40 border border-white/5 text-cream/40 hover:text-cream/70'
+                    }`}
+                  >
+                    {f}
+                  </button>
+                ))}
+                <span className="text-xs text-cream/20 ml-auto">
+                  {filteredInvoices.length} record{filteredInvoices.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+
+              {/* Invoice Table or Empty */}
+              <motion.div {...fadeUp(0.1)} className="lg:col-span-12 glass-card overflow-hidden">
+                {filteredInvoices.length === 0 ? (
+                  <EmptyState
+                    icon={<ReceiptText size={28} />}
+                    title={invoices.length === 0 ? 'No Invoices Generated Yet' : 'No matching records'}
+                    sub={invoices.length === 0
+                      ? 'Invoices are generated automatically after you pay for a consultancy or place an order.'
+                      : 'Try changing the filter'}
+                    cta={invoices.length === 0 ? 'Book Consultation for ₹1' : undefined}
+                    onCta={() => navigate('/doctors')}
+                  />
+                ) : (
+                  <>
+                    {/* Table header */}
+                    <div className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-white/5 bg-forest/30">
+                      <span className="col-span-1 text-[10px] uppercase tracking-widest text-cream/30">Type</span>
+                      <span className="col-span-3 text-[10px] uppercase tracking-widest text-cream/30">Service</span>
+                      <span className="col-span-3 text-[10px] uppercase tracking-widest text-cream/30">Doctor / Items</span>
+                      <span className="col-span-2 text-[10px] uppercase tracking-widest text-cream/30">Date</span>
+                      <span className="col-span-1 text-[10px] uppercase tracking-widest text-cream/30 text-right">Amount</span>
+                      <span className="col-span-1 text-[10px] uppercase tracking-widest text-cream/30 text-center">Status</span>
+                      <span className="col-span-1 text-[10px] uppercase tracking-widest text-cream/30 text-center">Actions</span>
+                    </div>
+
+                    {filteredInvoices.map((inv, i) => (
+                      <motion.div
+                        key={inv.id}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.05 }}
+                        className="grid grid-cols-12 gap-4 px-6 py-5 border-b border-white/5 last:border-0 hover:bg-white/[0.015] transition-colors"
+                      >
+                        {/* Type icon */}
+                        <div className="col-span-1 flex items-center">
+                          <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: inv.type === 'consultation' ? 'rgba(96,165,250,0.1)' : 'rgba(245,158,11,0.1)' }}>
+                            {inv.type === 'consultation'
+                              ? <Stethoscope size={13} style={{ color: '#60A5FA' }} />
+                              : <ShoppingBag size={13} style={{ color: '#FBBF24' }} />}
+                          </div>
+                        </div>
+
+                        {/* Service */}
+                        <div className="col-span-3 flex items-center">
+                          <div>
+                            <p className="text-xs font-semibold text-cream leading-tight">{inv.service}</p>
+                            <p className="text-[10px] text-cream/30 font-mono mt-0.5">INV-{inv.id.slice(0, 8).toUpperCase()}</p>
+                          </div>
+                        </div>
+
+                        {/* Doctor / Items */}
+                        <div className="col-span-3 flex items-center">
+                          <p className="text-xs text-cream/60 truncate">
+                            {inv.type === 'consultation' ? inv.doctor : `${inv.items.length} item${inv.items.length !== 1 ? 's' : ''}`}
+                          </p>
+                        </div>
+
+                        {/* Date */}
+                        <div className="col-span-2 flex items-center">
+                          <p className="text-xs text-cream/50">
+                            {new Date(inv.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                          </p>
+                        </div>
+
+                        {/* Amount */}
+                        <div className="col-span-1 flex items-center justify-end">
+                          <p className="text-sm font-bold text-cream">₹{inv.amount.toLocaleString()}</p>
+                        </div>
+
+                        {/* Status */}
+                        <div className="col-span-1 flex items-center justify-center">
+                          <span className={`smart-tag ${inv.status === 'paid' ? 'green' : 'gold'} text-[9px]`}>
+                            {inv.status}
+                          </span>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="col-span-1 flex items-center justify-center gap-1">
+                          <button
+                            onClick={() => setPreviewInvoice(previewInvoice?.id === inv.id ? null : inv)}
+                            className="w-7 h-7 rounded-lg flex items-center justify-center hover:opacity-80 transition-opacity"
+                            style={{ background: 'rgba(96,165,250,0.1)' }}
+                            title="Preview"
+                          >
+                            <Eye size={12} style={{ color: '#60A5FA' }} />
+                          </button>
+                          <button
+                            onClick={() => generateInvoicePDF(inv, userName)}
+                            className="w-7 h-7 rounded-lg flex items-center justify-center hover:opacity-80 transition-opacity"
+                            style={{ background: 'rgba(16,185,129,0.1)' }}
+                            title="Download PDF"
+                          >
+                            <Download size={12} className="text-emerald-accent" />
+                          </button>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </>
+                )}
+              </motion.div>
+
+              {/* Invoice Preview Panel */}
+              <AnimatePresence>
+                {previewInvoice && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    className="lg:col-span-12 glass-card p-6"
+                  >
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(16,185,129,0.1)' }}>
+                          <FileText size={16} className="text-emerald-accent" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-bold text-cream">Invoice Preview</h3>
+                          <p className="text-[10px] text-cream/40 font-mono mt-0.5">INV-{previewInvoice.id.slice(0, 8).toUpperCase()}</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => generateInvoicePDF(previewInvoice, userName)}
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-accent text-forest text-xs font-bold uppercase tracking-widest hover:bg-emerald-accent/90 transition-colors shadow-lg shadow-emerald-accent/20"
+                      >
+                        <Download size={13} /> Download PDF
+                      </button>
+                    </div>
+
+                    {/* Preview card */}
+                    <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      {/* Header */}
+                      <div className="px-8 py-6 border-b border-white/5 flex justify-between items-start">
+                        <div>
+                          <p className="text-xl font-display font-bold text-cream">🌿 AyurCare<span className="text-emerald-accent">+</span></p>
+                          <p className="text-[11px] text-cream/40 mt-1">Holistic Ayurvedic Health & Wellness</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-emerald-accent font-mono">INV-{previewInvoice.id.slice(0, 8).toUpperCase()}</p>
+                          <p className="text-[11px] text-cream/40 mt-1">{new Date(previewInvoice.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                          <span className={`smart-tag ${previewInvoice.status === 'paid' ? 'green' : 'gold'} text-[9px] mt-1 inline-block`}>
+                            {previewInvoice.status.toUpperCase()}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Billing */}
+                      <div className="px-8 py-5 grid grid-cols-2 gap-6 border-b border-white/5">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-widest text-cream/30 mb-1">Billed To</p>
+                          <p className="text-sm font-bold text-cream">{userName}</p>
+                          <p className="text-xs text-cream/40">{user.email}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase tracking-widest text-cream/30 mb-1">Service</p>
+                          <p className="text-sm font-bold text-cream">{previewInvoice.service}</p>
+                          {previewInvoice.doctor && <p className="text-xs text-cream/40">{previewInvoice.doctor}</p>}
+                        </div>
+                      </div>
+
+                      {/* Line Items */}
+                      <div className="px-8 py-5">
+                        <div className="grid grid-cols-12 gap-4 mb-3">
+                          <span className="col-span-6 text-[10px] uppercase tracking-widest text-cream/30">Item</span>
+                          <span className="col-span-2 text-[10px] uppercase tracking-widest text-cream/30 text-center">Qty</span>
+                          <span className="col-span-2 text-[10px] uppercase tracking-widest text-cream/30 text-right">Rate</span>
+                          <span className="col-span-2 text-[10px] uppercase tracking-widest text-cream/30 text-right">Total</span>
+                        </div>
+                        {previewInvoice.items.map((item, i) => (
+                          <div key={i} className="grid grid-cols-12 gap-4 py-3 border-t border-white/5">
+                            <span className="col-span-6 text-xs text-cream/80">{item.name}</span>
+                            <span className="col-span-2 text-xs text-cream/50 text-center">{item.qty}</span>
+                            <span className="col-span-2 text-xs text-cream/50 text-right">₹{item.price.toLocaleString()}</span>
+                            <span className="col-span-2 text-xs font-bold text-cream text-right">₹{(item.price * item.qty).toLocaleString()}</span>
+                          </div>
+                        ))}
+                        <div className="grid grid-cols-12 gap-4 py-4 border-t-2 mt-2" style={{ borderColor: 'rgba(16,185,129,0.2)' }}>
+                          <span className="col-span-10 text-xs font-bold text-cream text-right uppercase tracking-widest">Total Amount</span>
+                          <span className="col-span-2 text-sm font-bold text-emerald-accent text-right">₹{previewInvoice.amount.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+            </div>
+          </motion.div>
+        )}
+
+      </AnimatePresence>
+    </div>
   );
 }
-
-// Help sub-icons
-const ShieldAlert = (props: any) => <Shield {...props} className={props.className + " text-red-400"} />;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Star, ExternalLink, Search, Filter, X, Check, Minus, Plus, Package, Truck, Shield, Sparkles } from 'lucide-react';
 import { User as FirebaseUser } from 'firebase/auth';
-import { doc, setDoc, onSnapshot } from 'firebase/firestore';
+import { doc, setDoc, onSnapshot, addDoc, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
 interface Medicine {
@@ -162,6 +162,9 @@ export default function ShopPage({ user, onLogin }: { user: FirebaseUser | null,
   const [showCart, setShowCart] = useState(false);
   const [selectedMed, setSelectedMed] = useState<Medicine | null>(null);
   const [addedId, setAddedId] = useState<number | null>(null);
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const [checkoutProcessing, setCheckoutProcessing] = useState(false);
+  const [orderSaved, setOrderSaved] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -227,16 +230,145 @@ export default function ShopPage({ user, onLogin }: { user: FirebaseUser | null,
   const cartCount = cart.reduce((sum, c) => sum + c.qty, 0);
 
   const handleCheckout = () => {
-    // Open external pharmacy with first item in cart as search
-    if (cart.length > 0) {
-      const searchTerms = cart.map(c => c.medicine.name.split(' ')[0]).join('+');
-      window.open(`https://www.1mg.com/search/all?name=${searchTerms}`, '_blank');
+    if (!user) { onLogin(); return; }
+    if (cart.length > 0) setShowCheckoutModal(true);
+  };
+
+  const handleConfirmCheckout = async () => {
+    if (!user || cart.length === 0) return;
+    setCheckoutProcessing(true);
+    try {
+      // Save real order to Firestore
+      await addDoc(collection(db, 'orders'), {
+        userId: user.uid,
+        createdAt: new Date().toISOString(),
+        status: 'ordered',
+        total: cartTotal,
+        items: cart.map(c => ({
+          name: c.medicine.name,
+          brand: c.medicine.brand,
+          qty: c.qty,
+          price: c.medicine.price,
+        })),
+      });
+      // Clear cart in Firestore
+      await setDoc(doc(db, 'users', user.uid), { cart: [] }, { merge: true });
+      setCart([]);
+      setOrderSaved(true);
+      setCheckoutProcessing(false);
+      // Open 1mg after a short delay
+      setTimeout(() => {
+        const searchTerms = cart.map(c => c.medicine.name.split(' ')[0]).join('+');
+        window.open(`https://www.1mg.com/search/all?name=${searchTerms}`, '_blank');
+        setShowCheckoutModal(false);
+        setOrderSaved(false);
+      }, 1800);
+    } catch (err) {
+      console.error('Order save failed:', err);
+      setCheckoutProcessing(false);
     }
   };
 
   return (
     <div className="min-h-screen pt-40 pb-20 px-4 md:px-6 relative overflow-hidden">
       <div className="fixed inset-0 -z-10 bg-[url('/bg-page-shop.png')] bg-cover bg-center bg-no-repeat before:absolute before:inset-0 before:bg-forest/90" />
+
+      {/* ── Checkout Confirmation Modal ── */}
+      <AnimatePresence>
+        {showCheckoutModal && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[99999]"
+              onClick={() => { if (!checkoutProcessing) setShowCheckoutModal(false); }}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.88, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.88, y: 40 }}
+              transition={{ type: 'spring', damping: 22, stiffness: 280 }}
+              className="fixed inset-0 z-[100000] flex items-center justify-center p-4"
+            >
+              <div
+                style={{
+                  background: 'linear-gradient(145deg, #1b4332 0%, #0f2d1e 100%)',
+                  border: '1px solid rgba(52,211,153,0.25)',
+                  borderRadius: '24px',
+                  padding: '36px 28px',
+                  maxWidth: '420px',
+                  width: '100%',
+                  boxShadow: '0 24px 64px rgba(0,0,0,0.6)',
+                }}
+                onClick={e => e.stopPropagation()}
+              >
+                {orderSaved ? (
+                  <div className="text-center">
+                    <div style={{
+                      width: 72, height: 72, borderRadius: '50%',
+                      background: 'rgba(52,211,153,0.15)', border: '2px solid rgba(52,211,153,0.4)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      margin: '0 auto 16px',
+                    }}>
+                      <Check style={{ color: '#34d399', width: 36, height: 36 }} />
+                    </div>
+                    <h2 style={{ fontSize: 20, fontWeight: 800, color: '#ecfdf5', marginBottom: 8 }}>Order Recorded! 🎉</h2>
+                    <p style={{ color: 'rgba(52,211,153,0.7)', fontSize: 13 }}>
+                      Saved to your dashboard. Opening 1mg.com to complete purchase…
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <h2 style={{ fontSize: 20, fontWeight: 800, color: '#ecfdf5', marginBottom: 4 }}>Confirm Order</h2>
+                    <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, marginBottom: 20 }}>
+                      This will save the order to your AyurCare+ dashboard and open 1mg.com for payment.
+                    </p>
+                    {/* Items summary */}
+                    <div style={{ background: 'rgba(0,0,0,0.25)', borderRadius: 12, padding: 14, marginBottom: 16, border: '1px solid rgba(52,211,153,0.1)' }}>
+                      {cart.map(item => (
+                        <div key={item.medicine.id} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 13 }}>
+                          <span style={{ color: 'rgba(255,255,255,0.7)' }}>{item.medicine.name} ×{item.qty}</span>
+                          <span style={{ color: '#ecfdf5', fontWeight: 700 }}>₹{item.medicine.price * item.qty}</span>
+                        </div>
+                      ))}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(52,211,153,0.15)' }}>
+                        <span style={{ color: 'rgba(52,211,153,0.8)', fontSize: 13, fontWeight: 700 }}>Total</span>
+                        <span style={{ color: '#34d399', fontSize: 16, fontWeight: 800 }}>₹{cartTotal}</span>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: 10 }}>
+                      <button
+                        onClick={() => setShowCheckoutModal(false)}
+                        style={{
+                          flex: 1, background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.6)',
+                          border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '11px',
+                          fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                        }}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleConfirmCheckout}
+                        disabled={checkoutProcessing}
+                        style={{
+                          flex: 2,
+                          background: checkoutProcessing ? 'rgba(52,211,153,0.4)' : 'linear-gradient(135deg, #34d399, #059669)',
+                          color: '#052e16', border: 'none', borderRadius: 12, padding: '11px',
+                          fontSize: 13, fontWeight: 800, cursor: checkoutProcessing ? 'not-allowed' : 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                        }}
+                      >
+                        {checkoutProcessing ? 'Saving Order…' : '✓ Confirm & Buy on 1mg'}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+
       {/* Background decorations */}
       <motion.div
         animate={{ scale: [1, 1.2, 1], opacity: [0.04, 0.08, 0.04] }}

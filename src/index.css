@@ -19,6 +19,15 @@
   --color-emerald-accent: #059669; /* Darker Emerald 600 for contrast against light bg */
 }
 
+/* Fix for forced dark background images in light mode */
+.light-mode .fixed.inset-0.-z-10 {
+  background-image: none !important;
+  background-color: var(--color-forest) !important;
+}
+.light-mode .fixed.inset-0.-z-10 > div {
+  background: none !important;
+}
+
 /* Base styles */
 body {
   margin: 0;

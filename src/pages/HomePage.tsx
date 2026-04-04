@@ -21,7 +21,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
       </div>
 
       {/* Hero Section */}
-      <section className="relative pt-40 pb-28 px-6">
+      <section className="relative pt-28 pb-28 px-6">
         <div className="max-w-7xl mx-auto text-center">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -114,27 +114,54 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
             Ancient wisdom meets modern intelligence. Consult with top Indian Ayurvedic doctors, track your vitals, and balance your life — all from one platform.
           </motion.p>
 
+          {/* WOW FACTOR CARDS */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, duration: 0.7, ease: 'easeOut' }}
+            className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
           >
-            {user ? (
-              <Link 
-                to="/diagnosis"
-                className="bg-emerald-accent text-forest px-10 py-5 rounded-full text-xl font-bold shadow-2xl shadow-emerald-accent/20 hover:bg-emerald-accent/90 hover:scale-105 transition-all inline-flex items-center gap-3"
-              >
-                🩺 Start AI Diagnosis <ChevronRight />
-              </Link>
-            ) : (
-              <button 
-                onClick={onLogin}
-                className="bg-emerald-accent text-forest px-10 py-5 rounded-full text-xl font-bold shadow-2xl shadow-emerald-accent/20 hover:bg-emerald-accent/90 hover:scale-105 transition-all flex items-center gap-3 mx-auto"
-              >
-                Get Started Free <ChevronRight />
-              </button>
-            )}
+            {/* Feature 1: AI Diagnosis */}
+            <div 
+              onClick={() => user ? window.location.href = '/diagnosis' : onLogin()}
+              className="group relative cursor-pointer"
+            >
+              {/* Subtle Glow Behind */}
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-accent to-blue-500/50 rounded-[32px] blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
+              {/* Premium Glass Card */}
+              <div className="relative h-full bg-moss/70 backdrop-blur-2xl border border-white/10 p-6 sm:p-8 rounded-[32px] flex items-center gap-5 sm:gap-6 transform group-hover:-translate-y-2 transition-all duration-500 shadow-2xl shadow-black/50 overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-emerald-accent/20 to-emerald-accent/5 border border-emerald-accent/30 flex items-center justify-center flex-shrink-0 shadow-[inset_0_0_20px_rgba(52,211,153,0.1)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                  <Sparkles className="text-emerald-accent w-7 h-7 sm:w-8 sm:h-8" />
+                </div>
+                <div className="text-left flex-1">
+                  <h3 className="text-xl sm:text-2xl font-display font-bold text-cream mb-1">AI Diagnosis</h3>
+                  <p className="text-xs sm:text-sm text-emerald-accent/60 font-medium leading-relaxed">Instant symptom analysis with intelligent dosha mapping.</p>
+                </div>
+                <ChevronRight className="text-emerald-accent/30 group-hover:text-emerald-accent transition-colors group-hover:translate-x-1.5 duration-300" size={24} />
+              </div>
+            </div>
+
+            {/* Feature 2: AI Health Checker */}
+            <div 
+              onClick={() => user ? window.location.href = '/health-coach' : onLogin()}
+              className="group relative cursor-pointer"
+            >
+              {/* Subtle Glow Behind */}
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/50 to-emerald-accent rounded-[32px] blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
+              {/* Premium Glass Card */}
+              <div className="relative h-full bg-moss/70 backdrop-blur-2xl border border-white/10 p-6 sm:p-8 rounded-[32px] flex items-center gap-5 sm:gap-6 transform group-hover:-translate-y-2 transition-all duration-500 shadow-2xl shadow-black/50 overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-400/20 to-emerald-accent/5 border border-purple-400/30 flex items-center justify-center flex-shrink-0 shadow-[inset_0_0_20px_rgba(192,132,252,0.1)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                  <Shield className="text-purple-400 w-7 h-7 sm:w-8 sm:h-8" />
+                </div>
+                <div className="text-left flex-1">
+                  <h3 className="text-xl sm:text-2xl font-display font-bold text-cream mb-1">AI Health Checker</h3>
+                  <p className="text-xs sm:text-sm text-purple-400/60 font-medium leading-relaxed">Complete holistic wellness blueprint & health tracking.</p>
+                </div>
+                <ChevronRight className="text-purple-400/30 group-hover:text-purple-400 transition-colors group-hover:translate-x-1.5 duration-300" size={24} />
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>

@@ -45,10 +45,15 @@ export default function DoctorCard({ doctor, user, onBookingSuccess }: DoctorCar
           name: user?.displayName,
           doctorId: doctor.id,
           doctorName: doctor.name,
+          specialization: doctor.specialization,
           problem,
           preferredDate: date,
           amountPaid: 1,
           status: "Paid & Confirmed",
+          service: `Doctor Consultation — ${doctor.specialization}`,
+          items: [
+            { name: `Video Consultation with ${doctor.name}`, qty: 1, price: 1 },
+          ],
           createdAt: new Date().toISOString()
         });
 

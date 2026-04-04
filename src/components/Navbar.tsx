@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { 
-  Leaf, LogOut, Sun, Moon, Activity, Ribbon, Heart, Scale, 
-  Shield, Coffee, ShoppingBag, Utensils, Sparkles, Menu, X, 
-  ChevronDown, LayoutDashboard, Stethoscope, Wrench, BookOpen, MessageSquare
+import {
+  Leaf, LogOut, Sun, Moon, Activity, Ribbon, Heart, Scale,
+  Shield, Coffee, ShoppingBag, Utensils, Sparkles, Menu, X,
+  LayoutDashboard, Stethoscope, Wrench, BookOpen, MessageSquare,
+  Brain, ChevronRight, Zap, Target, ArrowUpRight,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { auth, logout } from '../lib/firebase';
@@ -15,20 +16,41 @@ interface NavbarProps {
   onLogin: () => void;
 }
 
-const TOPICS = [
-  { id: 'liver',            label: 'Liver',          icon: Activity  },
-  { id: 'cancer',           label: 'Cancer',         icon: Ribbon    },
-  { id: 'sexual-wellness',  label: 'Sexual Wellness',icon: Heart     },
-  { id: 'weight',           label: 'Weight Management',icon: Scale     },
-  { id: 'immunity',         label: 'Immunity',       icon: Shield    },
-  { id: 'hangover',         label: 'Hangover Fix',   icon: Coffee    },
+
+
+// ─── All tools grouped for the panel ───
+const TOOL_GROUPS = [
+  {
+    label: 'Core',
+    items: [
+      { to: '/dashboard',    label: 'My Dashboard',     icon: LayoutDashboard, tag: 'Live',     tagColor: '#10B981', desc: 'Health stats & invoices' },
+      { to: '/doctors',      label: 'Consult Experts',  icon: Stethoscope,     tag: '₹1',       tagColor: '#60A5FA', desc: 'Book an Ayurvedic doctor' },
+      { to: '/shop',         label: 'Herbal Shop',      icon: ShoppingBag,     tag: 'New',      tagColor: '#FBBF24', desc: 'Ayurvedic medicines' },
+    ],
+  },
+  {
+    label: 'AI Tools',
+    items: [
+      { to: '/health-coach', label: 'AI Health Coach',  icon: Brain,     tag: 'AI',  tagColor: '#A78BFA', desc: '13-section wellness report' },
+      { to: '/diagnosis',    label: 'AI Diagnosis',     icon: Sparkles,  tag: 'AI',  tagColor: '#A78BFA', desc: 'Symptom analysis' },
+      { to: '/chat',         label: 'AI Chat',          icon: MessageSquare, tag: 'Live', tagColor: '#10B981', desc: 'Ask anything about health' },
+    ],
+  },
+  {
+    label: 'Wellness',
+    items: [
+      { to: '/tools',           label: 'BMI & Heart',      icon: Wrench,   tag: 'Tool', tagColor: '#F87171', desc: 'BMI + heart monitor' },
+      { to: '/calorie-checker', label: 'Calorie Checker',  icon: Utensils, tag: 'Tool', tagColor: '#F87171', desc: 'Indian food database' },
+      { to: '/guides',          label: 'Health Guides',    icon: BookOpen, tag: 'Edu',  tagColor: '#6B7280', desc: 'Ayurvedic knowledge base' },
+    ],
+  },
 ];
 
 export default function Navbar({ user, onLogin }: NavbarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLightMode, setIsLightMode] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showPanel, setShowPanel] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -37,15 +59,25 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close panel on route change
+  useEffect(() => { setShowPanel(false); }, [location.pathname]);
+
+  // Lock body scroll when panel is open
+  useEffect(() => {
+    document.body.style.overflow = showPanel ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [showPanel]);
+
   useEffect(() => {
     const savedMode = localStorage.getItem('theme');
-    if (savedMode === 'dark') {
-      setIsLightMode(false);
-      document.body.classList.remove('light-mode');
-    } else {
+    // Default to dark mode unless 'light' was explicitly saved
+    if (savedMode === 'light') {
       setIsLightMode(true);
       document.body.classList.add('light-mode');
-      if (!savedMode) localStorage.setItem('theme', 'light');
+    } else {
+      setIsLightMode(false);
+      document.body.classList.remove('light-mode');
+      if (!savedMode) localStorage.setItem('theme', 'dark');
     }
   }, []);
 
@@ -61,165 +93,268 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
     }
   };
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/');
-  };
-
+  const handleLogout = async () => { await logout(); navigate('/'); };
   const isActive = (path: string) => location.pathname === path;
 
-  const NavLink = ({ to, children, icon: Icon, highlight = false }: any) => (
-    <Link 
-      to={to} 
-      className={`flex items-center gap-1.5 transition-all ${
-        isActive(to) 
-          ? 'text-emerald-accent font-bold' 
-          : highlight 
-            ? 'text-emerald-accent hover:text-emerald-accent/80' 
-            : 'text-cream/70 hover:text-emerald-accent'
-      }`}
-    >
-      {Icon && <Icon size={14} className={isActive(to) ? 'animate-pulse' : ''} />}
-      <span>{children}</span>
-    </Link>
-  );
-
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'py-3 bg-forest/80 backdrop-blur-xl border-b border-white/5' : 'py-5 bg-transparent'}`}>
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group shrink-0">
-            <div className="bg-emerald-accent p-2 rounded-xl group-hover:scale-110 transition-transform shadow-lg shadow-emerald-accent/20">
-              <Leaf className="text-forest w-5 h-5" />
+    <>
+      {/* ── Main Navbar ── */}
+      <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'py-3 bg-forest/90 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/10' : 'py-5 bg-transparent'}`}>
+        <div className="max-w-7xl mx-auto px-5">
+          <div className="flex items-center justify-between">
+
+            {/* LEFT: Hamburger + Logo */}
+            <div className="flex items-center gap-3">
+              {/* All Tools Trigger */}
+              <button
+                onClick={() => setShowPanel(true)}
+                aria-label="All Tools"
+                className={`group relative flex items-center gap-2 px-3 py-2.5 rounded-xl transition-all ${
+                  showPanel
+                    ? 'bg-emerald-accent text-forest'
+                    : 'bg-forest/50 border border-white/8 text-cream/70 hover:text-emerald-accent hover:border-emerald-accent/30 hover:bg-emerald-accent/5'
+                } backdrop-blur-md`}
+              >
+                <div className="flex flex-col gap-[5px] w-[18px]">
+                  <span className={`h-[2px] rounded-full transition-all duration-300 ${showPanel ? 'bg-forest rotate-45 translate-y-[7px]' : 'bg-current'}`} />
+                  <span className={`h-[2px] rounded-full transition-all duration-300 ${showPanel ? 'opacity-0 -translate-x-2' : 'bg-current'}`} />
+                  <span className={`h-[2px] rounded-full transition-all duration-300 ${showPanel ? 'bg-forest -rotate-45 -translate-y-[7px]' : 'bg-current'}`} />
+                </div>
+                <span className="text-[11px] font-bold uppercase tracking-wider hidden sm:block">Tools</span>
+                {/* Pulse dot */}
+                {!showPanel && (
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-accent">
+                    <span className="absolute inset-0 rounded-full bg-emerald-accent animate-ping opacity-60" />
+                  </span>
+                )}
+              </button>
+
+              {/* Logo */}
+              <Link to="/" className="flex items-center gap-2 group shrink-0">
+                <div className="bg-emerald-accent p-2 rounded-xl group-hover:scale-110 transition-transform shadow-lg shadow-emerald-accent/20">
+                  <Leaf className="text-forest w-5 h-5" />
+                </div>
+                <span className="text-xl font-display font-bold text-gradient hidden sm:block">AyurCare+</span>
+              </Link>
             </div>
-            <span className="text-2xl font-display font-bold text-gradient">Ayurcare+</span>
-          </Link>
 
-          {/* Desktop Nav - CLEAN & MINIMAL */}
-          <div className="hidden lg:flex items-center gap-8 text-[13px] font-bold">
-            <NavLink to="/dashboard" icon={LayoutDashboard}>Dashboard</NavLink>
-            <NavLink to="/doctors" icon={Stethoscope}>Consult</NavLink>
-            
-            {/* The rest are hidden on desktop but accessible via Hamburger */}
-            <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-accent/10 text-emerald-accent hover:bg-emerald-accent/20 transition-all border border-emerald-accent/20 font-bold uppercase tracking-widest text-[10px]"
-            >
-              <Menu size={16} /> All Tools
-            </button>
-          </div>
+            {/* CENTER: Quick nav links (desktop) */}
+            <div className="hidden lg:flex items-center gap-1">
+              {[
+                { to: '/dashboard', label: 'Dashboard',  icon: LayoutDashboard },
+                { to: '/doctors',   label: 'Consult',    icon: Stethoscope     },
+                { to: '/shop',      label: 'Shop',       icon: ShoppingBag     },
+                { to: '/chat',      label: 'AI Chat',    icon: MessageSquare   },
+                { to: '/health-coach', label: 'Health Coach', icon: Brain },
+                { to: '/diagnosis', label: 'AI Diagnosis', icon: Sparkles },
+              ].map(link => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-bold transition-all ${
+                    isActive(link.to)
+                      ? 'bg-emerald-accent/10 text-emerald-accent'
+                      : 'text-cream/50 hover:text-cream hover:bg-white/5'
+                  }`}
+                >
+                  <link.icon size={13} />
+                  {link.label}
+                </Link>
+              ))}
+            </div>
 
-          {/* Right Actions */}
-          <div className="flex items-center gap-3">
-             <div className="hidden sm:block">
+            {/* RIGHT: Actions */}
+            <div className="flex items-center gap-2">
+              <div className="hidden sm:block">
                 <LanguageSwitcher />
-             </div>
-            
-            <button 
-              onClick={toggleTheme}
-              className="w-10 h-10 rounded-full bg-forest/40 border border-white/10 text-emerald-accent/80 hover:text-emerald-accent transition-colors flex items-center justify-center backdrop-blur-md"
-            >
-              {isLightMode ? <Moon size={18} /> : <Sun size={18} />}
-            </button>
+              </div>
 
-            {user ? (
-              <div className="flex items-center gap-3 pl-3 border-l border-white/10">
-                <img src={user.photoURL || ''} alt="" className="w-8 h-8 rounded-full border-2 border-emerald-accent/20" />
-                <button onClick={handleLogout} className="text-cream/40 hover:text-rose-400 transition-colors">
-                  <LogOut size={18} />
+              <button
+                onClick={toggleTheme}
+                className="w-9 h-9 rounded-xl bg-forest/40 border border-white/8 text-cream/60 hover:text-emerald-accent transition-colors flex items-center justify-center backdrop-blur-md"
+              >
+                {isLightMode ? <Moon size={16} /> : <Sun size={16} />}
+              </button>
+
+              {user ? (
+                <div className="flex items-center gap-2 pl-2 border-l border-white/10">
+                  <div className="w-8 h-8 rounded-xl overflow-hidden border-2 border-emerald-accent/20">
+                    {user.photoURL
+                      ? <img src={user.photoURL} alt="" className="w-full h-full object-cover" />
+                      : <div className="w-full h-full bg-emerald-accent/20 flex items-center justify-center text-emerald-accent text-xs font-bold">{(user.displayName || 'U')[0]}</div>
+                    }
+                  </div>
+                  <button onClick={handleLogout} className="text-cream/30 hover:text-rose-400 transition-colors">
+                    <LogOut size={15} />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={onLogin}
+                  className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-accent text-forest text-[13px] font-bold hover:bg-emerald-accent/90 transition-all shadow-lg shadow-emerald-accent/15"
+                >
+                  Sign In <Zap size={12} />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* ── Left-Side Tools Panel ── */}
+      <AnimatePresence>
+        {showPanel && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setShowPanel(false)}
+              className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm"
+            />
+
+            {/* Panel */}
+            <motion.aside
+              initial={{ x: '-100%', opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: '-100%', opacity: 0 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+              className="fixed top-0 left-0 h-full z-[201] flex flex-col bg-forest/95 backdrop-blur-3xl border-r border-emerald-accent/20 shadow-2xl"
+              style={{ width: 'min(360px, 85vw)' }}
+            >
+              {/* Panel Header */}
+              <div className="flex flex-shrink-0 items-center justify-between px-6 pt-6 pb-5 border-b border-cream/[0.06]">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-accent flex items-center justify-center shadow-lg shadow-emerald-accent/30">
+                    <Leaf size={20} className="text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-display font-bold text-cream leading-tight tracking-wide">AyurCare+</h2>
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-accent">Wellness Hub</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowPanel(false)}
+                  className="w-10 h-10 rounded-2xl flex items-center justify-center text-cream/40 hover:text-cream bg-cream/[0.03] hover:bg-cream/[0.08] border border-cream/[0.05] transition-all"
+                >
+                  <X size={18} />
                 </button>
               </div>
-            ) : (
-              <button 
-                onClick={onLogin} 
-                className="hidden sm:block px-5 py-2.5 rounded-full bg-emerald-accent text-forest text-sm font-bold hover:bg-emerald-accent/90 transition-all shadow-lg shadow-emerald-accent/20"
-              >
-                Sign In
-              </button>
-            )}
 
-            {/* Mobile Toggle */}
-            <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden w-10 h-10 rounded-xl bg-forest/40 border border-white/10 text-cream flex items-center justify-center lg:hidden"
-            >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-
-        {/* Sub-nav topics for desktop */}
-        <div className="hidden lg:flex gap-8 mt-4 overflow-x-auto scrollbar-hide py-2 border-t border-white/5">
-          {TOPICS.map(t => (
-            <Link key={t.id} to={`/topic/${t.id}`} className="flex items-center gap-2 group shrink-0 opacity-60 hover:opacity-100 transition-opacity">
-              <t.icon size={12} className="text-emerald-accent" />
-              <span className="text-[10px] uppercase tracking-widest font-bold">{t.label}</span>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* Mobile Menu Drawer */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[51]"
-            />
-            <motion.div 
-              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-72 bg-forest border-l border-white/10 z-[52] p-8 flex flex-col"
-            >
-              <div className="flex justify-between items-center mb-10">
-                <span className="text-xl font-display font-bold text-gradient">Menu</span>
-                <button onClick={() => setIsMobileMenuOpen(false)} className="text-cream/40"><X size={24} /></button>
-              </div>
-
-              <div className="flex flex-col gap-6">
-                {[
-                  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-                  { to: '/doctors', label: 'Consult Doctors', icon: Stethoscope },
-                  { to: '/tools', label: 'Wellness Tools', icon: Wrench },
-                  { to: '/diagnosis', label: 'AI Diagnosis', icon: Sparkles, highlight: true },
-                  { to: '/health-coach', label: 'AI Health Coach', icon: Activity, highlight: true },
-                  { to: '/shop', label: 'Ayurvedic Shop', icon: ShoppingBag },
-                  { to: '/calorie-checker', label: 'Calorie Checker', icon: Utensils, highlight: true },
-                  { to: '/guides', label: 'Health Guides', icon: BookOpen },
-                  { to: '/chat', label: 'AI Chat Assistant', icon: MessageSquare },
-                ].map((link, i) => (
-                  <Link 
-                    key={i} 
-                    to={link.to} 
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 text-lg font-semibold ${link.highlight ? 'text-emerald-accent' : 'text-cream/60'}`}
+              {/* User card (if logged in) */}
+              {user && (
+                <div className="mx-6 mt-6 px-4 py-3 rounded-2xl flex items-center gap-3 bg-emerald-accent/[0.08] border border-emerald-accent/20 flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl overflow-hidden border border-emerald-accent/30 flex-shrink-0 bg-emerald-accent/10 flex items-center justify-center text-emerald-accent text-sm font-bold">
+                    {user.photoURL ? <img src={user.photoURL} alt="" className="w-full h-full object-cover" /> : (user.displayName || 'U')[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold text-cream truncate">{user.displayName || 'User'}</p>
+                    <p className="text-[10px] uppercase tracking-widest text-emerald-accent truncate">{user.email}</p>
+                  </div>
+                  <button
+                    onClick={() => { navigate('/dashboard'); setShowPanel(false); }}
+                    className="ml-auto w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 bg-cream/[0.05] hover:bg-emerald-accent text-cream/50 hover:text-white transition-all shadow-sm"
                   >
-                    <link.icon size={20} />
-                    {link.label}
-                  </Link>
+                    <ArrowUpRight size={16} />
+                  </button>
+                </div>
+              )}
+
+              {/* Tool Groups (Scrollable) */}
+              <div className="flex-1 overflow-y-auto py-6 px-6 space-y-7 scrollbar-hide">
+                {TOOL_GROUPS.map((group) => (
+                  <div key={group.label}>
+                    {/* Group Label */}
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cream/40 pl-1 mb-3">
+                      {group.label}
+                    </p>
+
+                    {/* Items */}
+                    <div className="space-y-1.5">
+                      {group.items.map((item, i) => (
+                        <motion.div
+                          key={item.to}
+                          initial={{ opacity: 0, x: -12 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.04 + 0.05 }}
+                        >
+                          <Link
+                            to={item.to}
+                            onClick={() => setShowPanel(false)}
+                            className={`group flex items-center gap-3.5 px-4 py-3.5 rounded-2xl transition-all ${
+                              isActive(item.to)
+                                ? 'bg-emerald-accent border-emerald-accent shadow-lg shadow-emerald-accent/25'
+                                : 'bg-cream/[0.02] border-cream/[0.05] hover:bg-cream/[0.06] hover:border-emerald-accent/30 border'
+                            }`}
+                          >
+                            {/* Icon */}
+                            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-forest/30 shadow-inner">
+                              <item.icon size={18} className={isActive(item.to) ? 'text-forest' : `text-[${item.tagColor}]`} style={{ color: isActive(item.to) ? '#fff' : item.tagColor }} />
+                            </div>
+
+                            {/* Label + desc */}
+                            <div className="flex-1 min-w-0">
+                              <p className={`text-[14px] font-bold leading-none mb-1 transition-colors ${isActive(item.to) ? 'text-white' : 'text-cream group-hover:text-emerald-accent'}`}>
+                                {item.label}
+                              </p>
+                              <p className={`text-[11px] truncate ${isActive(item.to) ? 'text-white/80' : 'text-cream/50'}`}>{item.desc}</p>
+                            </div>
+
+                            {/* Tag badge */}
+                            <span
+                              className={`text-[9px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 uppercase tracking-widest ${isActive(item.to) ? 'bg-white/20 text-white' : 'bg-forest/50'}`}
+                              style={{ color: isActive(item.to) ? '#fff' : item.tagColor }}
+                            >
+                              {item.tag}
+                            </span>
+                          </Link>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
 
-              <div className="mt-auto pt-10">
-                {!user && (
-                   <button 
-                    onClick={() => { onLogin(); setIsMobileMenuOpen(false); }}
-                    className="w-full py-4 rounded-2xl bg-emerald-accent text-forest font-bold mb-4 shadow-lg shadow-emerald-accent/20"
-                   >
-                     Sign In Account
-                   </button>
-                )}
-                <div className="flex justify-center">
-                  <LanguageSwitcher />
+              {/* Enhanced Panel Footer strictly adhering to Branding */}
+              <div className="flex-shrink-0 border-t border-cream/[0.08] bg-moss/10 px-6 py-6">
+                
+                {/* Branding Core Details */}
+                <div className="mb-5 space-y-2">
+                  <div className="flex items-center gap-2 mb-1 opacity-70">
+                    <Leaf size={16} className="text-emerald-accent" />
+                    <span className="font-display font-bold text-sm text-cream">Ayurcare+</span>
+                  </div>
+                  <p className="text-[11px] text-cream/60 flex items-center gap-1.5"><strong className="text-emerald-accent">CEO:</strong> Aryan Singh Tariani</p>
+                  <p className="text-[11px] text-cream/40">Desh Bhagat University, Mandi Govindgarh</p>
+                  <a href="tel:+919475002048" className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-accent hover:underline mt-1">
+                     +91 94750 02048
+                  </a>
                 </div>
+
+                {/* Authentication logic */}
+                {!user ? (
+                  <button
+                    onClick={() => { onLogin(); setShowPanel(false); }}
+                    className="w-full py-3.5 rounded-xl bg-emerald-accent text-forest text-[13px] font-bold hover:bg-emerald-accent/90 transition-all shadow-lg shadow-emerald-accent/20 flex items-center justify-center gap-2"
+                  >
+                    Sign In to AyurCare+ <Zap size={14} />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleLogout}
+                    className="w-full py-3 rounded-xl border border-rose-500/30 text-rose-500 bg-rose-500/5 text-[13px] font-bold hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center gap-2"
+                  >
+                    <LogOut size={14} /> Sign Out
+                  </button>
+                )}
+                
               </div>
-            </motion.div>
+            </motion.aside>
           </>
         )}
       </AnimatePresence>
-    </nav>
+    </>
   );
 }

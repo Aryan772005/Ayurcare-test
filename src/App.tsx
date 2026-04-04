@@ -79,12 +79,15 @@ export default function App() {
     return <>{children}</>;
   };
 
-  return (
-    <BrowserRouter>
+  const MainApp = () => {
+    const location = useLocation();
+    const isHome = location.pathname === '/';
+    return (
       <div className="min-h-screen flex flex-col bg-forest text-cream font-sans selection:bg-emerald-accent/20">
         <Navbar user={user} onLogin={() => setShowAuth(true)} />
         
-        <main className="flex-1 pt-24 md:pt-32 relative z-0">
+        {/* Only apply global top padding if we are NOT on the homepage, removing the unwanted gap. */}
+        <main className={`flex-1 relative z-0 ${isHome ? '' : 'pt-24 md:pt-28'}`}>
           <AnimatePresence mode="wait">
             <Routes>
               <Route path="/" element={<HomePage onLogin={() => setShowAuth(true)} user={user} />} />
@@ -95,7 +98,6 @@ export default function App() {
               <Route path="/shop" element={<ShopPage user={user} onLogin={() => setShowAuth(true)} />} />
               <Route path="/diagnosis" element={<DiagnosisPage user={user} />} />
               
-              {/* Pages accessible in Prototype mode without Mandatory Login */}
               <Route path="/dashboard" element={<DashboardPage user={user!} />} />
               <Route path="/health-coach" element={<HealthCoachPage user={user} />} />
               <Route path="/calorie-checker" element={<CalorieCheckerPage />} />
@@ -107,16 +109,18 @@ export default function App() {
         </main>
         
         <Footer />
-
-        {/* Floating AI Chat Button */}
         <FloatingChatButton />
-
-        {/* Floating WhatsApp Support Button */}
         <FloatingWhatsAppButton />
-
-        {/* Auth Modal */}
         {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
       </div>
+    );
+  };
+
+  return (
+    <BrowserRouter>
+      <MainApp />
     </BrowserRouter>
   );
 }
+
+
