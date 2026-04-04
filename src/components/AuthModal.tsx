@@ -2,6 +2,31 @@ import React, { useState } from 'react';
 import { X, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import { loginWithGoogle, signUpWithEmail, loginWithEmail } from '../lib/firebase';
 
+const VideoPanel = React.memo(() => (
+  <div className="hidden md:block relative w-5/12 flex-shrink-0 overflow-hidden">
+    <video
+      src="/hero-video.mp4"
+      autoPlay
+      muted
+      loop
+      playsInline
+      className="absolute inset-0 w-full h-full object-cover"
+      style={{ filter: 'brightness(0.82)', transform: 'translateZ(0)' }}
+    />
+    {/* Gradient overlay so text is readable */}
+    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+    {/* Branding overlay */}
+    <div className="absolute bottom-0 left-0 right-0 p-6">
+      <p className="text-white/90 font-display text-lg font-bold leading-tight">
+        AyurCare+
+      </p>
+      <p className="text-white/50 text-xs mt-1">
+        Your Ayurvedic wellness companion
+      </p>
+    </div>
+  </div>
+));
+
 export default function AuthModal({ onClose }: { onClose: () => void }) {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
@@ -58,29 +83,7 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
         onClick={e => e.stopPropagation()}
       >
         {/* ── Left: Video Panel ── */}
-        <div className="hidden md:block relative w-5/12 flex-shrink-0 overflow-hidden">
-          <video
-            src="/hero-video.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="none"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ filter: 'brightness(0.82)' }}
-          />
-          {/* Gradient overlay so text is readable */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-          {/* Branding overlay */}
-          <div className="absolute bottom-0 left-0 right-0 p-6">
-            <p className="text-white/90 font-display text-lg font-bold leading-tight">
-              AyurCare+
-            </p>
-            <p className="text-white/50 text-xs mt-1">
-              Your Ayurvedic wellness companion
-            </p>
-          </div>
-        </div>
+        <VideoPanel />
 
         {/* ── Right: Form Panel ── */}
         <div className="flex-1 bg-forest border border-white/10 p-8 flex flex-col justify-center">

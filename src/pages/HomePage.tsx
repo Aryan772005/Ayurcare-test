@@ -75,6 +75,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
                   objectFit: 'cover',
                   objectPosition: 'center center',
                   display: 'block',
+                  transform: 'translateZ(0)',
                 }}
               >
                 <source src="/hero-video.mp4" type="video/mp4" />
