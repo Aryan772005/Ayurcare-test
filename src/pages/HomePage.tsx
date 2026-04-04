@@ -1,22 +1,27 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Heart, Calendar, ChevronRight } from 'lucide-react';
+import { Sparkles, Heart, Calendar, ChevronRight, Star, Users, Award, Leaf, Quote } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function HomePage({ onLogin, user }: { onLogin: () => void, user: any }) {
   return (
-    <div className="min-h-screen bg-forest overflow-hidden relative pb-32">
-      {/* Decorative background elements */}
+    <div className="min-h-screen bg-forest overflow-hidden relative">
+      {/* Decorative background */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
         <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.08, 0.15, 0.08] }}
           transition={{ duration: 10, repeat: Infinity }}
           className="absolute -top-1/4 -left-1/4 w-full h-full bg-emerald-accent/10 rounded-full blur-[120px]" 
+        />
+        <motion.div 
+          animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.1, 0.05] }}
+          transition={{ duration: 14, repeat: Infinity, delay: 3 }}
+          className="absolute -bottom-1/4 -right-1/4 w-3/4 h-3/4 bg-emerald-accent/5 rounded-full blur-[150px]" 
         />
       </div>
 
       {/* Hero Section */}
-      <section className="relative pt-40 pb-32 px-6">
+      <section className="relative pt-40 pb-28 px-6">
         <div className="max-w-7xl mx-auto text-center">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -41,16 +46,17 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
             transition={{ delay: 0.2 }}
             className="max-w-2xl mx-auto text-xl text-cream/70 mb-12 leading-relaxed"
           >
-            Ancient wisdom meets modern intelligence. Consult with top Indian Ayurvedic doctors, track your vitals, and balance your life.
+            Ancient wisdom meets modern intelligence. Consult with top Indian Ayurvedic doctors, track your vitals, and balance your life — all from one platform.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             {user ? (
-               <Link 
+              <Link 
                 to="/dashboard"
                 className="bg-emerald-accent text-forest px-10 py-5 rounded-full text-xl font-bold shadow-2xl shadow-emerald-accent/20 hover:bg-emerald-accent/90 hover:scale-105 transition-all inline-flex items-center gap-3"
               >
@@ -61,31 +67,137 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
                 onClick={onLogin}
                 className="bg-emerald-accent text-forest px-10 py-5 rounded-full text-xl font-bold shadow-2xl shadow-emerald-accent/20 hover:bg-emerald-accent/90 hover:scale-105 transition-all flex items-center gap-3 mx-auto"
               >
-                Get Started <ChevronRight />
+                Get Started Free <ChevronRight />
               </button>
             )}
           </motion.div>
         </div>
       </section>
 
+      {/* Stats Bar */}
+      <section className="py-12 px-6 bg-moss/30 border-y border-white/5">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {[
+            { num: "8+", label: "Expert Doctors", icon: <Users size={20} /> },
+            { num: "5000+", label: "Consultations", icon: <Calendar size={20} /> },
+            { num: "₹1", label: "Per Session", icon: <Award size={20} /> },
+            { num: "4.8★", label: "Avg. Rating", icon: <Star size={20} /> },
+          ].map((s, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.1 }}>
+              <div className="text-emerald-accent mb-2 flex justify-center">{s.icon}</div>
+              <p className="text-3xl font-display font-bold text-cream">{s.num}</p>
+              <p className="text-xs text-emerald-accent/50 uppercase tracking-widest mt-1">{s.label}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
       {/* Features Grid */}
-      <section className="px-6 py-20 relative z-10">
+      <section className="px-6 py-24 relative z-10">
+        <h2 className="text-4xl font-display font-bold text-center text-cream mb-4">Everything You Need</h2>
+        <p className="text-center text-emerald-accent/60 mb-16 max-w-xl mx-auto">A complete Ayurvedic wellness platform for every aspect of your health journey.</p>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-          <div className="bg-moss/40 backdrop-blur-xl p-12 rounded-[56px] border border-white/5 shadow-2xl hover:border-emerald-accent/30 transition-all hover:-translate-y-2 group">
-            <Heart className="text-rose-400 w-12 h-12 mb-8 group-hover:scale-110 transition-transform" />
-            <h3 className="text-3xl font-display font-bold mb-4 text-cream">Vitals Tracker</h3>
-            <p className="text-emerald-accent/60 leading-relaxed text-lg">Monitor heart rate, BMI, and calorie intake tailored to your specific Ayurvedic Dosha.</p>
-          </div>
-          <div className="bg-moss/40 backdrop-blur-xl p-12 rounded-[56px] border border-white/5 shadow-2xl hover:border-emerald-accent/30 transition-all hover:-translate-y-2 group">
-            <Calendar className="text-emerald-accent w-12 h-12 mb-8 group-hover:scale-110 transition-transform" />
-            <h3 className="text-3xl font-display font-bold mb-4 text-cream">Expert Doctors</h3>
-            <p className="text-emerald-accent/60 leading-relaxed text-lg">Book 1-on-1 consultations with verified Indian Ayurvedic physicians for just ₹1.</p>
-          </div>
-          <div className="bg-moss/40 backdrop-blur-xl p-12 rounded-[56px] border border-white/5 shadow-2xl hover:border-emerald-accent/30 transition-all hover:-translate-y-2 group">
-            <Sparkles className="text-blue-400 w-12 h-12 mb-8 group-hover:scale-110 transition-transform" />
-            <h3 className="text-3xl font-display font-bold mb-4 text-cream">AI Assistant</h3>
-            <p className="text-emerald-accent/60 leading-relaxed text-lg">Chat with our advanced AI to analyze symptoms and generate personalized diet plans.</p>
-          </div>
+          {[
+            { icon: <Heart className="text-rose-400 w-10 h-10" />, title: "Vitals Tracker", desc: "Monitor heart rate, BMI, and calorie intake tailored to your specific Ayurvedic Dosha." },
+            { icon: <Calendar className="text-emerald-accent w-10 h-10" />, title: "Expert Doctors", desc: "Book 1-on-1 consultations with verified Indian Ayurvedic physicians for just ₹1." },
+            { icon: <Sparkles className="text-blue-400 w-10 h-10" />, title: "AI Assistant", desc: "Chat with our advanced AI to analyze symptoms and get personalized Ayurvedic recommendations." },
+            { icon: <Leaf className="text-green-400 w-10 h-10" />, title: "Herbal Guides", desc: "Explore dosha-specific diet plans, Triphala remedies, and weight management tips." },
+            { icon: <Award className="text-purple-400 w-10 h-10" />, title: "BMI & Prakriti", desc: "Calculate your BMI and discover your body constitution type for better health decisions." },
+            { icon: <Star className="text-yellow-400 w-10 h-10" />, title: "Food Database", desc: "Check calories and Ayurvedic properties of 50+ common Indian dishes instantly." },
+          ].map((f, i) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08 }}
+              className="bg-moss/30 backdrop-blur-xl p-10 rounded-[40px] border border-white/5 shadow-2xl hover:border-emerald-accent/20 transition-all hover:-translate-y-2 group"
+            >
+              <div className="mb-6 group-hover:scale-110 transition-transform">{f.icon}</div>
+              <h3 className="text-2xl font-display font-bold mb-3 text-cream">{f.title}</h3>
+              <p className="text-emerald-accent/60 leading-relaxed">{f.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Popular Herbs Section */}
+      <section className="px-6 py-20 bg-moss/20 border-y border-white/5">
+        <h2 className="text-4xl font-display font-bold text-center text-cream mb-4">Sacred Herbs of Ayurveda</h2>
+        <p className="text-center text-emerald-accent/60 mb-16 max-w-xl mx-auto">Nature's most potent healing ingredients used in our treatment protocols.</p>
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-6">
+          {[
+            { name: "Ashwagandha", benefit: "Stress relief & vitality", emoji: "🌿" },
+            { name: "Turmeric", benefit: "Anti-inflammatory", emoji: "🟡" },
+            { name: "Tulsi", benefit: "Immunity booster", emoji: "🍃" },
+            { name: "Triphala", benefit: "Digestive health", emoji: "🫐" },
+            { name: "Brahmi", benefit: "Brain & memory", emoji: "🧠" },
+          ].map((herb, i) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="bg-forest/60 border border-white/5 rounded-3xl p-6 text-center hover:border-emerald-accent/30 transition-all hover:-translate-y-1 cursor-default"
+            >
+              <div className="text-4xl mb-3">{herb.emoji}</div>
+              <h4 className="font-bold text-cream text-lg">{herb.name}</h4>
+              <p className="text-xs text-emerald-accent/50 mt-1">{herb.benefit}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="px-6 py-24">
+        <h2 className="text-4xl font-display font-bold text-center text-cream mb-4">What Our Users Say</h2>
+        <p className="text-center text-emerald-accent/60 mb-16 max-w-xl mx-auto">Real stories from people who transformed their health with Ayurcare+.</p>
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[
+            { name: "Meera K.", location: "Delhi", text: "The AI assistant diagnosed my digestive issues perfectly. The Ayurvedic diet plan worked wonders in just 2 weeks!", avatar: "M" },
+            { name: "Rohit S.", location: "Mumbai", text: "Booking a consultation for ₹1 was unbelievable. Dr. Vikram Singh's rejuvenation therapy changed my life completely.", avatar: "R" },
+            { name: "Anita P.", location: "Bangalore", text: "I love the BMI calculator with Dosha mapping. Finally an app that combines modern science with ancient wisdom!", avatar: "A" },
+          ].map((t, i) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15 }}
+              className="bg-moss/30 border border-white/5 rounded-3xl p-8 relative"
+            >
+              <Quote className="text-emerald-accent/10 absolute top-6 right-6" size={40} />
+              <p className="text-cream/80 leading-relaxed mb-6 italic">"{t.text}"</p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-accent/20 text-emerald-accent flex items-center justify-center font-bold text-sm">{t.avatar}</div>
+                <div>
+                  <p className="font-bold text-cream text-sm">{t.name}</p>
+                  <p className="text-xs text-emerald-accent/50">{t.location}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="px-6 py-20 bg-moss/30 border-t border-white/5">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-4xl font-display font-bold text-cream mb-4">Start Your Healing Journey Today</h2>
+          <p className="text-emerald-accent/60 mb-10 text-lg">Join thousands who are balancing their doshas, tracking vitals, and consulting experts — all for free.</p>
+          {user ? (
+            <Link to="/doctors" className="bg-emerald-accent text-forest px-10 py-5 rounded-full text-xl font-bold shadow-2xl shadow-emerald-accent/20 hover:bg-emerald-accent/90 hover:scale-105 transition-all inline-flex items-center gap-3">
+              Browse Doctors <ChevronRight />
+            </Link>
+          ) : (
+            <button 
+              onClick={onLogin}
+              className="bg-emerald-accent text-forest px-10 py-5 rounded-full text-xl font-bold shadow-2xl shadow-emerald-accent/20 hover:bg-emerald-accent/90 hover:scale-105 transition-all inline-flex items-center gap-3"
+            >
+              Sign Up with Google <ChevronRight />
+            </button>
+          )}
         </div>
       </section>
     </div>
