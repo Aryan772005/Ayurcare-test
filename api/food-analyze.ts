@@ -12,12 +12,16 @@ export default async function handler(req: any, res: any) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const rawKey = process.env.NVIDIA_API_KEY || '';
+  const rawKey = process.env.NVIDIA_API_KEY || process.env.NIVIDIA_API_KEY || process.env.NVIDIA_KEY || process.env.NVIDIA_PI_KEY || '';
   const apiKey = rawKey.trim();
 
   // If no NVIDIA key, we fallback
   if (!apiKey) {
-    return res.status(401).json({ error: "API Key not configured." });
+    // Collect custom environments to help debug
+    const ignorePrefixes = ['npm_', 'VERCEL_', 'AWS_', 'NODE_', 'XDG_', 'LANG', 'HOME', 'PATH', 'PWD', 'USER', 'SHLVL', '_', 'LOGNAME', 'TZ', 'TERM'];
+    const customKeys = Object.keys(process.env).filter(k => !ignorePrefixes.some(p => k.startsWith(p)));
+    const foundStr = customKeys.length > 0 ? customKeys.join(', ') : "No custom keys found";
+    return res.status(401).json({ error: `API Key not configured. Vercel environment found: [${foundStr}]` });
   }
 
   try {
