@@ -19,13 +19,14 @@ export default async function handler(req: any, res: any) {
 
   if (!apiKey) {
     console.error("NVIDIA_API_KEY is not set in environment variables");
-    // Debugging logic to help the user see what environment variables exist containing NVIDIA
-    const nvidiaKeys = Object.keys(process.env).filter(k => k.toLowerCase().includes('nvidia'));
-    const foundStr = nvidiaKeys.length > 0 ? nvidiaKeys.join(', ') : "None matching 'nvidia'";
+    // Try to find the user's typo. Filter out common system variables to just show custom ones.
+    const ignorePrefixes = ['npm_', 'VERCEL_', 'AWS_', 'NODE_', 'npm_', 'XDG_', 'LANG', 'HOME', 'PATH', 'PWD', 'USER', 'SHLVL', '_', 'LOGNAME', 'TZ', 'TERM'];
+    const customKeys = Object.keys(process.env).filter(k => !ignorePrefixes.some(p => k.startsWith(p)));
+    const foundStr = customKeys.length > 0 ? customKeys.join(', ') : "No custom keys found";
     const isVercel = process.env.VERCEL === '1' ? 'Yes' : 'No';
     
     return res.status(500).json({ 
-      error: `Server config error: API key not set. (Vercel=${isVercel}, Keys_Found=[${foundStr}])`,
+      error: `Server config error: Key missing. (Vercel=${isVercel}, Custom_Keys=[${foundStr}])`,
     });
   }
 
