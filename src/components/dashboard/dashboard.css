@@ -1,0 +1,195 @@
+/* ─── Dashboard Glassmorphism Styles ─── */
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 20px;
+  padding: 0 24px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(19, 28, 24, 0.65) 0%, rgba(10, 15, 13, 0.45) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(16, 185, 129, 0.08);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), transparent 50%, rgba(245, 158, 11, 0.08));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glass-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at 30% 20%, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.glass-card:hover {
+  border-color: rgba(16, 185, 129, 0.18);
+  box-shadow: 0 8px 40px rgba(16, 185, 129, 0.08), 0 0 80px rgba(16, 185, 129, 0.03);
+  transform: translateY(-2px);
+}
+
+/* ─── Hero wellness card ─── */
+.hero-card {
+  grid-column: span 5;
+  padding: 40px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.hero-card .pulse-ring {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  border: 1px solid rgba(16, 185, 129, 0.1);
+  animation: pulseRing 3s ease-in-out infinite;
+}
+
+.hero-card .pulse-ring:nth-child(2) { animation-delay: 1s; width: 280px; height: 280px; }
+.hero-card .pulse-ring:nth-child(3) { animation-delay: 2s; width: 320px; height: 320px; }
+
+@keyframes pulseRing {
+  0%, 100% { opacity: 0.3; transform: scale(0.95); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+/* ─── Predictive panel ─── */
+.predict-card { grid-column: span 4; padding: 28px; }
+.prakriti-card { grid-column: span 3; padding: 28px; }
+
+/* ─── Anomaly card ─── */
+.anomaly-card { grid-column: span 4; padding: 28px; }
+.anomaly-card.alert {
+  border-color: rgba(239, 68, 68, 0.2);
+  box-shadow: 0 0 40px rgba(239, 68, 68, 0.06);
+}
+.anomaly-card.alert::before {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), transparent 50%);
+}
+.anomaly-card.stable {
+  border-color: rgba(16, 185, 129, 0.15);
+}
+
+/* ─── History card ─── */
+.history-card { grid-column: span 8; padding: 28px; }
+
+/* ─── Stats widgets ─── */
+.stats-row { grid-column: span 12; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.stat-widget {
+  background: linear-gradient(135deg, rgba(19, 28, 24, 0.5), rgba(10, 15, 13, 0.3));
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(16, 185, 129, 0.06);
+  border-radius: 18px;
+  padding: 20px 24px;
+  transition: all 0.3s;
+}
+.stat-widget:hover {
+  border-color: rgba(16, 185, 129, 0.15);
+  box-shadow: 0 4px 24px rgba(16, 185, 129, 0.06);
+}
+
+/* ─── Activity feed ─── */
+.feed-card { grid-column: span 4; padding: 24px; max-height: 400px; overflow-y: auto; }
+.feed-card::-webkit-scrollbar { width: 4px; }
+.feed-card::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.2); border-radius: 2px; }
+
+.feed-item {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(10, 15, 13, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  margin-bottom: 8px;
+  transition: all 0.2s;
+}
+.feed-item:hover { border-color: rgba(16, 185, 129, 0.12); background: rgba(19, 28, 24, 0.5); }
+
+/* ─── Smart tag badges ─── */
+.smart-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.smart-tag.green { background: rgba(16, 185, 129, 0.15); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.2); }
+.smart-tag.gold { background: rgba(245, 158, 11, 0.15); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.2); }
+.smart-tag.red { background: rgba(239, 68, 68, 0.15); color: #F87171; border: 1px solid rgba(239, 68, 68, 0.2); }
+.smart-tag.blue { background: rgba(96, 165, 250, 0.15); color: #93C5FD; border: 1px solid rgba(96, 165, 250, 0.2); }
+
+/* ─── Ambient glow effect ─── */
+.ambient-glow {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Breathing animation for stable badge ─── */
+.breathe { animation: breathe 3s ease-in-out infinite; }
+@keyframes breathe {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* ─── Alert intensity pulse ─── */
+.alert-pulse { animation: alertPulse 2s ease-in-out infinite; }
+@keyframes alertPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.1); }
+  50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.2); }
+}
+
+/* ─── Count-up number styling ─── */
+.count-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .dash-grid { grid-template-columns: repeat(6, 1fr); gap: 16px; }
+  .hero-card { grid-column: span 6; }
+  .predict-card { grid-column: span 3; }
+  .prakriti-card { grid-column: span 3; }
+  .anomaly-card { grid-column: span 3; }
+  .history-card { grid-column: span 6; }
+  .feed-card { grid-column: span 3; }
+  .stats-row { grid-column: span 6; grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .dash-grid { grid-template-columns: 1fr; gap: 14px; padding: 0 14px; }
+  .hero-card, .predict-card, .prakriti-card, .anomaly-card, .history-card, .feed-card { grid-column: span 1; }
+  .stats-row { grid-column: span 1; grid-template-columns: 1fr; }
+}

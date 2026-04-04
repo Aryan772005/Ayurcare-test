@@ -73,6 +73,17 @@ app.post("/api/food-analyze", async (req, res) => {
   }
 });
 
+// Health Coach route for local development
+app.post("/api/health-coach", async (req, res) => {
+  try {
+    const handlerModule = await import("./api/health-coach.ts");
+    await handlerModule.default(req, res);
+  } catch (err) {
+    console.error("Health coach handler failed:", err);
+    res.status(500).json({ error: "Failed to run health coach locally" });
+  }
+});
+
 // Export the app for Vercel serverless functions
 export default app;
 
