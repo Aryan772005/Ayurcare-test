@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Heart, Calendar, ChevronRight, Star, Users, Award, Leaf, Quote, Shield } from 'lucide-react';
+import { Sparkles, Heart, Calendar, ChevronRight, Star, Users, Award, Leaf, Quote, Shield, ShoppingBag, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function HomePage({ onLogin, user }: { onLogin: () => void, user: any }) {
@@ -252,6 +252,72 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
               </div>
             </motion.div>
           ))}
+        </div>
+      </section>
+
+      {/* Featured Medicines — Shop Promo */}
+      <section className="px-6 py-24 bg-moss/20 border-y border-white/5">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-accent/10 text-emerald-accent text-xs font-bold mb-4 border border-emerald-accent/20">
+                <ShoppingBag size={14} /> New — Ayurvedic Shop
+              </div>
+              <h2 className="text-4xl font-display font-bold text-cream mb-2">Shop Trusted Medicines</h2>
+              <p className="text-emerald-accent/60 max-w-lg">Handpicked Ayurvedic medicines from top Indian brands. Buy directly from Tata 1mg.</p>
+            </div>
+            <Link to="/shop" className="mt-6 md:mt-0 text-emerald-accent font-bold text-sm hover:underline flex items-center gap-1">
+              View All Medicines <ChevronRight size={16} />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { name: "Ashwagandha KSM-66", brand: "Himalaya", price: 299, mrp: 450, image: "/med-ashwagandha.png", rating: 4.7, badge: "Bestseller", link: "https://www.1mg.com/search/all?name=ashwagandha" },
+              { name: "Chyawanprash", brand: "Dabur", price: 350, mrp: 499, image: "/med-chyawanprash.png", rating: 4.8, badge: "Most Popular", link: "https://www.1mg.com/search/all?name=chyawanprash" },
+              { name: "Shilajit Gold Resin", brand: "Zandu", price: 399, mrp: 599, image: "/med-shilajit.png", rating: 4.4, badge: "Premium", link: "https://www.1mg.com/search/all?name=shilajit" },
+              { name: "Tulsi Drops", brand: "Organic India", price: 220, mrp: 350, image: "/med-tulsi.png", rating: 4.6, link: "https://www.1mg.com/search/all?name=tulsi+drops" },
+            ].map((med, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="group bg-forest/60 border border-white/5 rounded-3xl overflow-hidden hover:border-emerald-accent/25 transition-all hover:-translate-y-2 shadow-xl"
+              >
+                <div className="relative aspect-square overflow-hidden">
+                  <img src={med.image} alt={med.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-forest/80 via-transparent to-transparent" />
+                  {med.badge && (
+                    <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-accent text-forest text-xs font-bold shadow-lg">{med.badge}</span>
+                  )}
+                  <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-forest/80 backdrop-blur-sm border border-white/10">
+                    <Star size={11} className="text-yellow-400 fill-yellow-400" />
+                    <span className="text-cream text-xs font-bold">{med.rating}</span>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <p className="text-emerald-accent/50 text-[10px] font-semibold uppercase tracking-wider">{med.brand}</p>
+                  <h4 className="text-cream font-bold text-sm mb-2">{med.name}</h4>
+                  <div className="flex items-baseline gap-2 mb-3">
+                    <span className="text-xl font-display font-bold text-cream">₹{med.price}</span>
+                    <span className="text-xs text-cream/30 line-through">₹{med.mrp}</span>
+                    <span className="text-[10px] font-bold text-emerald-accent bg-emerald-accent/10 px-1.5 py-0.5 rounded-full">
+                      {Math.round((1 - med.price / med.mrp) * 100)}% OFF
+                    </span>
+                  </div>
+                  <a
+                    href={med.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2.5 rounded-xl bg-emerald-accent text-forest font-bold text-xs hover:bg-emerald-accent/90 transition-all flex items-center justify-center gap-1.5"
+                  >
+                    Buy on 1mg <ExternalLink size={13} />
+                  </a>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 

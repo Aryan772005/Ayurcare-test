@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Leaf, LogOut, Sun, Moon, Activity, Ribbon, Heart, Scale, Shield, Coffee } from 'lucide-react';
+import { Leaf, LogOut, Sun, Moon, Activity, Ribbon, Heart, Scale, Shield, Coffee, ShoppingBag } from 'lucide-react';
 import { auth, logout } from '../lib/firebase';
 import { User as FirebaseUser } from 'firebase/auth';
 
@@ -68,6 +68,7 @@ export default function Navbar({ user }: NavbarProps) {
               <Link to="/dashboard" className="text-cream hover:text-emerald-accent transition-colors">Dashboard</Link>
               <Link to="/doctors" className="text-cream hover:text-emerald-accent transition-colors">Consult</Link>
               <Link to="/tools" className="text-cream hover:text-emerald-accent transition-colors">Tools</Link>
+              <Link to="/shop" className="text-cream hover:text-emerald-accent transition-colors flex items-center gap-1"><ShoppingBag size={14} /> Shop</Link>
               <Link to="/guides" className="text-cream hover:text-emerald-accent transition-colors">Guides</Link>
               <Link to="/chat" className="text-cream hover:text-emerald-accent transition-colors">AI Chat</Link>
             </div>
