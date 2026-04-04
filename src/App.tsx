@@ -220,7 +220,16 @@ export default function App() {
     </div>
   );
 
-  if (!user) return <LandingPage onLogin={loginWithGoogle} />;
+  const handleLogin = async () => {
+    try {
+      await loginWithGoogle();
+    } catch (error: any) {
+      console.error("Login failed:", error);
+      alert(`Login failed: ${error.message || error}. Please ensure this domain is authorized in Firebase Console.`);
+    }
+  };
+
+  if (!user) return <LandingPage onLogin={handleLogin} />;
 
   return (
     <div className="min-h-screen bg-forest flex flex-col md:flex-row text-cream">
