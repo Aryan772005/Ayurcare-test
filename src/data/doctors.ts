@@ -52,7 +52,7 @@ export const doctors: Doctor[] = [
     languages: ["English", "Gujarati", "Hindi"],
     rating: 4.9,
     reviews: 210,
-    imageUrl: "https://images.unsplash.com/photo-1594824436998-058a20cd7be6?q=80&w=300&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1614608682850-e0d6ed316d47?q=80&w=300&auto=format&fit=crop",
     about: "Dedicated to women's health, offering Ayurvedic solutions for menstrual disorders, PCOD, and prenatal care."
   },
   {
@@ -85,7 +85,7 @@ export const doctors: Doctor[] = [
     languages: ["English", "Hindi", "Punjabi"],
     rating: 5.0,
     reviews: 305,
-    imageUrl: "https://images.unsplash.com/photo-1582750433449-648ed127d09e?q=80&w=300&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?q=80&w=300&auto=format&fit=crop",
     about: "Master in anti-aging therapies, vitality enhancement, and boosting overall immunity using rare herbs."
   },
   {

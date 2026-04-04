@@ -1,5 +1,5 @@
 import React from 'react';
-import { Leaf } from 'lucide-react';
+import { Leaf, MapPin } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -10,9 +10,14 @@ export default function Footer() {
           <span className="font-display font-bold text-xl text-cream">Ayurcare+</span>
         </div>
         
-        <p className="text-sm text-emerald-accent/40 text-center md:text-left">
-          &copy; {new Date().getFullYear()} Ayurcare+. Holistic wellness and ancient wisdom.
-        </p>
+        <div className="text-center md:text-left">
+          <p className="text-sm text-emerald-accent/40">
+            &copy; {new Date().getFullYear()} Ayurcare+. Holistic wellness and ancient wisdom.
+          </p>
+          <p className="text-xs text-emerald-accent/30 flex items-center justify-center md:justify-start gap-1 mt-1">
+            <MapPin size={12} /> Desh Bhagat University, Mandi Govindgarh
+          </p>
+        </div>
         
         <div className="flex items-center gap-4 text-sm font-medium text-emerald-accent/60">
           <a href="#" className="hover:text-emerald-accent transition-colors">Privacy</a>
