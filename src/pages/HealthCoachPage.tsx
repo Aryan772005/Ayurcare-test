@@ -59,7 +59,18 @@ export default function HealthCoachPage({ user }: { user: FirebaseUser | null })
         body: JSON.stringify(formData)
       });
       
-      const data = await res.json();
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        // If not JSON, it might be a Vercel/Server error HTML
+        if (text.includes('A server error occurred')) {
+          throw new Error('AI Engine Timeout (Vercel 10s limit). Please try with a shorter goal or wait a moment.');
+        }
+        throw new Error(`Invalid server response: ${text.substring(0, 50)}...`);
+      }
+
       if (res.ok) {
         setReport(data);
       } else {

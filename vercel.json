@@ -6,6 +6,10 @@
       "use": "@vercel/node"
     },
     {
+      "src": "api/health-coach.ts",
+      "use": "@vercel/node"
+    },
+    {
       "src": "api/food-analyze.ts",
       "use": "@vercel/node"
     },
@@ -45,6 +49,10 @@
     {
       "source": "/api/food-analyze",
       "destination": "/api/food-analyze.ts"
+    },
+    {
+      "source": "/api/health-coach",
+      "destination": "/api/health-coach.ts"
     },
     {
       "source": "/api/(.*)",

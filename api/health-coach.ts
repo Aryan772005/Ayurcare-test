@@ -41,94 +41,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 
-  // Advanced System Prompt (Professional Assistant)
-  const SYSTEM_PROMPT = `
-You are an advanced AI-powered holistic health assistant combining modern nutrition science, Ayurveda, dermatology, and lifestyle optimization.
-
-Your role is to act as a:
-- Personal Health Coach
-- Certified Dietician
-- Ayurvedic Consultant
-- Basic Skin & Hair Care Advisor
-
-Your goal is to generate highly practical, personalized, affordable, and actionable recommendations tailored for Indian users. Avoid generic advice. Focus on clarity, usefulness, and real-life applicability.
-
-Follow these 13 sections of analysis:
-1. HEALTH STATUS ANALYSIS (BPM trends, classification)
-2. DAILY CALORIE REQUIREMENT (Total needs adjusted for goals)
-3. MACRONUTRIENT BREAKDOWN (Protein, Carbs, Fats)
-4. PERSONALIZED INDIAN DIET PLAN (Budget-friendly Indian foods)
-5. TODAY’S FOOD ANALYSIS (Consumed vs Required)
-6. SMART HEALTH INSIGHTS (Improvements, actionable steps)
-7. AYURVEDIC ANALYSIS (Dosha identification, balancing foods/herbs)
-8. HAIR CARE & HAIRFALL SOLUTION (Routine, Remedies, Diet)
-9. AYURVEDIC SKINCARE & COSMETICS (Morning/Night routine, Natural remedies)
-10. FITNESS & LIFESTYLE (Workouts, Sleep, Hydration)
-11. RISK ALERTS (Abnormalities detection)
-12. DAILY AYURVEDIC QUICK TIPS (3 short tips: Hair, Skin, Health)
-13. FINAL ACTION PLAN (Exactly 5 clear steps for tomorrow)
-`;
+  // Concise System Prompt
+  const SYSTEM_PROMPT = `You are a professional Indian health coach (Ayurveda + Modern Nutrition). Generate high-precision, actionable health blueprints. Follow the 13-section structure precisely within JSON. Focus on budget-friendly Indian solutions.`;
 
   // Structured Output Request (JSON Mapping)
-  const USER_PROMPT = `
-Return response STRICTLY in JSON format. Do not include any text outside the JSON.
+  const USER_PROMPT = `Return Strictly JSON. No other text.
+  Profile: Age ${age}, ${gender}, ${height}cm, ${weight}kg, Goal: ${goal}, Activity: ${activityLevel}, Diet: ${foodPreference}, Med: ${conditions || 'None'}.
+  Real-time: BPM ${bpm || 'N/A'}, Cals Today ${caloriesToday || '0'}, Food: ${foodList || 'None'}, Skin: ${skinType}, Hair: ${hairCondition}.
 
-{
-  "healthAnalysis": "Combine Section 1 (Health Status) and Section 7 (Ayurvedic/Dosha Analysis) here.",
-  "calories": {
-    "required": 0,
-    "protein": 0,
-    "carbs": 0,
-    "fats": 0
-  },
-  "dietPlan": {
-    "breakfast": "Item + Calories",
-    "lunch": "Item + Calories",
-    "dinner": "Item + Calories",
-    "snacks": "Item + Calories"
-  },
-  "foodAnalysis": "Detailed Section 5 report.",
-  "recommendations": ["List 3-5 actionable steps from Section 6"],
-  "hairCare": {
-    "issue": "Identified cause from Section 8",
-    "remedies": ["Daily routine", "Weekly routine", "Herbs/Diet from Section 8"]
-  },
-  "skinCare": {
-    "routine": "Morning/Night breakdown from Section 9",
-    "remedies": ["Natural remedies/packs from Section 9"]
-  },
-  "fitness": "Section 10 details (Workout, Sleep, Hydration).",
-  "alerts": ["Risk alerts from Section 11"],
-  "tips": {
-    "hair": "TIP_HAIR (max 12 words)",
-    "skin": "TIP_SKIN (max 12 words)",
-    "health": "TIP_HEALTH (max 12 words)"
-  },
-  "summary": ["The 5 clear actionable steps from Section 13"]
-}
-
-USER PROFILE:
-- Age: ${age}
-- Gender: ${gender}
-- Height: ${height} cm
-- Weight: ${weight} kg
-- Goal: ${goal}
-- Activity: ${activityLevel}
-- Food Preference: ${foodPreference}
-- Medical Conditions: ${conditions || 'None'}
-
-REAL-TIME DATA:
-- Average BPM: ${bpm || 'N/A'}
-- Calories Consumed Today: ${caloriesToday || '0'}
-- Food Consumed: ${foodList || 'None'}
-- Skin Type: ${skinType || 'Combination'}
-- Hair Condition: ${hairCondition || 'Normal'}
-`;
+  JSON Map:
+  {
+    "healthAnalysis": "Section 1+7 (BPM/Dosha analysis)",
+    "calories": { "required": 0, "protein": 0, "carbs": 0, "fats": 0 },
+    "dietPlan": { "breakfast": "item+cal", "lunch": "item+cal", "dinner": "item+cal", "snacks": "item+cal" },
+    "foodAnalysis": "Detailed section 5 (Consumed vs Required)",
+    "recommendations": ["3-5 actionable steps"],
+    "hairCare": { "issue": "cause from sec 8", "remedies": ["routine", "herbs"] },
+    "skinCare": { "routine": "am/pm", "remedies": ["packs"] },
+    "fitness": "Section 10 details",
+    "alerts": ["Risk alerts from sec 11"],
+    "tips": { "hair": "tip (10w)", "skin": "tip (10w)", "health": "tip (10w)" },
+    "summary": ["5 clear steps for tomorrow"]
+  }`;
 
   try {
-    // Timeout Controller
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
+    const timeout = setTimeout(() => controller.abort(), 9000); // 9s timeout for Vercel Hobby
 
     const response = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
       method: 'POST',
@@ -143,8 +81,8 @@ REAL-TIME DATA:
           { role: 'system', content: SYSTEM_PROMPT },
           { role: 'user', content: USER_PROMPT },
         ],
-        temperature: 0.3,
-        max_tokens: 2000,
+        temperature: 0.2, // Lower temperature for more stable JSON
+        max_tokens: 1500, // Reduced slightly to save time
       }),
     });
 
