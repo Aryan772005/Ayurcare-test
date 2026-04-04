@@ -12,6 +12,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
 import FloatingChatButton from './components/FloatingChatButton';
+import FloatingWhatsAppButton from './components/FloatingWhatsAppButton';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import DoctorsPage from './pages/DoctorsPage';
@@ -104,6 +105,9 @@ export default function App() {
 
         {/* Floating AI Chat Button */}
         <FloatingChatButton />
+
+        {/* Floating WhatsApp Support Button */}
+        <FloatingWhatsAppButton />
 
         {/* Auth Modal */}
         {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}

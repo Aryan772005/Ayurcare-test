@@ -40,10 +40,69 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
             Ayurcare<span className="text-emerald-accent">+</span>
           </motion.h1>
 
+          {/* Hero Wellness Image */}
+          <motion.div
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.18, duration: 0.7, ease: 'easeOut' }}
+            className="relative mx-auto mb-10"
+            style={{ maxWidth: '520px' }}
+          >
+            {/* Glow ring */}
+            <div style={{
+              position: 'absolute', inset: '-3px',
+              background: 'linear-gradient(135deg, rgba(52,211,153,0.5) 0%, rgba(16,185,129,0.2) 50%, rgba(52,211,153,0.4) 100%)',
+              borderRadius: '28px',
+              filter: 'blur(8px)',
+              zIndex: 0,
+            }} />
+            <div style={{
+              position: 'relative', zIndex: 1,
+              borderRadius: '24px',
+              overflow: 'hidden',
+              border: '1px solid rgba(52,211,153,0.25)',
+              boxShadow: '0 24px 64px rgba(0,0,0,0.45)',
+            }}>
+              <img
+                src="/assets/hero-wellness.jpg"
+                alt="Ayurvedic Wellness"
+                style={{
+                  width: '100%',
+                  height: '260px',
+                  objectFit: 'cover',
+                  objectPosition: 'center top',
+                  display: 'block',
+                }}
+              />
+              {/* Gradient overlay */}
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(to top, rgba(5,27,18,0.75) 0%, rgba(5,27,18,0.1) 60%, transparent 100%)',
+              }} />
+              {/* Floating badge */}
+              <div style={{
+                position: 'absolute', bottom: '16px', left: '50%',
+                transform: 'translateX(-50%)',
+                background: 'rgba(5,27,18,0.75)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(52,211,153,0.3)',
+                borderRadius: '99px',
+                padding: '6px 20px',
+                display: 'flex', alignItems: 'center', gap: '8px',
+                whiteSpace: 'nowrap',
+              }}>
+                <span style={{ color: '#34d399', fontSize: '14px' }}>🌿</span>
+                <span style={{ color: '#ecfdf5', fontSize: '13px', fontWeight: 700, letterSpacing: '0.03em' }}>
+                  Ayurvedic Wellness Platform
+                </span>
+              </div>
+            </div>
+          </motion.div>
+
           <motion.p 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.28 }}
             className="max-w-2xl mx-auto text-xl text-cream/70 mb-12 leading-relaxed"
           >
             Ancient wisdom meets modern intelligence. Consult with top Indian Ayurvedic doctors, track your vitals, and balance your life — all from one platform.
