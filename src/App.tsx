@@ -86,7 +86,7 @@ export default function App() {
             <Route path="/guides" element={<GuidesPage />} />
             <Route path="/topic/:id" element={<TopicPage />} />
             <Route path="/tools" element={<ToolsPage user={user} />} />
-            <Route path="/shop" element={<ShopPage />} />
+            <Route path="/shop" element={<ShopPage user={user} onLogin={() => setShowAuth(true)} />} />
             
             {/* Protected Routes */}
             <Route path="/dashboard" element={

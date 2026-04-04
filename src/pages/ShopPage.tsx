@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Star, ExternalLink, Search, Filter, X, Check, Minus, Plus, Package, Truck, Shield, Sparkles } from 'lucide-react';
+import { User as FirebaseUser } from 'firebase/auth';
+import { doc, setDoc, onSnapshot } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 interface Medicine {
   id: number;
@@ -152,13 +155,37 @@ interface CartItem {
   qty: number;
 }
 
-export default function ShopPage() {
+export default function ShopPage({ user, onLogin }: { user: FirebaseUser | null, onLogin: () => void }) {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [selectedMed, setSelectedMed] = useState<Medicine | null>(null);
   const [addedId, setAddedId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!user) {
+      setCart([]);
+      return;
+    }
+    const unsub = onSnapshot(doc(db, 'users', user.uid), (docSnap) => {
+      if (docSnap.exists() && docSnap.data().cart) {
+        setCart(docSnap.data().cart);
+      } else {
+        setCart([]);
+      }
+    });
+    return unsub;
+  }, [user]);
+
+  const saveCartToDb = async (newCart: CartItem[]) => {
+    if (!user) return;
+    try {
+      await setDoc(doc(db, 'users', user.uid), { cart: newCart }, { merge: true });
+    } catch (err) {
+      console.error("Failed to save cart to Firebase", err);
+    }
+  };
 
   const filtered = MEDICINES.filter(m => {
     const matchSearch = m.name.toLowerCase().includes(search.toLowerCase())
@@ -169,19 +196,31 @@ export default function ShopPage() {
   });
 
   const addToCart = (med: Medicine) => {
-    setCart(prev => {
-      const existing = prev.find(c => c.medicine.id === med.id);
-      if (existing) return prev.map(c => c.medicine.id === med.id ? { ...c, qty: c.qty + 1 } : c);
-      return [...prev, { medicine: med, qty: 1 }];
-    });
+    if (!user) {
+      onLogin();
+      return;
+    }
+    const newCart = [...cart];
+    const existing = newCart.find(c => c.medicine.id === med.id);
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      newCart.push({ medicine: med, qty: 1 });
+    }
+    setCart(newCart);
+    saveCartToDb(newCart);
+
     setAddedId(med.id);
     setTimeout(() => setAddedId(null), 1200);
   };
 
   const updateQty = (id: number, delta: number) => {
-    setCart(prev => prev.map(c =>
+    if (!user) return;
+    const newCart = cart.map(c =>
       c.medicine.id === id ? { ...c, qty: Math.max(0, c.qty + delta) } : c
-    ).filter(c => c.qty > 0));
+    ).filter(c => c.qty > 0);
+    setCart(newCart);
+    saveCartToDb(newCart);
   };
 
   const cartTotal = cart.reduce((sum, c) => sum + c.medicine.price * c.qty, 0);
@@ -364,7 +403,7 @@ export default function ShopPage() {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           onClick={() => setShowCart(true)}
-          className="fixed bottom-24 right-6 z-40 bg-emerald-accent text-forest w-16 h-16 rounded-2xl flex items-center justify-center shadow-2xl shadow-emerald-accent/30 hover:scale-110 transition-transform"
+          className="fixed bottom-24 left-6 z-40 bg-emerald-accent text-forest w-16 h-16 rounded-2xl flex items-center justify-center shadow-2xl shadow-emerald-accent/30 hover:scale-110 transition-transform"
         >
           <ShoppingCart size={24} />
           <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
