@@ -4,7 +4,7 @@ import { User as FirebaseUser } from 'firebase/auth';
 
 export default function ChatPage({ user }: { user: FirebaseUser | null }) {
   const [messages, setMessages] = useState<{role: 'user'|'assistant', content: string}[]>([
-    { role: 'assistant', content: "Namaste. I am your Ayurvedic AI assistant. Describe your symptoms, diet, or health concerns, and I will provide natural holistic insights." }
+    { role: 'assistant', content: "Namaste 🙏 I am your Ayurvedic AI assistant. Describe your symptoms, diet, or health concerns, and I will provide natural holistic insights." }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -17,43 +17,42 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
     
-    // In a real scenario we'd send the full conversation array to a backend route,
-    // but the current backend route handles simple symptom analysis. 
-    // We will use the existing `/api/analyze-symptoms` for now, wrapping the input.
-    
     const userMessage = input.trim();
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setInput('');
     setIsLoading(true);
 
     try {
-      const token = await user?.getIdToken();
-      const baseUrl = import.meta.env.VITE_API_URL || '';
-      
-      const res = await fetch(`${baseUrl}/api/analyze-symptoms`, {
+      // Send to backend AI route (no auth required)
+      const res = await fetch(`/api/analyze-symptoms`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ symptoms: userMessage })
       });
       
+      if (!res.ok) {
+        const errorData = await res.text();
+        throw new Error(`Server responded with ${res.status}: ${errorData}`);
+      }
+
       const data = await res.json();
       
       let aiResponseText = '';
       if (data && data.possibleDisease) {
-        aiResponseText = `Based on Ayurveda, this could be related to ${data.possibleDisease}.\n\nSuggestion: ${data.ayurvedicSuggestion}\n\nPrecautions: \n- ${data.precautions?.join('\n- ')}`;
-      } else if (data.message) {
-        aiResponseText = data.message;
+        aiResponseText = `🔍 **Possible Condition:** ${data.possibleDisease}\n\n💚 **Ayurvedic Suggestion:** ${data.ayurvedicSuggestion}\n\n⚠️ **Precautions:**\n${data.precautions?.map((p: string) => `• ${p}`).join('\n')}`;
+      } else if (data.error) {
+        aiResponseText = `Sorry, I encountered an issue: ${data.error}`;
+      } else if (typeof data === 'string') {
+        aiResponseText = data;
       } else {
-        aiResponseText = "Could not generate a response. Please try again.";
+        aiResponseText = JSON.stringify(data, null, 2);
       }
 
       setMessages(prev => [...prev, { role: 'assistant', content: aiResponseText }]);
     } catch (err) {
-      console.error(err);
-      setMessages(prev => [...prev, { role: 'assistant', content: "There was an error connecting to the AI. Please verify your NVIDIA API KEY." }]);
+      console.error("Chat error:", err);
+      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+      setMessages(prev => [...prev, { role: 'assistant', content: `⚠️ Connection error: ${errorMsg}\n\nPlease make sure the server is running and try again.` }]);
     } finally {
       setIsLoading(false);
     }
@@ -79,8 +78,8 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
             </div>
           ))}
           {isLoading && (
-            <div className={`flex gap-4 flex-row`}>
-            <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-blue-400/20 text-blue-400">
+            <div className="flex gap-4 flex-row">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-blue-400/20 text-blue-400">
                 <Sparkles size={18} className="animate-spin" />
               </div>
               <div className="p-4 rounded-2xl bg-forest/40 border border-white/5 flex gap-2 items-center">
