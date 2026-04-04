@@ -223,9 +223,20 @@ export default function DiagnosisPage({ user }: { user: FirebaseUser | null }) {
             initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
             className="flex flex-col w-full relative z-10"
           >
-            <div className="text-center mb-8">
-              <h1 className="text-4xl md:text-5xl font-display font-bold text-cream mb-4">What's bothering you?</h1>
-              <p className="text-emerald-accent/60 text-lg">Click on the body map, type, or speak your symptoms.</p>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-10 text-center md:text-left">
+              <div className="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-emerald-accent/30 overflow-hidden shadow-2xl relative shrink-0 group hover:border-emerald-accent transition-colors duration-500">
+                <img src="/ai_doctor.png" alt="AI Ayurvedic Doctor" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                {isListening && (
+                   <div className="absolute inset-0 bg-emerald-accent/20 animate-pulse"></div>
+                )}
+                <div className="absolute bottom-2 right-2 w-4 h-4 bg-green-500 border-2 border-forest rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.6)]"></div>
+              </div>
+              <div>
+                <h1 className="text-4xl md:text-5xl font-display font-bold text-cream mb-4">What's bothering you?</h1>
+                <p className="text-emerald-accent/60 text-lg max-w-xl leading-relaxed">
+                  I am your AI Ayurvedic practitioner. Click on the body map, type your symptoms, or tap the microphone and speak to me directly.
+                </p>
+              </div>
             </div>
 
             <div className="bg-moss/30 p-4 md:p-8 rounded-[40px] border border-white/5 shadow-2xl flex flex-col">
