@@ -21,6 +21,7 @@ import GuidesPage from './pages/GuidesPage';
 import ChatPage from './pages/ChatPage';
 import TopicPage from './pages/TopicPage';
 import ShopPage from './pages/ShopPage';
+import DiagnosisPage from './pages/DiagnosisPage';
 
 export default function App() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
@@ -87,6 +88,7 @@ export default function App() {
             <Route path="/topic/:id" element={<TopicPage />} />
             <Route path="/tools" element={<ToolsPage user={user} />} />
             <Route path="/shop" element={<ShopPage user={user} onLogin={() => setShowAuth(true)} />} />
+            <Route path="/diagnosis" element={<DiagnosisPage user={user} />} />
             
             {/* Protected Routes */}
             <Route path="/dashboard" element={

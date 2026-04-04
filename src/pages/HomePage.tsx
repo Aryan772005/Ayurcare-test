@@ -122,10 +122,10 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
           >
             {user ? (
               <Link 
-                to="/dashboard"
+                to="/diagnosis"
                 className="bg-emerald-accent text-forest px-10 py-5 rounded-full text-xl font-bold shadow-2xl shadow-emerald-accent/20 hover:bg-emerald-accent/90 hover:scale-105 transition-all inline-flex items-center gap-3"
               >
-                Go to Dashboard <ChevronRight />
+                🩺 Start AI Diagnosis <ChevronRight />
               </Link>
             ) : (
               <button 
@@ -165,9 +165,9 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
           {[
             { icon: <Heart className="text-rose-400 w-10 h-10" />, title: "Vitals Tracker", desc: "Monitor heart rate, BMI, and calorie intake tailored to your specific Ayurvedic Dosha." },
             { icon: <Calendar className="text-emerald-accent w-10 h-10" />, title: "Expert Doctors", desc: "Book 1-on-1 consultations with verified Indian Ayurvedic physicians for just ₹1." },
-            { icon: <Sparkles className="text-blue-400 w-10 h-10" />, title: "AI Assistant", desc: "Chat with our advanced AI to analyze symptoms and get personalized Ayurvedic recommendations." },
+            { icon: <Sparkles className="text-blue-400 w-10 h-10" />, title: "AI Diagnosis", desc: "Use text, voice 🎤, or body map clicks to let our AI analyze symptoms and dosha." },
             { icon: <Leaf className="text-green-400 w-10 h-10" />, title: "Herbal Guides", desc: "Explore dosha-specific diet plans, Triphala remedies, and weight management tips." },
-            { icon: <Award className="text-purple-400 w-10 h-10" />, title: "BMI & Prakriti", desc: "Calculate your BMI and discover your body constitution type for better health decisions." },
+            { icon: <Award className="text-purple-400 w-10 h-10" />, title: "Food Scanner", desc: "Upload meal images 📷 for instant nutritional analysis via NVIDIA AI." },
             { icon: <Star className="text-yellow-400 w-10 h-10" />, title: "Food Database", desc: "Check calories and Ayurvedic properties of 50+ common Indian dishes instantly." },
           ].map((f, i) => (
             <motion.div 

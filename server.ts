@@ -61,6 +61,12 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
+// Food Analyze route for local development
+app.post("/api/food-analyze", async (req, res) => {
+  // For dev we will just let frontend fallback trigger since we aren't using multipart parser here for brevity
+  res.status(500).json({ error: "Local dev fallback triggered" });
+});
+
 // Export the app for Vercel serverless functions
 export default app;
 
