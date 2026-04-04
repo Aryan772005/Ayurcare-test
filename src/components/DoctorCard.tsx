@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Star, ShieldCheck, CheckCircle, X } from 'lucide-react';
+import { Star, ShieldCheck, CheckCircle, X, Download } from 'lucide-react';
 import { Doctor } from '../data/doctors';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { User as FirebaseUser } from 'firebase/auth';
+import { generateConsultationInvoice } from '../utils/generateInvoice';
 
 interface DoctorCardProps {
   doctor: Doctor;
@@ -17,6 +18,9 @@ export default function DoctorCard({ doctor, user, onBookingSuccess }: DoctorCar
   const [showSuccess, setShowSuccess] = useState(false);
   const [problem, setProblem] = useState('');
   const [date, setDate] = useState('');
+  const [bookingId, setBookingId] = useState('');
+  const [bookedProblem, setBookedProblem] = useState('');
+  const [bookedDate, setBookedDate] = useState('');
 
   const initiateBooking = () => {
     if (!user) {
@@ -36,7 +40,7 @@ export default function DoctorCard({ doctor, user, onBookingSuccess }: DoctorCar
 
     setTimeout(async () => {
       try {
-        await addDoc(collection(db, 'appointments'), {
+        const docRef = await addDoc(collection(db, 'appointments'), {
           userId: user?.uid,
           name: user?.displayName,
           doctorId: doctor.id,
@@ -48,11 +52,14 @@ export default function DoctorCard({ doctor, user, onBookingSuccess }: DoctorCar
           createdAt: new Date().toISOString()
         });
 
+        setBookingId(docRef.id);
+        setBookedProblem(problem);
+        setBookedDate(date);
         setShowSimulatedPayment(false);
         setIsBooking(false);
         setProblem('');
         setDate('');
-        setShowSuccess(true); // 🎉 Show success modal
+        setShowSuccess(true);
         onBookingSuccess();
       } catch (err) {
         console.error("Booking failed:", err);
@@ -139,7 +146,7 @@ export default function DoctorCard({ doctor, user, onBookingSuccess }: DoctorCar
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                 <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>Date</span>
-                <span style={{ color: '#ecfdf5', fontSize: '13px', fontWeight: 700 }}>{formatDate(date)}</span>
+                <span style={{ color: '#ecfdf5', fontSize: '13px', fontWeight: 700 }}>{formatDate(bookedDate)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                 <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>Amount Paid</span>
@@ -160,18 +167,44 @@ export default function DoctorCard({ doctor, user, onBookingSuccess }: DoctorCar
               For support: <a href="mailto:aryansinghtariani@gmail.com" style={{ color: '#34d399' }}>aryansinghtariani@gmail.com</a>
             </p>
 
-            <button
-              onClick={() => setShowSuccess(false)}
-              style={{
-                marginTop: '20px', width: '100%',
-                background: 'linear-gradient(135deg, #34d399, #059669)',
-                color: '#052e16', border: 'none', borderRadius: '12px',
-                padding: '12px', fontSize: '14px', fontWeight: 800,
-                cursor: 'pointer', transition: 'opacity 0.2s',
-              }}
-            >
-              Done
-            </button>
+            <div style={{ display: 'flex', gap: '8px', marginTop: '20px' }}>
+              <button
+                onClick={() => setShowSuccess(false)}
+                style={{
+                  flex: 1,
+                  background: 'rgba(52,211,153,0.1)',
+                  color: '#34d399', border: '1px solid rgba(52,211,153,0.3)',
+                  borderRadius: '12px', padding: '11px',
+                  fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+                }}
+              >
+                Done
+              </button>
+              <button
+                onClick={() => generateConsultationInvoice({
+                  patientName: user?.displayName || 'Patient',
+                  patientEmail: user?.email || '',
+                  doctorName: doctor.name,
+                  specialization: doctor.specialization,
+                  problem: bookedProblem,
+                  preferredDate: bookedDate,
+                  amountPaid: 1,
+                  bookingId: bookingId || 'N/A',
+                  createdAt: new Date().toISOString(),
+                })}
+                style={{
+                  flex: 1,
+                  background: 'linear-gradient(135deg, #34d399, #059669)',
+                  color: '#052e16', border: 'none',
+                  borderRadius: '12px', padding: '11px',
+                  fontSize: '13px', fontWeight: 800, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center',
+                  justifyContent: 'center', gap: '6px',
+                }}
+              >
+                <Download size={14} /> Invoice
+              </button>
+            </div>
           </div>
 
           <style>{`

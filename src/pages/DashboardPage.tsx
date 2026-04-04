@@ -3,8 +3,9 @@ import { motion } from 'framer-motion';
 import { User as FirebaseUser } from 'firebase/auth';
 import { db } from '../lib/firebase';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
-import { Heart, Calendar, Activity, ArrowRight } from 'lucide-react';
+import { Heart, Calendar, Activity, ArrowRight, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { generateConsultationInvoice } from '../utils/generateInvoice';
 
 export default function DashboardPage({ user }: { user: FirebaseUser }) {
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -16,7 +17,7 @@ export default function DashboardPage({ user }: { user: FirebaseUser }) {
       try {
         const appq = query(collection(db, 'appointments'), where('userId', '==', user.uid));
         const appSnap = await getDocs(appq);
-        setAppointments(appSnap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => new Date(a.preferredDate).getTime() - new Date(b.preferredDate).getTime()));
+        setAppointments(appSnap.docs.map(d => ({id: d.id, ...d.data() as any})).sort((a: any, b: any) => new Date(a.preferredDate).getTime() - new Date(b.preferredDate).getTime()));
 
         const heartq = query(collection(db, 'heart_logs'), where('userId', '==', user.uid), orderBy('timestamp', 'desc'));
         const heartSnap = await getDocs(heartq);
@@ -72,7 +73,26 @@ export default function DashboardPage({ user }: { user: FirebaseUser }) {
                     <h4 className="font-bold text-cream">{app.doctorName || 'Doctor'}</h4>
                     <p className="text-xs text-emerald-accent/60 flex items-center gap-1"><Calendar size={12}/> {app.preferredDate}</p>
                   </div>
-                  <span className="text-xs px-3 py-1 bg-emerald-accent/20 text-emerald-accent rounded-full border border-emerald-accent/30">{app.status}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs px-3 py-1 bg-emerald-accent/20 text-emerald-accent rounded-full border border-emerald-accent/30">{app.status}</span>
+                    <button
+                      onClick={() => generateConsultationInvoice({
+                        patientName: user.displayName || 'Patient',
+                        patientEmail: user.email || '',
+                        doctorName: app.doctorName || 'Doctor',
+                        specialization: 'Consultation',
+                        problem: app.problem || 'Health Concern',
+                        preferredDate: app.preferredDate,
+                        amountPaid: app.amountPaid || 1,
+                        bookingId: app.id,
+                        createdAt: app.createdAt || new Date().toISOString(),
+                      })}
+                      className="p-1.5 bg-emerald-accent/10 text-emerald-accent rounded-lg border border-emerald-accent/20 hover:bg-emerald-accent/20 transition-colors flex items-center justify-center"
+                      title="Download Invoice"
+                    >
+                      <Download size={14} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
