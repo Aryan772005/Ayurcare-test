@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Leaf, LogOut, Sun, Moon, Activity, Ribbon, Heart, Scale, Shield, Coffee, ShoppingBag, TrendingDown, TrendingUp, Utensils, Sparkles } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { 
+  Leaf, LogOut, Sun, Moon, Activity, Ribbon, Heart, Scale, 
+  Shield, Coffee, ShoppingBag, Utensils, Sparkles, Menu, X, 
+  ChevronDown, LayoutDashboard, Stethoscope, Wrench, BookOpen, MessageSquare
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { auth, logout } from '../lib/firebase';
 import { User as FirebaseUser } from 'firebase/auth';
 import LanguageSwitcher from './LanguageSwitcher';
 
 interface NavbarProps {
   user: FirebaseUser | null;
+  onLogin: () => void;
 }
 
 const TOPICS = [
@@ -18,13 +24,21 @@ const TOPICS = [
   { id: 'hangover',         label: 'Hangover Fix',   icon: Coffee    },
 ];
 
-export default function Navbar({ user }: NavbarProps) {
+export default function Navbar({ user, onLogin }: NavbarProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLightMode, setIsLightMode] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const savedMode = localStorage.getItem('theme');
-    // Default is light mode ("normal when new users login should be in light mode")
     if (savedMode === 'dark') {
       setIsLightMode(false);
       document.body.classList.remove('light-mode');
@@ -52,70 +66,160 @@ export default function Navbar({ user }: NavbarProps) {
     navigate('/');
   };
 
+  const isActive = (path: string) => location.pathname === path;
+
+  const NavLink = ({ to, children, icon: Icon, highlight = false }: any) => (
+    <Link 
+      to={to} 
+      className={`flex items-center gap-1.5 transition-all ${
+        isActive(to) 
+          ? 'text-emerald-accent font-bold' 
+          : highlight 
+            ? 'text-emerald-accent hover:text-emerald-accent/80' 
+            : 'text-cream/70 hover:text-emerald-accent'
+      }`}
+    >
+      {Icon && <Icon size={14} className={isActive(to) ? 'animate-pulse' : ''} />}
+      <span>{children}</span>
+    </Link>
+  );
+
   return (
-    <nav className="fixed w-full z-50 bg-transparent py-4 md:py-5 px-6 md:px-12 backdrop-blur-[4px] transition-all">
-      <div className="max-w-7xl mx-auto flex flex-col gap-4">
-        {/* Main Nav */}
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'py-3 bg-forest/80 backdrop-blur-xl border-b border-white/5' : 'py-5 bg-transparent'}`}>
+      <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 group">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 group shrink-0">
             <div className="bg-emerald-accent p-2 rounded-xl group-hover:scale-110 transition-transform shadow-lg shadow-emerald-accent/20">
               <Leaf className="text-forest w-5 h-5" />
             </div>
             <span className="text-2xl font-display font-bold text-gradient">Ayurcare+</span>
           </Link>
 
-          <div className="flex items-center gap-4 md:gap-6">
-            <div className="hidden md:flex items-center gap-6 text-sm font-medium">
-              <Link to="/dashboard" className="text-cream hover:text-emerald-accent transition-colors">Dashboard</Link>
-              <Link to="/doctors" className="text-cream hover:text-emerald-accent transition-colors">Consult</Link>
-              <Link to="/tools" className="text-cream hover:text-emerald-accent transition-colors">Tools</Link>
-              <Link to="/diagnosis" className="text-emerald-accent hover:text-emerald-accent/80 transition-colors flex items-center gap-1"><Sparkles size={14} /> AI Diagnosis</Link>
-              <Link to="/shop" className="text-cream hover:text-emerald-accent transition-colors flex items-center gap-1"><ShoppingBag size={14} /> Shop</Link>
-              <Link to="/guides" className="text-cream hover:text-emerald-accent transition-colors">Guides</Link>
-              <Link to="/chat" className="text-cream hover:text-emerald-accent transition-colors">AI Chat</Link>
-            </div>
+          {/* Desktop Nav - CLEAN & MINIMAL */}
+          <div className="hidden lg:flex items-center gap-8 text-[13px] font-bold">
+            <NavLink to="/dashboard" icon={LayoutDashboard}>Dashboard</NavLink>
+            <NavLink to="/doctors" icon={Stethoscope}>Consult</NavLink>
             
-            <div className="flex items-center gap-3 border-l border-white/10 pl-4 md:pl-6">
-              <LanguageSwitcher />
-              
-              {/* Theme Toggle Button */}
-              <button 
-                onClick={toggleTheme}
-                className="flex items-center gap-1.5 px-3 h-8 rounded-full bg-forest/40 border border-white/10 text-emerald-accent/80 hover:text-emerald-accent transition-colors text-xs font-semibold"
-                title="Toggle Theme"
-              >
-                {isLightMode ? <Moon size={14} /> : <Sun size={14} />}
-                <span>{isLightMode ? 'Dark' : 'Light'}</span>
-              </button>
+            {/* The rest are hidden on desktop but accessible via Hamburger */}
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-accent/10 text-emerald-accent hover:bg-emerald-accent/20 transition-all border border-emerald-accent/20 font-bold uppercase tracking-widest text-[10px]"
+            >
+              <Menu size={16} /> All Tools
+            </button>
+          </div>
 
-              {user ? (
-                <>
-                  <img src={user.photoURL || ''} alt="" className="w-8 h-8 rounded-full border border-emerald-accent/20" referrerPolicy="no-referrer" />
-                  <button onClick={handleLogout} className="text-emerald-accent/60 hover:text-rose-400 transition-colors" title="Sign Out">
-                    <LogOut size={20} />
-                  </button>
-                </>
-              ) : (
-                <span className="text-sm font-medium text-emerald-accent/60 hidden md:block">Log in to book</span>
-              )}
-            </div>
+          {/* Right Actions */}
+          <div className="flex items-center gap-3">
+             <div className="hidden sm:block">
+                <LanguageSwitcher />
+             </div>
+            
+            <button 
+              onClick={toggleTheme}
+              className="w-10 h-10 rounded-full bg-forest/40 border border-white/10 text-emerald-accent/80 hover:text-emerald-accent transition-colors flex items-center justify-center backdrop-blur-md"
+            >
+              {isLightMode ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
+
+            {user ? (
+              <div className="flex items-center gap-3 pl-3 border-l border-white/10">
+                <img src={user.photoURL || ''} alt="" className="w-8 h-8 rounded-full border-2 border-emerald-accent/20" />
+                <button onClick={handleLogout} className="text-cream/40 hover:text-rose-400 transition-colors">
+                  <LogOut size={18} />
+                </button>
+              </div>
+            ) : (
+              <button 
+                onClick={onLogin} 
+                className="hidden sm:block px-5 py-2.5 rounded-full bg-emerald-accent text-forest text-sm font-bold hover:bg-emerald-accent/90 transition-all shadow-lg shadow-emerald-accent/20"
+              >
+                Sign In
+              </button>
+            )}
+
+            {/* Mobile Toggle */}
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden w-10 h-10 rounded-xl bg-forest/40 border border-white/10 text-cream flex items-center justify-center lg:hidden"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </div>
 
-        {/* Health Topics Ribbon (Logos) */}
-        <div className="border-t border-white/10 pt-4 pb-2 md:pt-5 md:pb-3 flex gap-6 md:gap-10 overflow-x-auto scrollbar-hide">
+        {/* Sub-nav topics for desktop */}
+        <div className="hidden lg:flex gap-8 mt-4 overflow-x-auto scrollbar-hide py-2 border-t border-white/5">
           {TOPICS.map(t => (
-            <Link key={t.id} to={`/topic/${t.id}`} className="flex items-center gap-2.5 group shrink-0">
-              <div className="bg-moss/40 border border-white/5 p-2.5 rounded-2xl group-hover:bg-emerald-accent/20 group-hover:border-emerald-accent/30 transition-all shadow-sm">
-                <t.icon className="w-4 h-4 text-emerald-accent group-hover:scale-110 transition-transform" />
-              </div>
-              <span className="text-xs uppercase tracking-wider text-cream/70 group-hover:text-emerald-accent font-bold transition-colors">
-                {t.label}
-              </span>
+            <Link key={t.id} to={`/topic/${t.id}`} className="flex items-center gap-2 group shrink-0 opacity-60 hover:opacity-100 transition-opacity">
+              <t.icon size={12} className="text-emerald-accent" />
+              <span className="text-[10px] uppercase tracking-widest font-bold">{t.label}</span>
             </Link>
           ))}
         </div>
       </div>
+
+      {/* Mobile Menu Drawer */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[51]"
+            />
+            <motion.div 
+              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 h-full w-72 bg-forest border-l border-white/10 z-[52] p-8 flex flex-col"
+            >
+              <div className="flex justify-between items-center mb-10">
+                <span className="text-xl font-display font-bold text-gradient">Menu</span>
+                <button onClick={() => setIsMobileMenuOpen(false)} className="text-cream/40"><X size={24} /></button>
+              </div>
+
+              <div className="flex flex-col gap-6">
+                {[
+                  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+                  { to: '/doctors', label: 'Consult Doctors', icon: Stethoscope },
+                  { to: '/tools', label: 'Wellness Tools', icon: Wrench },
+                  { to: '/diagnosis', label: 'AI Diagnosis', icon: Sparkles, highlight: true },
+                  { to: '/health-coach', label: 'AI Health Coach', icon: Activity, highlight: true },
+                  { to: '/shop', label: 'Ayurvedic Shop', icon: ShoppingBag },
+                  { to: '/calorie-checker', label: 'Calorie Checker', icon: Utensils, highlight: true },
+                  { to: '/guides', label: 'Health Guides', icon: BookOpen },
+                  { to: '/chat', label: 'AI Chat Assistant', icon: MessageSquare },
+                ].map((link, i) => (
+                  <Link 
+                    key={i} 
+                    to={link.to} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 text-lg font-semibold ${link.highlight ? 'text-emerald-accent' : 'text-cream/60'}`}
+                  >
+                    <link.icon size={20} />
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+
+              <div className="mt-auto pt-10">
+                {!user && (
+                   <button 
+                    onClick={() => { onLogin(); setIsMobileMenuOpen(false); }}
+                    className="w-full py-4 rounded-2xl bg-emerald-accent text-forest font-bold mb-4 shadow-lg shadow-emerald-accent/20"
+                   >
+                     Sign In Account
+                   </button>
+                )}
+                <div className="flex justify-center">
+                  <LanguageSwitcher />
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }

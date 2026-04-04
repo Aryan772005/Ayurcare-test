@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Scale, Utensils, Activity } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Heart, Scale, Utensils, Activity, Sparkles, Brain, Target } from 'lucide-react';
 import { User as FirebaseUser } from 'firebase/auth';
 import { db } from '../lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';
@@ -40,22 +41,25 @@ const indianFoods = [
 ];
 
 export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
-  const [activeTool, setActiveTool] = useState<'bmi' | 'calorie' | 'heart'>('bmi');
+  const [activeTool, setActiveTool] = useState<'bmi' | 'heart' | 'health-coach'>('bmi');
+  const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen pt-48 px-6 pb-20 max-w-7xl mx-auto">
+    <div className="min-h-screen pb-20 relative overflow-hidden">
       <div className="fixed inset-0 -z-10" style={{backgroundImage: "url('/bg-page-dash.png')", backgroundSize: 'cover', backgroundPosition: 'center'}}>
         <div className="absolute inset-0" style={{background: 'linear-gradient(135deg, rgba(10,15,13,0.93) 0%, rgba(3,20,12,0.90) 100%)'}} />
       </div>
       <header className="mb-12 text-center max-w-2xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-display font-bold text-cream mb-4">Wellness Tools</h1>
-        <p className="text-emerald-accent/60 text-lg">Measure and monitor your doshas with our interactive calculators.</p>
+        <h1 className="text-4xl md:text-5xl font-display font-bold text-gradient mb-4">Wellness Hub</h1>
+        <p className="text-emerald-accent/60 text-lg">Advanced AI-powered diagnostics and traditional Ayurvedic wisdom.</p>
       </header>
 
       <div className="flex justify-center gap-4 mb-12 flex-wrap">
         <ToolTab active={activeTool === 'bmi'} onClick={() => setActiveTool('bmi')} icon={<Scale />} label="BMI & Prakriti" />
-        <ToolTab active={activeTool === 'calorie'} onClick={() => setActiveTool('calorie')} icon={<Utensils />} label="Calorie Check" />
+        <ToolTab active={false} onClick={() => navigate('/calorie-checker')} icon={<Utensils />} label="Premium Calorie Check" />
         <ToolTab active={activeTool === 'heart'} onClick={() => setActiveTool('heart')} icon={<Heart />} label="Heart Monitor" />
+        <ToolTab active={activeTool === 'health-coach'} onClick={() => setActiveTool('health-coach')} icon={<Target />} label="AI Health Coach" />
+        <ToolTab active={false} onClick={() => navigate('/diagnosis')} icon={<Sparkles />} label="AI Diagnosis" />
       </div>
 
       <motion.div 
@@ -65,11 +69,31 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
         className="max-w-3xl mx-auto bg-moss/20 backdrop-blur-xl p-8 md:p-12 rounded-[40px] border border-white/5 shadow-2xl"
       >
         {activeTool === 'bmi' && <BMITool />}
-        {activeTool === 'calorie' && <CalorieTool />}
         {activeTool === 'heart' && <HeartTool user={user} />}
+        {activeTool === 'health-coach' && <HealthCoachTool navigate={navigate} />}
       </motion.div>
     </div>
   );
+}
+
+function HealthCoachTool({ navigate }: { navigate: any }) {
+   return (
+     <div className="text-center py-8">
+        <div className="w-20 h-20 bg-emerald-accent/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-emerald-accent/20">
+           <Brain size={40} className="text-emerald-accent" />
+        </div>
+        <h2 className="text-3xl font-display font-bold text-cream mb-4">AI Holistic Health Coach</h2>
+        <p className="text-emerald-accent/60 text-lg mb-8 max-w-md mx-auto">
+           Get personalized 13-section health analysis including Indian diet plans, hair/skin care, and Ayurvedic protocols.
+        </p>
+        <button 
+           onClick={() => navigate('/health-coach')}
+           className="px-10 py-4 bg-emerald-accent text-forest font-bold rounded-2xl hover:bg-emerald-accent/90 transition-all flex items-center gap-2 mx-auto shadow-lg shadow-emerald-accent/20"
+        >
+           Launch Full Coach <Sparkles size={18} />
+        </button>
+     </div>
+   );
 }
 
 function ToolTab({ active, onClick, icon, label }: any) {

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { auth } from './lib/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from './lib/firebase';
 import { Leaf } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Components & Pages
 import Navbar from './components/Navbar';
@@ -23,6 +23,8 @@ import TopicPage from './pages/TopicPage';
 import ShopPage from './pages/ShopPage';
 import DiagnosisPage from './pages/DiagnosisPage';
 import HealthCoachPage from './pages/HealthCoachPage';
+import CalorieCheckerPage from './pages/CalorieCheckerPage';
+
 
 export default function App() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
@@ -30,6 +32,7 @@ export default function App() {
   const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
+    (window as any).showAuth = () => setShowAuth(true);
     const unsubscribe = onAuthStateChanged(auth, async (u) => {
       if (u) {
         try {
@@ -79,36 +82,28 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col bg-forest text-cream font-sans selection:bg-emerald-accent/20">
-        <Navbar user={user} />
+        <Navbar user={user} onLogin={() => setShowAuth(true)} />
         
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<HomePage onLogin={() => setShowAuth(true)} user={user} />} />
-            <Route path="/doctors" element={<DoctorsPage user={user} />} />
-            <Route path="/guides" element={<GuidesPage />} />
-            <Route path="/topic/:id" element={<TopicPage />} />
-            <Route path="/tools" element={<ToolsPage user={user} />} />
-            <Route path="/shop" element={<ShopPage user={user} onLogin={() => setShowAuth(true)} />} />
-            <Route path="/diagnosis" element={<DiagnosisPage user={user} />} />
-            
-            {/* Protected Routes */}
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <DashboardPage user={user!} />
-              </ProtectedRoute>
-            } />
-            <Route path="/health-coach" element={
-              <ProtectedRoute>
-                <HealthCoachPage user={user} />
-              </ProtectedRoute>
-            } />
-            <Route path="/chat" element={
-              <ProtectedRoute>
-                <ChatPage user={user} />
-              </ProtectedRoute>
-            } />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+        <main className="flex-1 pt-24 md:pt-32 relative z-0">
+          <AnimatePresence mode="wait">
+            <Routes>
+              <Route path="/" element={<HomePage onLogin={() => setShowAuth(true)} user={user} />} />
+              <Route path="/doctors" element={<DoctorsPage user={user} />} />
+              <Route path="/guides" element={<GuidesPage />} />
+              <Route path="/topic/:id" element={<TopicPage />} />
+              <Route path="/tools" element={<ToolsPage user={user} />} />
+              <Route path="/shop" element={<ShopPage user={user} onLogin={() => setShowAuth(true)} />} />
+              <Route path="/diagnosis" element={<DiagnosisPage user={user} />} />
+              
+              {/* Pages accessible in Prototype mode without Mandatory Login */}
+              <Route path="/dashboard" element={<DashboardPage user={user!} />} />
+              <Route path="/health-coach" element={<HealthCoachPage user={user} />} />
+              <Route path="/calorie-checker" element={<CalorieCheckerPage />} />
+
+              <Route path="/chat" element={<ChatPage user={user} />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </AnimatePresence>
         </main>
         
         <Footer />

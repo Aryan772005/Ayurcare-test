@@ -65,7 +65,7 @@ app.post("/api/chat", async (req, res) => {
 // Food Analyze route for local development
 app.post("/api/food-analyze", async (req, res) => {
   try {
-    const handlerModule = await import("./api/food-analyze.ts");
+    const handlerModule = await import("./api/food-analyze.ts") as any;
     await handlerModule.default(req, res);
   } catch (err) {
     console.error("Local dev handler failed:", err);
@@ -76,7 +76,7 @@ app.post("/api/food-analyze", async (req, res) => {
 // Health Coach route for local development
 app.post("/api/health-coach", async (req, res) => {
   try {
-    const handlerModule = await import("./api/health-coach.ts");
+    const handlerModule = await import("./api/health-coach.ts") as any;
     await handlerModule.default(req, res);
   } catch (err) {
     console.error("Health coach handler failed:", err);
