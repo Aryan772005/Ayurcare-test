@@ -47,7 +47,7 @@ export default function CalorieCheckerPage() {
   const totalProtein = cart.reduce((acc, curr) => acc + (curr.item.protein * curr.quantity), 0);
 
   return (
-    <div className="min-h-screen pt-32 pb-20 bg-forest relative overflow-hidden">
+    <div className="min-h-screen pt-24 pb-20 bg-forest relative overflow-hidden">
       {/* Dynamic background */}
       <div className="absolute top-[10%] left-[5%] w-[400px] h-[400px] rounded-full filter blur-[100px] opacity-10 pointer-events-none bg-emerald-accent" />
       <div className="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] rounded-full filter blur-[120px] opacity-[0.05] pointer-events-none bg-amber-500" />

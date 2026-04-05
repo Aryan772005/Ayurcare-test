@@ -12,6 +12,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
 import FloatingChatButton from './components/FloatingChatButton';
+import ScrollToTop from './components/ScrollToTop';
 import FloatingWhatsAppButton from './components/FloatingWhatsAppButton';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
@@ -67,7 +68,7 @@ export default function App() {
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     if (!user) {
       return (
-        <div className="min-h-screen pt-48 text-center px-6">
+        <div className="min-h-screen pt-24 text-center px-6">
           <h2 className="text-3xl font-display font-bold text-cream mb-4">Login Required</h2>
           <p className="text-emerald-accent/60 mb-8">Please sign in to access this page.</p>
           <button onClick={() => setShowAuth(true)} className="bg-emerald-accent text-forest px-8 py-3 rounded-full font-bold hover:bg-emerald-accent/90 transition-colors">
@@ -84,10 +85,10 @@ export default function App() {
     const isHome = location.pathname === '/';
     return (
       <div className="min-h-screen flex flex-col bg-forest text-cream font-sans selection:bg-emerald-accent/20">
+        <ScrollToTop />
         <Navbar user={user} onLogin={() => setShowAuth(true)} />
         
-        {/* Only apply global top padding if we are NOT on the homepage, removing the unwanted gap. */}
-        <main className={`flex-1 relative z-0 ${isHome ? '' : 'pt-24 md:pt-28'}`}>
+        <main className="flex-1 relative z-0">
           <AnimatePresence mode="wait">
             <Routes>
               <Route path="/" element={<HomePage onLogin={() => setShowAuth(true)} user={user} />} />

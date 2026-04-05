@@ -85,7 +85,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
   };
 
   return (
-    <div className="min-h-screen pt-44 px-4 pb-0 max-w-4xl mx-auto flex flex-col h-screen">
+    <div className="min-h-screen pt-24 px-4 pb-0 max-w-4xl mx-auto flex flex-col h-screen">
       <div className="fixed inset-0 -z-10" style={{backgroundImage: "url('/bg-page-dash.png')", backgroundSize: 'cover', backgroundPosition: 'center'}}>
         <div className="absolute inset-0" style={{background: 'linear-gradient(135deg, rgba(5,10,15,0.94) 0%, rgba(2,10,8,0.92) 100%)'}} />
       </div>

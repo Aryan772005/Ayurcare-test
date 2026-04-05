@@ -180,7 +180,7 @@ export default function DiagnosisPage({ user }: { user: FirebaseUser | null }) {
   };
 
   return (
-    <div className="min-h-screen bg-forest pt-40 px-4 md:px-8 pb-20 flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-forest pt-24 px-4 md:px-8 pb-20 flex flex-col relative overflow-hidden">
       {/* Decorative background matching HomePage */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
         <motion.div 

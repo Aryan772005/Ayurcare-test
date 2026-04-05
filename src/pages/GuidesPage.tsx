@@ -116,7 +116,7 @@ const TOPIC_CARDS = [
 
 export default function GuidesPage() {
   return (
-    <div className="min-h-screen pt-48 px-6 pb-20 max-w-7xl mx-auto">
+    <div className="min-h-screen pt-24 px-6 pb-20 max-w-7xl mx-auto">
       <div className="fixed inset-0 -z-10" style={{backgroundImage: "url('/bg-page-shop.png')", backgroundSize: 'cover', backgroundPosition: 'center'}}>
         <div className="absolute inset-0" style={{background: 'linear-gradient(135deg, rgba(10,8,5,0.93) 0%, rgba(20,12,3,0.90) 100%)'}} />
       </div>

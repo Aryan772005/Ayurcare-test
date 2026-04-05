@@ -225,7 +225,7 @@ export default function TopicPage() {
   const relatedIds = (id ? RELATED_TOPICS[id] : []) || [];
 
   return (
-    <div className="min-h-screen pt-48 pb-20 px-6 max-w-4xl mx-auto">
+    <div className="min-h-screen pt-24 pb-20 px-6 max-w-4xl mx-auto">
       <Link to="/guides" className="inline-flex items-center gap-2 text-emerald-accent/60 hover:text-emerald-accent mb-8 transition-colors">
         <ChevronLeft size={20} /> Back to Guides
       </Link>
