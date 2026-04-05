@@ -1,0 +1,50 @@
+8bf99a2 HEAD@{0}: pull deployment_repo main: Fast-forward
+20cb48a HEAD@{1}: rebase (finish): returning to refs/heads/ayurcare_test_main
+20cb48a HEAD@{2}: commit (amend): fix(ai): enhance NVIDIA API key and json parsing robustness to resolve auth and vercel deployment errors
+7e1a9c8 HEAD@{3}: rebase (pick): fix(ai): enhance NVIDIA API key and json parsing robustness to resolve auth and vercel deployment errors
+a768e70 HEAD@{4}: commit (amend): feat: upgrade body map vector path to glowing anime human anatomy image
+08cb097 HEAD@{5}: rebase (pick): feat: upgrade body map vector path to glowing anime human anatomy image
+db54fac HEAD@{6}: commit (amend): feat: add highly realistic anime AI doctor portrait to Diagnosis Page
+2a983b2 HEAD@{7}: rebase (pick): feat: add highly realistic anime AI doctor portrait to Diagnosis Page
+27243af HEAD@{8}: commit (amend): fix: add api key typo resilience for vercel deployments
+16c2ca1 HEAD@{9}: rebase (pick): fix: add api key typo resilience for vercel deployments
+8bdeb85 HEAD@{10}: commit (amend): fix: compress food scanner uploads for vercel hardware limit
+9445a75 HEAD@{11}: rebase (pick): fix: compress food scanner uploads for vercel hardware limit
+552856c HEAD@{12}: commit (amend): fix: resolve voice input duplication and UI dark mode layout limiters
+9f1023f HEAD@{13}: rebase (pick): fix: resolve voice input duplication and UI dark mode layout limiters
+d301e75 HEAD@{14}: commit (amend): feat: Add AI-driven multimodal Diagnosis flow for Hackathon
+ba1cd60 HEAD@{15}: rebase (pick): feat: Add AI-driven multimodal Diagnosis flow for Hackathon
+f513bc1 HEAD@{16}: commit (amend): fix(ui): reorder GuidesPage categories to show wellness guides first
+1cfe55c HEAD@{17}: rebase (pick): fix(ui): reorder GuidesPage categories to show wellness guides first
+7cc33e5 HEAD@{18}: commit (amend): feat(ui): unified Guides Page UI and updated navbar topics for Weight Management
+9270382 HEAD@{19}: rebase (pick): feat(ui): unified Guides Page UI and updated navbar topics for Weight Management
+e211483 HEAD@{20}: commit (amend): Redesign dark mode palette
+50a75a9 HEAD@{21}: rebase (pick): Redesign dark mode palette
+7a9b292 HEAD@{22}: commit (amend): Fix language switcher contrast
+4a4a358 HEAD@{23}: rebase (pick): Fix language switcher contrast
+84f658e HEAD@{24}: commit (amend): Add Google Translate Hindi option
+28fceac HEAD@{25}: rebase (pick): Add Google Translate Hindi option
+5860356 HEAD@{26}: commit (amend): Add invoice generation feature
+5c712ab HEAD@{27}: rebase (pick): Add invoice generation feature
+75343df HEAD@{28}: commit (amend): fix(shop): move floating cart button higher to avoid overlap with whatsapp widget
+04f4c51 HEAD@{29}: rebase (pick): fix(shop): move floating cart button higher to avoid overlap with whatsapp widget
+d21a3e8 HEAD@{30}: commit (amend): feat(shop): authenticate cart and sync with Firebase, fix cart UI overlap
+92e9b2c HEAD@{31}: rebase (pick): feat(shop): authenticate cart and sync with Firebase, fix cart UI overlap
+e56fc18 HEAD@{32}: commit (amend): Remove visible Tata 1mg brand mentions, replace with generic messaging
+5f2e2f3 HEAD@{33}: rebase (pick): Remove visible Tata 1mg brand mentions, replace with generic messaging
+54a198d HEAD@{34}: commit (amend): Add Ayurvedic Medicine Shop with product images, cart, and Tata 1mg integration
+0225b87 HEAD@{35}: rebase (pick): Add Ayurvedic Medicine Shop with product images, cart, and Tata 1mg integration
+8b63862 HEAD@{36}: commit (amend): Update homepage with AI generated images for Ayurvedic herbs
+f8adbd8 HEAD@{37}: rebase (pick): Update homepage with AI generated images for Ayurvedic herbs
+a28994f HEAD@{38}: commit (amend): fix: add typo catchers for nvidia api key env var
+61b56f9 HEAD@{39}: rebase (pick): fix: add typo catchers for nvidia api key env var
+12223e8 HEAD@{40}: commit (amend): debug: full custom env check
+ff5bf11 HEAD@{41}: rebase (pick): debug: full custom env check
+71fe3ea HEAD@{42}: commit (amend): debug: inject key debugging string into frontend error msg
+c1d1815 HEAD@{43}: rebase (pick): debug: inject key debugging string into frontend error msg
+f336a31 HEAD@{44}: commit (amend): debug: add temp env diagnostic endpoint
+bd9e416 HEAD@{45}: rebase (pick): debug: add temp env diagnostic endpoint
+2b7ba36 HEAD@{46}: commit (amend): fix: read NVIDIA API key inside handler for Vercel compatibility
+1d32b5e HEAD@{47}: rebase (pick): fix: read NVIDIA API key inside handler for Vercel compatibility
+aedef14 HEAD@{48}: commit (amend): fix: remove hardcoded NVIDIA API key, use env variable instead
+c84c0a5 HEAD@{49}: rebase (pick): fix: remove hardcoded NVIDIA API key, use env variable instead

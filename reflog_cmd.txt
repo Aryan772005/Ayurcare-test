@@ -1,0 +1,20 @@
+8bf99a2 HEAD@{0}: pull deployment_repo main: Fast-forward
+20cb48a HEAD@{1}: rebase (finish): returning to refs/heads/ayurcare_test_main
+20cb48a HEAD@{2}: commit (amend): fix(ai): enhance NVIDIA API key and json parsing robustness to resolve auth and vercel deployment errors
+7e1a9c8 HEAD@{3}: rebase (pick): fix(ai): enhance NVIDIA API key and json parsing robustness to resolve auth and vercel deployment errors
+a768e70 HEAD@{4}: commit (amend): feat: upgrade body map vector path to glowing anime human anatomy image
+08cb097 HEAD@{5}: rebase (pick): feat: upgrade body map vector path to glowing anime human anatomy image
+db54fac HEAD@{6}: commit (amend): feat: add highly realistic anime AI doctor portrait to Diagnosis Page
+2a983b2 HEAD@{7}: rebase (pick): feat: add highly realistic anime AI doctor portrait to Diagnosis Page
+27243af HEAD@{8}: commit (amend): fix: add api key typo resilience for vercel deployments
+16c2ca1 HEAD@{9}: rebase (pick): fix: add api key typo resilience for vercel deployments
+8bdeb85 HEAD@{10}: commit (amend): fix: compress food scanner uploads for vercel hardware limit
+9445a75 HEAD@{11}: rebase (pick): fix: compress food scanner uploads for vercel hardware limit
+552856c HEAD@{12}: commit (amend): fix: resolve voice input duplication and UI dark mode layout limiters
+9f1023f HEAD@{13}: rebase (pick): fix: resolve voice input duplication and UI dark mode layout limiters
+d301e75 HEAD@{14}: commit (amend): feat: Add AI-driven multimodal Diagnosis flow for Hackathon
+ba1cd60 HEAD@{15}: rebase (pick): feat: Add AI-driven multimodal Diagnosis flow for Hackathon
+f513bc1 HEAD@{16}: commit (amend): fix(ui): reorder GuidesPage categories to show wellness guides first
+1cfe55c HEAD@{17}: rebase (pick): fix(ui): reorder GuidesPage categories to show wellness guides first
+7cc33e5 HEAD@{18}: commit (amend): feat(ui): unified Guides Page UI and updated navbar topics for Weight Management
+9270382 HEAD@{19}: rebase (pick): feat(ui): unified Guides Page UI and updated navbar topics for Weight Management

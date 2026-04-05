@@ -1,0 +1,14 @@
+8bf99a2 ayurcare_test_main@{0}: pull deployment_repo main: Fast-forward
+20cb48a ayurcare_test_main@{1}: rebase (finish): refs/heads/ayurcare_test_main onto dc52dfc654b1be8f111ad9d0b1543382e61fa760
+9afcd4d ayurcare_test_main@{2}: rebase (abort): returning to refs/heads/ayurcare_test_main
+e7fd5f4 ayurcare_test_main@{3}: commit: Refactoring UI, adding AI Navigation, and setting Dark Theme Default
+d8f7086 ayurcare_test_main@{4}: commit: Final prompt and JSON repair refinement
+0f64a52 ayurcare_test_main@{5}: commit: Robust JSON repair and unit list expansion
+10800ac ayurcare_test_main@{6}: commit: Fix AI JSON unquoted units with repair logic and updated prompt
+3406236 ayurcare_test_main@{7}: commit: Improve AI JSON parsing robustness and UI error detail
+e38e80f ayurcare_test_main@{8}: commit: Fix JSON parsing error in Health Coach and optimize API
+9f106f1 ayurcare_test_main@{9}: commit: feat: Hackathon-Winner UI overhaul & premium animations
+aff1303 ayurcare_test_main@{10}: commit: Add new HealthCoachPage interactive UI to dynamically query the AI Health Coach
+5d7033e ayurcare_test_main@{11}: commit: Add new futuristic AI dashboard and health coach API endpoint
+9afcd4d ayurcare_test_main@{12}: filter-branch: rewrite
+0e92289 ayurcare_test_main@{13}: branch: Created from ayurcare_test/main
