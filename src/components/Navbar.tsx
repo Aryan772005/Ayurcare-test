@@ -101,8 +101,8 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
     <>
       {/* ── Main Navbar ── */}
       <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'py-3 bg-forest/90 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/10' : 'py-5 bg-transparent'}`}>
-        <div className="max-w-7xl mx-auto px-5">
-          <div className="flex items-center justify-between">
+        <div className="max-w-[1440px] mx-auto px-6 xl:px-10">
+          <div className="flex items-center justify-between gap-4">
 
             {/* LEFT: Hamburger + Logo */}
             <div className="flex items-center gap-3">
@@ -140,34 +140,33 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
             </div>
 
             {/* CENTER: Quick nav links (desktop) */}
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="hidden lg:flex items-center gap-0.5">
               {[
-                { to: '/dashboard',    label: 'Dashboard',       icon: LayoutDashboard },
-                { to: '/doctors',      label: 'Consult',         icon: Stethoscope     },
-                { to: '/shop',         label: 'Shop',            icon: ShoppingBag     },
-                { to: '/chat',         label: 'AI Chat',         icon: MessageSquare   },
-                { to: '/health-coach', label: 'Health Coach',    icon: Brain           },
-                { to: '/diagnosis',    label: 'AI Diagnosis',    icon: Sparkles        },
+                { to: '/dashboard',     label: 'Dashboard',    icon: LayoutDashboard },
+                { to: '/doctors',       label: 'Consult',      icon: Stethoscope     },
+                { to: '/shop',          label: 'Shop',         icon: ShoppingBag     },
+                { to: '/chat',          label: 'AI Chat',      icon: MessageSquare   },
+                { to: '/health-coach',  label: 'Health Coach', icon: Brain           },
               ].map(link => (
                 <Link
                   key={link.label}
                   to={link.to}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-bold transition-all ${
+                  className={`flex items-center gap-1 px-3 py-2 rounded-xl text-[12px] font-bold transition-all whitespace-nowrap ${
                     isActive(link.to)
                       ? 'bg-emerald-accent/10 text-emerald-accent'
                       : 'text-cream/50 hover:text-cream hover:bg-white/5'
                   }`}
                 >
-                  <link.icon size={13} />
+                  <link.icon size={12} />
                   {link.label}
                 </Link>
               ))}
               {/* AI Analyse Meal — special highlighted pill */}
               <Link
                 to="/meal-analysis"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-bold transition-all bg-orange-500/10 text-orange-400 border border-orange-500/20 hover:bg-orange-500/20 hover:text-orange-300"
+                className="flex items-center gap-1 px-3 py-2 rounded-xl text-[12px] font-bold transition-all whitespace-nowrap bg-orange-500/10 text-orange-400 border border-orange-500/20 hover:bg-orange-500/20 hover:text-orange-300"
               >
-                <Camera size={13} />
+                <Camera size={12} />
                 AI Analyse Meal
               </Link>
             </div>
