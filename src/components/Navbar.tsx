@@ -4,7 +4,7 @@ import {
   Leaf, LogOut, Sun, Moon, Activity, Ribbon, Heart, Scale,
   Shield, Coffee, ShoppingBag, Utensils, Sparkles, Menu, X,
   LayoutDashboard, Stethoscope, Wrench, BookOpen, MessageSquare,
-  Brain, ChevronRight, Zap, Target, ArrowUpRight,
+  Brain, ChevronRight, Zap, Target, ArrowUpRight, Camera,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { auth, logout } from '../lib/firebase';
@@ -31,9 +31,10 @@ const TOOL_GROUPS = [
   {
     label: 'AI Tools',
     items: [
-      { to: '/health-coach', label: 'AI Health Coach',  icon: Brain,     tag: 'AI',  tagColor: '#A78BFA', desc: '13-section wellness report' },
-      { to: '/diagnosis',    label: 'AI Diagnosis',     icon: Sparkles,  tag: 'AI',  tagColor: '#A78BFA', desc: 'Symptom analysis' },
-      { to: '/chat',         label: 'AI Chat',          icon: MessageSquare, tag: 'Live', tagColor: '#10B981', desc: 'Ask anything about health' },
+      { to: '/health-coach', label: 'AI Health Coach',   icon: Brain,         tag: 'AI',   tagColor: '#A78BFA', desc: '13-section wellness report' },
+      { to: '/diagnosis',    label: 'AI Diagnosis',      icon: Sparkles,      tag: 'AI',   tagColor: '#A78BFA', desc: 'Symptom & dosha analysis' },
+      { to: '/diagnosis',    label: 'AI Analyse Meal',   icon: Camera,        tag: 'AI',   tagColor: '#F97316', desc: 'Scan & analyse your meal' },
+      { to: '/chat',         label: 'AI Chat',           icon: MessageSquare, tag: 'Live', tagColor: '#10B981', desc: 'Ask anything about health' },
     ],
   },
   {
@@ -141,15 +142,15 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
             {/* CENTER: Quick nav links (desktop) */}
             <div className="hidden lg:flex items-center gap-1">
               {[
-                { to: '/dashboard', label: 'Dashboard',  icon: LayoutDashboard },
-                { to: '/doctors',   label: 'Consult',    icon: Stethoscope     },
-                { to: '/shop',      label: 'Shop',       icon: ShoppingBag     },
-                { to: '/chat',      label: 'AI Chat',    icon: MessageSquare   },
-                { to: '/health-coach', label: 'Health Coach', icon: Brain },
-                { to: '/diagnosis', label: 'AI Diagnosis', icon: Sparkles },
+                { to: '/dashboard',    label: 'Dashboard',       icon: LayoutDashboard },
+                { to: '/doctors',      label: 'Consult',         icon: Stethoscope     },
+                { to: '/shop',         label: 'Shop',            icon: ShoppingBag     },
+                { to: '/chat',         label: 'AI Chat',         icon: MessageSquare   },
+                { to: '/health-coach', label: 'Health Coach',    icon: Brain           },
+                { to: '/diagnosis',    label: 'AI Diagnosis',    icon: Sparkles        },
               ].map(link => (
                 <Link
-                  key={link.to}
+                  key={link.label}
                   to={link.to}
                   className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-bold transition-all ${
                     isActive(link.to)
@@ -161,6 +162,14 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
                   {link.label}
                 </Link>
               ))}
+              {/* AI Analyse Meal — special highlighted pill */}
+              <Link
+                to="/diagnosis"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-bold transition-all bg-orange-500/10 text-orange-400 border border-orange-500/20 hover:bg-orange-500/20 hover:text-orange-300"
+              >
+                <Camera size={13} />
+                AI Analyse Meal
+              </Link>
             </div>
 
             {/* RIGHT: Actions */}
