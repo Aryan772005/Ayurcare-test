@@ -35,7 +35,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-display font-bold text-gradient leading-tight mb-8"
+            className="text-4xl sm:text-5xl md:text-8xl lg:text-9xl font-display font-bold text-gradient leading-tight mb-6 md:mb-8"
           >
             Ayurcare<span className="text-emerald-accent">+</span>
           </motion.h1>
@@ -69,14 +69,8 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
                 muted
                 playsInline
                 preload="auto"
-                style={{
-                  width: '100%',
-                  height: '280px',
-                  objectFit: 'cover',
-                  objectPosition: 'center center',
-                  display: 'block',
-                  transform: 'translateZ(0)',
-                }}
+                className="w-full h-[180px] sm:h-[220px] md:h-[280px] object-cover object-center block"
+                style={{ transform: 'translateZ(0)' }}
               >
                 <source src="/hero-video.mp4" type="video/mp4" />
               </video>
@@ -109,7 +103,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.28 }}
-            className="max-w-2xl mx-auto text-xl text-cream/70 mb-12 leading-relaxed"
+            className="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-cream/70 mb-8 md:mb-12 leading-relaxed px-2"
           >
             Ancient wisdom meets modern intelligence. Consult with top Indian Ayurvedic doctors, track your vitals, and balance your life — all from one platform.
           </motion.p>
@@ -131,12 +125,12 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
               {/* Premium Glass Card */}
               <div className="relative h-full bg-moss/70 backdrop-blur-2xl border border-white/10 p-6 sm:p-8 rounded-[32px] flex items-center gap-5 sm:gap-6 transform group-hover:-translate-y-2 transition-all duration-500 shadow-2xl shadow-black/50 overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-emerald-accent/20 to-emerald-accent/5 border border-emerald-accent/30 flex items-center justify-center flex-shrink-0 shadow-[inset_0_0_20px_rgba(52,211,153,0.1)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
-                  <Sparkles className="text-emerald-accent w-7 h-7 sm:w-8 sm:h-8" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-emerald-accent/20 to-emerald-accent/5 border border-emerald-accent/30 flex items-center justify-center flex-shrink-0 shadow-[inset_0_0_20px_rgba(52,211,153,0.1)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                  <Sparkles className="text-emerald-accent w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
                 <div className="text-left flex-1">
-                  <h3 className="text-xl sm:text-2xl font-display font-bold text-cream mb-1">AI Diagnosis</h3>
-                  <p className="text-xs sm:text-sm text-emerald-accent/60 font-medium leading-relaxed">Instant symptom analysis with intelligent dosha mapping.</p>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-display font-bold text-cream mb-1">AI Diagnosis</h3>
+                  <p className="text-[11px] sm:text-sm text-emerald-accent/60 font-medium leading-relaxed">Instant symptom analysis with intelligent dosha mapping.</p>
                 </div>
                 <ChevronRight className="text-emerald-accent/30 group-hover:text-emerald-accent transition-colors group-hover:translate-x-1.5 duration-300" size={24} />
               </div>
@@ -152,12 +146,12 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
               {/* Premium Glass Card */}
               <div className="relative h-full bg-moss/70 backdrop-blur-2xl border border-white/10 p-6 sm:p-8 rounded-[32px] flex items-center gap-5 sm:gap-6 transform group-hover:-translate-y-2 transition-all duration-500 shadow-2xl shadow-black/50 overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-400/20 to-emerald-accent/5 border border-purple-400/30 flex items-center justify-center flex-shrink-0 shadow-[inset_0_0_20px_rgba(192,132,252,0.1)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
-                  <Shield className="text-purple-400 w-7 h-7 sm:w-8 sm:h-8" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-400/20 to-emerald-accent/5 border border-purple-400/30 flex items-center justify-center flex-shrink-0 shadow-[inset_0_0_20px_rgba(192,132,252,0.1)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                  <Shield className="text-purple-400 w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
                 <div className="text-left flex-1">
-                  <h3 className="text-xl sm:text-2xl font-display font-bold text-cream mb-1">AI Health Checker</h3>
-                  <p className="text-xs sm:text-sm text-purple-400/60 font-medium leading-relaxed">Complete holistic wellness blueprint & health tracking.</p>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-display font-bold text-cream mb-1">AI Health Checker</h3>
+                  <p className="text-[11px] sm:text-sm text-purple-400/60 font-medium leading-relaxed">Complete holistic wellness blueprint & health tracking.</p>
                 </div>
                 <ChevronRight className="text-purple-400/30 group-hover:text-purple-400 transition-colors group-hover:translate-x-1.5 duration-300" size={24} />
               </div>
@@ -177,8 +171,8 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
           ].map((s, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.1 }}>
               <div className="text-emerald-accent mb-2 flex justify-center">{s.icon}</div>
-              <p className="text-3xl font-display font-bold text-cream">{s.num}</p>
-              <p className="text-xs text-emerald-accent/50 uppercase tracking-widest mt-1">{s.label}</p>
+              <p className="text-2xl sm:text-3xl font-display font-bold text-cream">{s.num}</p>
+              <p className="text-[10px] sm:text-xs text-emerald-accent/50 uppercase tracking-widest mt-1">{s.label}</p>
             </motion.div>
           ))}
         </div>
@@ -186,8 +180,8 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
 
       {/* Features Grid */}
       <section className="px-4 sm:px-6 py-20 sm:py-24 relative z-10 bg-[url('/bg-features.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/85 before:-z-10">
-        <h2 className="text-4xl font-display font-bold text-center text-cream mb-4">Everything You Need</h2>
-        <p className="text-center text-emerald-accent/60 mb-16 max-w-xl mx-auto">A complete Ayurvedic wellness platform for every aspect of your health journey.</p>
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-center text-cream mb-4">Everything You Need</h2>
+        <p className="text-sm md:text-base text-center text-emerald-accent/60 mb-12 sm:mb-16 max-w-xl mx-auto px-2">A complete Ayurvedic wellness platform for every aspect of your health journey.</p>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
           {[
             { icon: <Heart className="text-rose-400 w-10 h-10" />, title: "Vitals Tracker", desc: "Monitor heart rate, BMI, and calorie intake tailored to your specific Ayurvedic Dosha." },
@@ -205,9 +199,9 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
               transition={{ delay: i * 0.08 }}
               className="bg-moss/30 backdrop-blur-xl p-10 rounded-[40px] border border-white/5 shadow-2xl hover:border-emerald-accent/20 transition-all hover:-translate-y-2 group"
             >
-              <div className="mb-6 group-hover:scale-110 transition-transform">{f.icon}</div>
-              <h3 className="text-2xl font-display font-bold mb-3 text-cream">{f.title}</h3>
-              <p className="text-emerald-accent/60 leading-relaxed">{f.desc}</p>
+              <div className="mb-4 sm:mb-6 group-hover:scale-110 transition-transform">{f.icon}</div>
+              <h3 className="text-xl sm:text-2xl font-display font-bold mb-2 sm:mb-3 text-cream">{f.title}</h3>
+              <p className="text-xs sm:text-base text-emerald-accent/60 leading-relaxed">{f.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -215,8 +209,8 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
 
       {/* Popular Herbs Section */}
       <section className="px-4 sm:px-6 py-16 sm:py-20 border-y border-white/5 relative z-10 bg-[url('/bg-herbs.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/90 before:-z-10">
-        <h2 className="text-4xl font-display font-bold text-center text-cream mb-4">Sacred Herbs of Ayurveda</h2>
-        <p className="text-center text-emerald-accent/60 mb-16 max-w-xl mx-auto">Nature's most potent healing ingredients used in our treatment protocols.</p>
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-center text-cream mb-4">Sacred Herbs of Ayurveda</h2>
+        <p className="text-sm md:text-base text-center text-emerald-accent/60 mb-12 sm:mb-16 max-w-xl mx-auto px-2">Nature's most potent healing ingredients used in our treatment protocols.</p>
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-6">
           {[
             { name: "Ashwagandha", benefit: "Stress relief & vitality", emoji: "🌿", image: "/ashwagandha.png" },
@@ -252,8 +246,8 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
 
       {/* Testimonials */}
       <section className="px-4 sm:px-6 py-20 sm:py-24 relative z-10 bg-[url('/bg-testimonials.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/85 before:-z-10">
-        <h2 className="text-4xl font-display font-bold text-center text-cream mb-4">What Our Users Say</h2>
-        <p className="text-center text-emerald-accent/60 mb-12 sm:mb-16 max-w-xl mx-auto">Real stories from people who transformed their health with Ayurcare+.</p>
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-center text-cream mb-4">What Our Users Say</h2>
+        <p className="text-sm md:text-base text-center text-emerald-accent/60 mb-12 sm:mb-16 max-w-xl mx-auto px-2">Real stories from people who transformed their health with Ayurcare+.</p>
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             { name: "Meera K.", location: "Delhi", text: "The AI assistant diagnosed my digestive issues perfectly. The Ayurvedic diet plan worked wonders in just 2 weeks!", avatar: "M" },
@@ -290,8 +284,8 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-accent/10 text-emerald-accent text-xs font-bold mb-4 border border-emerald-accent/20">
                 <ShoppingBag size={14} /> New — Ayurvedic Shop
               </div>
-              <h2 className="text-4xl font-display font-bold text-cream mb-2">Shop Trusted Medicines</h2>
-              <p className="text-emerald-accent/60 max-w-lg">Handpicked Ayurvedic medicines from top Indian brands. Fast and trusted delivery.</p>
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-cream mb-2">Shop Trusted Medicines</h2>
+              <p className="text-sm md:text-base text-emerald-accent/60 max-w-lg">Handpicked Ayurvedic medicines from top Indian brands. Fast and trusted delivery.</p>
             </div>
             <Link to="/shop" className="mt-6 md:mt-0 text-emerald-accent font-bold text-sm hover:underline flex items-center gap-1">
               View All Medicines <ChevronRight size={16} />
@@ -351,16 +345,16 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
       {/* CTA Section */}
       <section className="px-4 sm:px-6 py-16 sm:py-20 bg-moss/30 border-t border-white/5">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl font-display font-bold text-cream mb-4">Start Your Healing Journey Today</h2>
-          <p className="text-emerald-accent/60 mb-10 text-lg">Join thousands who are balancing their doshas, tracking vitals, and consulting experts — all for free.</p>
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-cream mb-4 px-2">Start Your Healing Journey Today</h2>
+          <p className="text-sm md:text-lg text-emerald-accent/60 mb-8 md:mb-10 px-2">Join thousands who are balancing their doshas, tracking vitals, and consulting experts — all for free.</p>
           {user ? (
-            <Link to="/doctors" className="bg-emerald-accent text-forest px-10 py-5 rounded-full text-xl font-bold shadow-2xl shadow-emerald-accent/20 hover:bg-emerald-accent/90 hover:scale-105 transition-all inline-flex items-center gap-3">
+            <Link to="/doctors" className="bg-emerald-accent text-forest px-8 py-4 md:px-10 md:py-5 rounded-full text-base md:text-xl font-bold shadow-2xl shadow-emerald-accent/20 hover:bg-emerald-accent/90 hover:scale-105 transition-all inline-flex items-center gap-3">
               Browse Doctors <ChevronRight />
             </Link>
           ) : (
             <button 
               onClick={onLogin}
-              className="bg-emerald-accent text-forest px-10 py-5 rounded-full text-xl font-bold shadow-2xl shadow-emerald-accent/20 hover:bg-emerald-accent/90 hover:scale-105 transition-all inline-flex items-center gap-3"
+              className="bg-emerald-accent text-forest px-8 py-4 md:px-10 md:py-5 rounded-full text-base md:text-xl font-bold shadow-2xl shadow-emerald-accent/20 hover:bg-emerald-accent/90 hover:scale-105 transition-all inline-flex items-center gap-3 mx-auto"
             >
               Sign Up with Google <ChevronRight />
             </button>
