@@ -34,7 +34,7 @@ const TOOL_GROUPS = [
       { to: '/health-coach', label: 'AI Health Coach',   icon: Brain,         tag: 'AI',   tagColor: '#A78BFA', desc: '13-section wellness report' },
       { to: '/diagnosis',    label: 'AI Diagnosis',      icon: Sparkles,      tag: 'AI',   tagColor: '#A78BFA', desc: 'Symptom & dosha analysis' },
       { to: '/meal-analysis', label: 'AI Analyse Meal',   icon: Camera,        tag: 'AI',   tagColor: '#F97316', desc: 'Scan & analyse your meal' },
-      { to: '/chat',         label: 'AI Chat',           icon: MessageSquare, tag: 'Live', tagColor: '#10B981', desc: 'Ask anything about health' },
+      { to: '/chat',         label: 'Ayurcare Chat',           icon: MessageSquare, tag: 'Live', tagColor: '#10B981', desc: 'Ask anything about health' },
     ],
   },
   {
@@ -140,7 +140,7 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
                 { to: '/dashboard',    label: 'Dashboard',    icon: LayoutDashboard },
                 { to: '/doctors',      label: 'Consult',      icon: Stethoscope     },
                 { to: '/shop',         label: 'Shop',         icon: ShoppingBag     },
-                { to: '/chat',         label: 'AI Chat',      icon: MessageSquare   },
+                { to: '/chat',         label: 'Ayurcare Chat',      icon: MessageSquare   },
                 { to: '/health-coach', label: 'Health Coach', icon: Brain           },
                 { to: '/diagnosis',    label: 'AI Diagnosis', icon: Sparkles        },
               ].map(link => (

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Heart, Scale, Utensils, Activity, Sparkles, Brain, Target } from 'lucide-react';
+import { Heart, Scale, Utensils, Activity, Sparkles, Brain, Target, MessageCircle } from 'lucide-react';
 import { User as FirebaseUser } from 'firebase/auth';
 import { db } from '../lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';
@@ -60,6 +60,7 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
         <ToolTab active={activeTool === 'heart'} onClick={() => setActiveTool('heart')} icon={<Heart />} label="Heart Monitor" />
         <ToolTab active={activeTool === 'health-coach'} onClick={() => setActiveTool('health-coach')} icon={<Target />} label="AI Health Coach" />
         <ToolTab active={false} onClick={() => navigate('/diagnosis')} icon={<Sparkles />} label="AI Diagnosis" />
+        <ToolTab active={false} onClick={() => window.open('https://wa.me/919475002048?text=Hello%20AyurCare%2B%2C%20I%20need%20support.', '_blank', 'noopener,noreferrer')} icon={<MessageCircle />} label="WhatsApp Connect" />
       </div>
 
       <motion.div 

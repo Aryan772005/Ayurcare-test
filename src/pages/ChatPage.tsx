@@ -85,103 +85,147 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
   };
 
   return (
-    <div className="min-h-screen pt-24 px-4 pb-0 max-w-4xl mx-auto flex flex-col h-screen">
-      <div className="fixed inset-0 -z-10" style={{backgroundImage: "url('/bg-page-dash.png')", backgroundSize: 'cover', backgroundPosition: 'center'}}>
-        <div className="absolute inset-0" style={{background: 'linear-gradient(135deg, rgba(5,10,15,0.94) 0%, rgba(2,10,8,0.92) 100%)'}} />
-      </div>
-      <header className="mb-6 mt-4 text-center shrink-0">
-        <h1 className="text-3xl font-display font-bold text-cream">AI Ayurvedic Assistant</h1>
-        <p className="text-emerald-accent/60 text-sm">Ask me about your health, diet, or Ayurvedic remedies</p>
+    <div className="h-screen w-full flex flex-col bg-[#121212] pt-[72px] relative overflow-hidden text-cream">
+      {/* Background that fits AyurCare theme but sleek */}
+      <div className="absolute inset-0 -z-10" style={{background: 'linear-gradient(180deg, #0f1714 0%, #080c0a 100%)'}} />
+      
+      {/* Sleek Header */}
+      <header className="w-full shrink-0 flex items-center justify-center py-4 border-b border-white/5 bg-[#0a0f0d]/90 backdrop-blur-md z-40 relative">
+        <div className="flex flex-col items-center gap-1">
+           <h1 className="text-xl font-bold font-display tracking-wide text-cream flex items-center gap-2">
+             <Sparkles size={18} className="text-emerald-accent" /> Ayurcare Chat
+           </h1>
+           <p className="text-[10px] text-emerald-accent/60 uppercase tracking-widest">Powered by AI Health Coach</p>
+        </div>
       </header>
 
-      <div className="flex-1 bg-moss/20 border border-white/5 rounded-t-[40px] p-4 md:p-8 flex flex-col overflow-hidden relative shadow-2xl">
-        <div className="flex-1 overflow-y-auto space-y-6 pr-2 scrollbar-hide">
-          {messages.map((msg, i) => (
-            <div key={i} className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-emerald-accent/20 text-emerald-accent' : 'bg-blue-400/20 text-blue-400'}`}>
-                {msg.role === 'user' ? <UserIcon size={18} /> : <Sparkles size={18} />}
+      {/* Main chat area edge-to-edge */}
+      <div className="flex-1 w-full max-w-3xl mx-auto overflow-y-auto px-4 sm:px-6 pt-6 pb-32 scrollbar-hide flex flex-col relative z-0">
+        
+        {messages.map((msg, i) => (
+          <div key={i} className={`flex w-full mb-6 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            {msg.role === 'assistant' && (
+              <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-[#1a2e22] text-emerald-accent border border-[#234230] mt-1 mr-3 md:mr-4">
+                <Sparkles size={16} />
               </div>
-              <div className={`max-w-[80%] ${msg.role === 'user' ? '' : ''}`}>
-                {/* Attachment Previews */}
-                {msg.attachments && msg.attachments.length > 0 && (
-                  <div className={`flex gap-2 mb-2 flex-wrap ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    {msg.attachments.map((att, j) => (
-                      <div key={j} className="rounded-xl overflow-hidden border border-white/10">
-                        {att.type === 'image' && att.preview ? (
-                          <img src={att.preview} alt={att.name} className="w-32 h-32 object-cover" />
-                        ) : (
-                          <div className="flex items-center gap-2 bg-forest/60 px-3 py-2 text-xs text-cream">
-                            <FileText size={14} className="text-emerald-accent" /> {att.name}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <div className={`p-4 rounded-2xl whitespace-pre-wrap ${msg.role === 'user' ? 'bg-emerald-accent text-forest font-medium rounded-tr-none' : 'bg-forest/60 text-cream border border-white/5 shadow-md rounded-tl-none leading-relaxed'}`}>
+            )}
+            
+            <div className={`max-w-[85%] md:max-w-[75%] ${msg.role === 'user' ? '' : 'text-cream/90 flex-1 min-w-0'}`}>
+              
+              {/* Attachment Previews */}
+              {msg.attachments && msg.attachments.length > 0 && (
+                <div className={`flex gap-2 mb-2 flex-wrap ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  {msg.attachments.map((att, j) => (
+                    <div key={j} className="rounded-2xl overflow-hidden border border-white/10 shadow-lg">
+                      {att.type === 'image' && att.preview ? (
+                        <img src={att.preview} alt={att.name} className="w-32 h-32 md:w-48 md:h-48 object-cover" />
+                      ) : (
+                        <div className="flex items-center gap-2 bg-[#2a2a2a] px-3 py-2 text-xs text-cream">
+                          <FileText size={14} className="text-emerald-accent" /> {att.name}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Message Bubble/Text */}
+              {msg.role === 'user' ? (
+                <div className="bg-[#2a2a2a] text-cream px-5 py-3 rounded-2xl rounded-tr-sm whitespace-pre-wrap leading-relaxed inline-block max-w-full text-[15px]">
                   {msg.content}
                 </div>
-              </div>
+              ) : (
+                <div className="py-2 whitespace-pre-wrap leading-relaxed w-full text-[15px]">
+                  {msg.content}
+                </div>
+              )}
+              
             </div>
-          ))}
-          {isLoading && (
-            <div className="flex gap-4 flex-row">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-blue-400/20 text-blue-400">
-                <Sparkles size={18} className="animate-spin" />
-              </div>
-              <div className="p-4 rounded-2xl bg-forest/40 border border-white/5 flex gap-2 items-center">
-                <span className="w-2 h-2 rounded-full bg-emerald-accent/60 animate-bounce" />
-                <span className="w-2 h-2 rounded-full bg-emerald-accent/60 animate-bounce delay-75" />
-                <span className="w-2 h-2 rounded-full bg-emerald-accent/60 animate-bounce delay-150" />
-              </div>
+          </div>
+        ))}
+        
+        {isLoading && (
+          <div className="flex w-full mb-6 justify-start">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-[#1a2e22] text-emerald-accent border border-[#234230] mt-1 mr-3 md:mr-4">
+              <Sparkles size={16} className="animate-spin-slow" />
             </div>
-          )}
-          <div ref={endRef} />
-        </div>
-
-        {/* Attachment Preview Strip */}
-        {attachments.length > 0 && (
-          <div className="flex gap-2 pt-3 flex-wrap">
-            {attachments.map((att, i) => (
-              <div key={i} className="relative group">
-                {att.preview ? (
-                  <img src={att.preview} alt="" className="w-16 h-16 rounded-xl object-cover border border-white/10" />
-                ) : (
-                  <div className="w-16 h-16 rounded-xl bg-forest/60 border border-white/10 flex items-center justify-center">
-                    <FileText size={20} className="text-emerald-accent/60" />
-                  </div>
-                )}
-                <button onClick={() => removeAttachment(i)} className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <X size={12} className="text-white" />
-                </button>
-              </div>
-            ))}
+            <div className="flex-1 flex gap-1.5 items-center pl-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-accent/60 animate-bounce" />
+              <span className="w-2 h-2 rounded-full bg-emerald-accent/60 animate-bounce delay-75" />
+              <span className="w-2 h-2 rounded-full bg-emerald-accent/60 animate-bounce delay-150" />
+            </div>
           </div>
         )}
+        <div ref={endRef} />
+      </div>
 
-        <div className="mt-4 pt-4 border-t border-white/5 flex gap-3 shrink-0 items-end">
-          {/* Hidden file input */}
-          <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.txt,.doc,.docx" onChange={handleFileSelect} className="hidden" />
+      {/* Input Area Fixed at Bottom */}
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#080c0a] via-[#080c0a]/95 to-transparent pt-12 pb-6 px-4 z-40 w-full flex justify-center">
+        
+        <div className="w-full max-w-3xl relative">
           
-          <button onClick={() => fileRef.current?.click()} className="w-12 h-14 rounded-2xl bg-forest/60 border border-white/10 flex items-center justify-center text-emerald-accent/60 hover:text-emerald-accent hover:border-emerald-accent/30 transition-colors shrink-0" title="Attach files">
-            <Paperclip size={20} />
-          </button>
+          {/* Attachment Preview Strip above input */}
+          {attachments.length > 0 && (
+            <div className="flex gap-2 pb-3 flex-wrap">
+              {attachments.map((att, i) => (
+                <div key={i} className="relative group shadow-lg">
+                  {att.preview ? (
+                    <img src={att.preview} alt="" className="w-14 h-14 rounded-2xl object-cover border border-white/10" />
+                  ) : (
+                    <div className="w-14 h-14 rounded-2xl bg-[#2a2a2a] border border-white/10 flex items-center justify-center">
+                      <FileText size={20} className="text-cream" />
+                    </div>
+                  )}
+                  <button onClick={() => removeAttachment(i)} className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-black border border-white/20 rounded-full flex items-center justify-center">
+                    <X size={10} className="text-white" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="flex items-end gap-2 bg-[#2a2a2a] border border-white/10 rounded-3xl p-2 w-full focus-within:border-emerald-accent/50 focus-within:bg-[#303030] transition-colors shadow-xl">
+            {/* Hidden file input */}
+            <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.txt,.doc,.docx" onChange={handleFileSelect} className="hidden" />
+            
+            <button 
+              onClick={() => fileRef.current?.click()} 
+              className="w-10 h-10 rounded-full flex items-center justify-center text-cream/60 hover:text-white bg-white/5 hover:bg-white/10 transition-colors shrink-0 mb-1 ml-1" 
+              title="Attach files"
+            >
+              <Paperclip size={18} />
+            </button>
+            
+            <textarea 
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }}}
+              placeholder="Message Ayurcare Chat..."
+              className="flex-1 bg-transparent border-none p-3 text-[15px] text-cream outline-none resize-none min-h-[46px] max-h-[150px] overflow-y-auto"
+              rows={1}
+              style={{
+                 height: "46px"
+              }}
+              onInput={(e) => {
+                 const target = e.target as HTMLTextAreaElement;
+                 target.style.height = "46px";
+                 target.style.height = Math.min(target.scrollHeight, 150) + "px";
+              }}
+            />
+            
+            <button 
+              onClick={handleSend}
+              disabled={isLoading || (!input.trim() && attachments.length === 0)}
+              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 mb-1 mr-1 transition-all disabled:opacity-30 disabled:bg-white/10 disabled:text-cream text-forest bg-white"
+            >
+              <Send size={18} />
+            </button>
+          </div>
           
-          <textarea 
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }}}
-            placeholder="Type your symptoms or questions..."
-            className="flex-1 bg-forest/60 border border-white/10 rounded-2xl p-4 text-cream focus:border-emerald-accent outline-none resize-none h-14"
-            rows={1}
-          />
-          <button 
-            onClick={handleSend}
-            disabled={isLoading || (!input.trim() && attachments.length === 0)}
-            className="bg-emerald-accent text-forest w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg disabled:opacity-50 hover:bg-emerald-accent/90 shrink-0"
-          >
-            <Send size={20} />
-          </button>
+          <p className="text-center text-[10px] text-cream/40 mt-3 hidden md:block">
+            Ayurcare Chat can make mistakes. Consider verifying important Ayurvedic and medical advice.
+          </p>
+
         </div>
       </div>
     </div>

@@ -25,6 +25,7 @@ export default function FloatingWhatsAppButton() {
 
   return (
     <div
+      className="hidden md:flex flex-col items-start gap-[10px]"
       style={{
         position: 'fixed',
         bottom: '28px',
@@ -33,10 +34,6 @@ export default function FloatingWhatsAppButton() {
         transform: visible ? 'translateY(0)' : 'translateY(120px)',
         opacity: visible ? 1 : 0,
         transition: 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        gap: '10px',
       }}
     >
       {/* Round floating WhatsApp button */}

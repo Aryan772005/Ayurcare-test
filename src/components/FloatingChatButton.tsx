@@ -80,7 +80,7 @@ export default function FloatingChatButton() {
               letterSpacing: '0.01em',
             }}
           >
-            Chat with AI
+            Ayurcare Chat
           </span>
           <span
             style={{
@@ -140,7 +140,7 @@ export default function FloatingChatButton() {
         }}
         onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
         onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-        title="Chat with AI"
+        title="Ayurcare Chat"
       >
         <MessageCircle style={{ color: '#052e16', width: '24px', height: '24px' }} />
       </button>
