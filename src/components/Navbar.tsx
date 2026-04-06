@@ -95,12 +95,12 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
   return (
     <>
       {/* ── Main Navbar ── */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'py-3 bg-forest/90 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/10' : 'py-5 bg-transparent'}`}>
+      <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'py-3 bg-forest/90 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/10' : 'py-3 sm:py-5 bg-transparent'}`}>
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 xl:px-10">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between sm:justify-start gap-4">
 
             {/* LEFT: Hamburger + Logo — shrink-0 so it never gets squished */}
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               {/* All Tools Trigger */}
               <button
                 onClick={() => setShowPanel(true)}

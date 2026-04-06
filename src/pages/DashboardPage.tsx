@@ -241,7 +241,7 @@ export default function DashboardPage({ user }: { user: FirebaseUser | null }) {
       </motion.div>
 
       {/* Tab Bar */}
-      <motion.div {...fadeUp(0.05)} className="flex gap-1 mb-8 p-1 rounded-2xl bg-forest/60 border border-white/5 backdrop-blur-md w-fit">
+      <motion.div {...fadeUp(0.05)} className="flex flex-nowrap gap-1 mb-6 sm:mb-8 p-1 rounded-2xl bg-forest/60 border border-white/5 backdrop-blur-md w-full sm:w-fit overflow-x-auto scrollbar-hide">
         {TABS.map(t => (
           <button
             key={t.id}

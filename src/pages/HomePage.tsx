@@ -35,7 +35,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-6xl md:text-8xl lg:text-9xl font-display font-bold text-gradient leading-tight mb-8"
+            className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-display font-bold text-gradient leading-tight mb-8"
           >
             Ayurcare<span className="text-emerald-accent">+</span>
           </motion.h1>
@@ -167,8 +167,8 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
       </section>
 
       {/* Stats Bar */}
-      <section className="py-12 px-6 bg-moss/30 border-y border-white/5">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <section className="py-12 px-4 sm:px-6 bg-moss/30 border-y border-white/5">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 text-center">
           {[
             { num: "8+", label: "Expert Doctors", icon: <Users size={20} /> },
             { num: "Trusted", label: "Platform", icon: <Shield size={20} /> },
@@ -185,7 +185,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
       </section>
 
       {/* Features Grid */}
-      <section className="px-6 py-24 relative z-10 bg-[url('/bg-features.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/85 before:-z-10">
+      <section className="px-4 sm:px-6 py-20 sm:py-24 relative z-10 bg-[url('/bg-features.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/85 before:-z-10">
         <h2 className="text-4xl font-display font-bold text-center text-cream mb-4">Everything You Need</h2>
         <p className="text-center text-emerald-accent/60 mb-16 max-w-xl mx-auto">A complete Ayurvedic wellness platform for every aspect of your health journey.</p>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -214,10 +214,10 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
       </section>
 
       {/* Popular Herbs Section */}
-      <section className="px-6 py-20 border-y border-white/5 relative z-10 bg-[url('/bg-herbs.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/90 before:-z-10">
+      <section className="px-4 sm:px-6 py-16 sm:py-20 border-y border-white/5 relative z-10 bg-[url('/bg-herbs.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/90 before:-z-10">
         <h2 className="text-4xl font-display font-bold text-center text-cream mb-4">Sacred Herbs of Ayurveda</h2>
         <p className="text-center text-emerald-accent/60 mb-16 max-w-xl mx-auto">Nature's most potent healing ingredients used in our treatment protocols.</p>
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-6">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-6">
           {[
             { name: "Ashwagandha", benefit: "Stress relief & vitality", emoji: "🌿", image: "/ashwagandha.png" },
             { name: "Turmeric", benefit: "Anti-inflammatory", emoji: "🟡", image: "/turmeric.png" },
@@ -251,9 +251,9 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
       </section>
 
       {/* Testimonials */}
-      <section className="px-6 py-24 relative z-10 bg-[url('/bg-testimonials.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/85 before:-z-10">
+      <section className="px-4 sm:px-6 py-20 sm:py-24 relative z-10 bg-[url('/bg-testimonials.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/85 before:-z-10">
         <h2 className="text-4xl font-display font-bold text-center text-cream mb-4">What Our Users Say</h2>
-        <p className="text-center text-emerald-accent/60 mb-16 max-w-xl mx-auto">Real stories from people who transformed their health with Ayurcare+.</p>
+        <p className="text-center text-emerald-accent/60 mb-12 sm:mb-16 max-w-xl mx-auto">Real stories from people who transformed their health with Ayurcare+.</p>
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             { name: "Meera K.", location: "Delhi", text: "The AI assistant diagnosed my digestive issues perfectly. The Ayurvedic diet plan worked wonders in just 2 weeks!", avatar: "M" },
@@ -283,7 +283,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
       </section>
 
       {/* Featured Medicines — Shop Promo */}
-      <section className="px-6 py-24 border-y border-white/5 relative z-10 bg-[url('/bg-shop.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/90 before:-z-10">
+      <section className="px-4 sm:px-6 py-20 sm:py-24 border-y border-white/5 relative z-10 bg-[url('/bg-shop.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/90 before:-z-10">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
             <div>
@@ -349,7 +349,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
       </section>
 
       {/* CTA Section */}
-      <section className="px-6 py-20 bg-moss/30 border-t border-white/5">
+      <section className="px-4 sm:px-6 py-16 sm:py-20 bg-moss/30 border-t border-white/5">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-4xl font-display font-bold text-cream mb-4">Start Your Healing Journey Today</h2>
           <p className="text-emerald-accent/60 mb-10 text-lg">Join thousands who are balancing their doshas, tracking vitals, and consulting experts — all for free.</p>
