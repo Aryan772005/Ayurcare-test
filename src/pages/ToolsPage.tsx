@@ -192,12 +192,12 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
                   className={`group w-full text-left relative p-5 rounded-3xl transition-all duration-400 overflow-hidden border ${
                     activeTool === tool.id && isInline
                       ? 'border-emerald-accent/40 scale-[0.98]'
-                      : 'border-white/[0.07] hover:border-white/[0.15] hover:-translate-y-0.5'
+                      : 'border-cream/[0.07] hover:border-cream/[0.15] hover:-translate-y-0.5'
                   }`}
                   style={{
                     background: activeTool === tool.id && isInline
                       ? `${tool.glow}`
-                      : 'rgba(10,15,13,0.45)',
+                      : 'var(--bg-card-subtle)',
                     backdropFilter: 'blur(20px)',
                     WebkitBackdropFilter: 'blur(20px)',
                   }}
@@ -251,9 +251,9 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.97 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="max-w-2xl mx-auto rounded-3xl p-7 md:p-10 border border-white/[0.08]"
+              className="max-w-2xl mx-auto rounded-3xl p-7 md:p-10 border border-cream/[0.08]"
               style={{
-                background: 'rgba(10,15,13,0.60)',
+                background: 'var(--bg-card)',
                 backdropFilter: 'blur(32px)',
                 WebkitBackdropFilter: 'blur(32px)',
               }}
@@ -300,7 +300,7 @@ function BMITool() {
     setResult({ val: bmi.toFixed(1), category, dosha, desc, color });
   };
 
-  const inputClass = "w-full p-4 rounded-2xl border border-white/[0.08] bg-white/[0.04] text-cream placeholder-cream/30 focus:border-emerald-accent/50 focus:outline-none transition-colors";
+  const inputClass = "w-full p-4 rounded-2xl border border-cream/[0.08] bg-moss/20 text-cream placeholder-cream/30 focus:border-emerald-accent/50 focus:outline-none transition-colors";
 
   return (
     <div>
@@ -407,7 +407,7 @@ function HeartTool({ user }: { user: FirebaseUser | null }) {
       <div className="relative mb-5">
         <input type="number" value={heartRate} onChange={e => setHeartRate(e.target.value)}
           placeholder="0" maxLength={3}
-          className="w-full text-center font-display font-bold text-cream py-8 rounded-3xl border border-white/[0.08] bg-white/[0.04] focus:border-rose-400/40 focus:outline-none transition-colors"
+          className="w-full text-center font-display font-bold text-cream py-8 rounded-3xl border border-cream/[0.08] bg-moss/20 focus:border-rose-400/40 focus:outline-none transition-colors"
           style={{ fontSize: 'clamp(3rem, 10vw, 5rem)', letterSpacing: '-0.05em' }} />
         <span className="absolute bottom-5 right-8 text-cream/20 font-bold text-sm tracking-widest">BPM</span>
       </div>
@@ -457,7 +457,7 @@ function CalorieTool() {
 
       <input type="text" value={query} onChange={e => setQuery(e.target.value)}
         placeholder="Search... Dal, Biryani, Pitta, Sweet..."
-        className="w-full p-4 rounded-2xl border border-white/[0.08] bg-white/[0.04] text-cream placeholder-cream/30 focus:border-amber-400/40 focus:outline-none transition-colors mb-4" />
+        className="w-full p-4 rounded-2xl border border-cream/[0.08] bg-moss/20 text-cream placeholder-cream/30 focus:border-amber-400/40 focus:outline-none transition-colors mb-4" />
 
       {/* Quick tags */}
       <div className="flex flex-wrap gap-1.5 mb-5">
@@ -466,7 +466,7 @@ function CalorieTool() {
             className="text-[11px] px-2.5 py-1 rounded-full border transition-colors"
             style={query === tag
               ? { background: 'rgba(251,191,36,0.2)', borderColor: 'rgba(251,191,36,0.4)', color: '#FBBF24' }
-              : { background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)', color: 'rgba(248,250,252,0.5)' }
+              : { background: 'var(--bg-card-subtle)', borderColor: 'var(--color-moss)', color: 'var(--color-cream)' }
             }>
             {tag}
           </button>
@@ -476,7 +476,7 @@ function CalorieTool() {
       <div className="space-y-2 max-h-72 overflow-y-auto pr-1" style={{ scrollbarWidth: 'none' }}>
         {filtered.map((f, i) => (
           <motion.div key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.02 }}
-            className="flex items-center justify-between p-3.5 rounded-2xl border border-white/[0.06] bg-white/[0.03] hover:border-amber-400/20 transition-colors">
+            className="flex items-center justify-between p-3.5 rounded-2xl border border-cream/[0.06] bg-moss/10 hover:border-amber-400/20 transition-colors">
             <div>
               <p className="font-bold text-cream text-sm">{f.name}</p>
               <p className="text-[11px] text-amber-400/70 mt-0.5">{f.type}</p>
