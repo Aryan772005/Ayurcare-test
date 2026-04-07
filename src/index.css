@@ -12,20 +12,116 @@
   --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
 }
 
+/* ─────────────────────────────────────────────
+   LIGHT MODE — Premium Clean White Theme
+────────────────────────────────────────────── */
 .light-mode {
-  --color-forest: #F8FAFC; /* Cool Slate 50 background */
-  --color-moss: #E2E8F0; /* Slate 200 for cards/glass */
-  --color-cream: #0F172A; /* Slate 900 for dark text */
-  --color-emerald-accent: #059669; /* Darker Emerald 600 for contrast against light bg */
+  --color-forest: #FFFFFF;          /* Pure white page background */
+  --color-moss:   #F1F5F9;          /* Slate-100 card surface     */
+  --color-cream:  #0F172A;          /* Slate-900 dark text        */
+  --color-emerald-accent: #059669;  /* Emerald-600 for contrast   */
+
+  /* Theme-aware surface tokens */
+  --bg-card:       rgba(255, 255, 255, 0.92);
+  --bg-card-subtle:rgba(248, 250, 252, 0.75);
+  --bg-stats:      rgba(248, 250, 252, 0.98);
+  --bg-page-overlay: rgba(255, 255, 255, 0.92);
+  --border-card:   rgba(0, 0, 0, 0.07);
+  --shadow-card:   0 4px 24px rgba(0, 0, 0, 0.06);
 }
 
-/* Fix for forced dark background images in light mode */
-.light-mode .fixed.inset-0.-z-10 {
-  background-image: none !important;
-  background-color: var(--color-forest) !important;
+/* ─── Dark mode surface tokens (default) ─── */
+:root {
+  --bg-card:        rgba(19, 28, 24, 0.55);
+  --bg-card-subtle: rgba(19, 28, 24, 0.35);
+  --bg-stats:       rgba(19, 28, 24, 0.75);
+  --bg-page-overlay:rgba(10, 15, 13, 0.88);
+  --border-card:    rgba(255, 255, 255, 0.06);
+  --shadow-card:    none;
 }
+
+/* ─────────────────────────────────────────────
+   REUSABLE THEME-AWARE SURFACE CLASSES
+   Use these instead of hardcoded rgba() inline styles
+────────────────────────────────────────────── */
+.card-surface {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-card);
+}
+.card-surface-subtle {
+  background: var(--bg-card-subtle);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-card);
+}
+.stats-surface {
+  background: var(--bg-stats);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.page-bg-overlay {
+  background: var(--bg-page-overlay);
+}
+
+/* ─── Light mode: hide dark-background images behind pages ─── */
+.light-mode section[style*="bg-herbs"],
+.light-mode section[style*="bg-shop"] {
+  opacity: 0 !important;
+}
+
+/* ─── Light mode: force fixed-bg overlays to white ─── */
+.light-mode .fixed.inset-0.-z-10,
 .light-mode .fixed.inset-0.-z-10 > div {
-  background: none !important;
+  background: white !important;
+  background-image: none !important;
+}
+
+/* ─── Light mode: Card inner borders look clean ─── */
+.light-mode .card-surface,
+.light-mode .card-surface-subtle {
+  border-color: rgba(0, 0, 0, 0.07) !important;
+}
+
+/* ─── Light mode: fix text-gradient for contrast ─── */
+.light-mode .text-gradient {
+  background: linear-gradient(to right, #059669, #10B981);
+}
+
+/* ─── Light mode: Chat page surfaces ─── */
+.light-mode .chat-surface {
+  background: #FFFFFF;
+  border-color: #E2E8F0 !important;
+}
+.light-mode .chat-input-surface {
+  background: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+.light-mode .chat-user-bubble {
+  background: #E2E8F0 !important;
+}
+.light-mode .chat-header {
+  background: rgba(255,255,255,0.95) !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* ─── Light mode: Navbar ─── */
+.light-mode nav {
+  border-color: rgba(0,0,0,0.06) !important;
+}
+.light-mode nav a, .light-mode nav button {
+  color: var(--color-cream);
+}
+
+/* ─── Light mode: Hero video overlay adjust ─── */
+.light-mode .hero-video-overlay-b {
+  background: linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, transparent 40%, rgba(255,255,255,0.97) 100%) !important;
+}
+.light-mode .hero-video-overlay-r {
+  background: linear-gradient(to right, rgba(255,255,255,0.2) 0%, transparent 50%, rgba(255,255,255,0.2) 100%) !important;
 }
 
 /* ─── Base styles ─── */

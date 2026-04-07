@@ -150,7 +150,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
       {/* ════════════════════════════════════════
           STATS BAR
       ════════════════════════════════════════ */}
-      <section className="relative z-10 py-7 border-y border-white/5" style={{ background: 'rgba(19,28,24,0.7)', backdropFilter: 'blur(20px)' }}>
+      <section className="relative z-10 py-7 border-y border-cream/[0.08] stats-surface">
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 px-6 text-center">
           {[
             { num: '8+',      label: 'Expert Doctors'   },
@@ -201,8 +201,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
                 initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.07 }}>
                 <Link to={tool.to}
-                  className="group relative flex flex-col h-full p-6 rounded-3xl border border-white/[0.06] overflow-hidden transition-all duration-500 hover:-translate-y-1.5 hover:border-white/[0.12]"
-                  style={{ background: 'rgba(19,28,24,0.5)', backdropFilter: 'blur(20px)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)' }}
+                  className="card-surface group relative flex flex-col h-full p-6 rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-1.5 hover:border-white/[0.12]"
                 >
                   {/* Hover radial glow */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"
@@ -298,8 +297,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
               <motion.div key={i}
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                className="relative p-6 rounded-3xl border border-white/[0.06] overflow-hidden"
-                style={{ background: 'rgba(19,28,24,0.5)', backdropFilter: 'blur(16px)' }}
+                className="card-surface-subtle relative p-6 rounded-3xl overflow-hidden"
               >
                 <Quote size={30} className="absolute top-5 right-5 text-white/[0.04]" />
                 <p className="text-cream/65 text-sm leading-relaxed mb-6 italic">"{t.text}"</p>
@@ -354,8 +352,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
               <motion.div key={i}
                 initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.09 }}
-                className="group rounded-3xl overflow-hidden border border-white/[0.06] hover:border-emerald-accent/20 transition-all duration-500 hover:-translate-y-1.5"
-                style={{ background: 'rgba(19,28,24,0.6)', backdropFilter: 'blur(16px)' }}
+                className="card-surface-subtle group rounded-3xl overflow-hidden hover:border-emerald-accent/20 transition-all duration-500 hover:-translate-y-1.5"
               >
                 <div className="relative aspect-square overflow-hidden">
                   <img src={med.image} alt={med.name}

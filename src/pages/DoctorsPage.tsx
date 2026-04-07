@@ -16,7 +16,7 @@ export default function DoctorsPage({ user }: { user: FirebaseUser | null }) {
   return (
     <div className="min-h-screen pt-24 px-6 pb-20 max-w-7xl mx-auto">
       <div className="fixed inset-0 -z-10" style={{backgroundImage: "url('/bg-page-shop.png')", backgroundSize: 'cover', backgroundPosition: 'center'}}>
-        <div className="absolute inset-0" style={{background: 'linear-gradient(135deg, rgba(10,15,13,0.92) 0%, rgba(5,30,20,0.88) 100%)'}} />
+        <div className="absolute inset-0 page-bg-overlay" />
       </div>
       <header className="mb-12 text-center max-w-2xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-cream mb-4">Ayurvedic Experts</h1>

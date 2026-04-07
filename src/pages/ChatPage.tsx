@@ -86,11 +86,11 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
 
   return (
     <div className="h-screen w-full flex flex-col bg-forest pt-[72px] relative overflow-hidden text-cream">
-      {/* Background that fits AyurCare theme but sleek */}
+      {/* Background */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-moss to-forest" />
       
       {/* Sleek Header */}
-      <header className="w-full shrink-0 flex items-center justify-center py-4 border-b border-cream/5 bg-forest/90 backdrop-blur-md z-40 relative">
+      <header className="chat-header w-full shrink-0 flex items-center justify-center py-4 border-b border-cream/[0.08] bg-forest/90 backdrop-blur-md z-40 relative">
         <div className="flex flex-col items-center gap-1">
            <h1 className="text-xl font-bold font-display tracking-wide text-cream flex items-center gap-2">
              <Sparkles size={18} className="text-emerald-accent" /> Ayurcare Chat
@@ -131,7 +131,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
               
               {/* Message Bubble/Text */}
               {msg.role === 'user' ? (
-                <div className="bg-moss text-cream px-5 py-3 rounded-2xl rounded-tr-sm whitespace-pre-wrap leading-relaxed inline-block max-w-full text-[15px] border border-cream/5">
+                <div className="chat-user-bubble bg-moss text-cream px-5 py-3 rounded-2xl rounded-tr-sm whitespace-pre-wrap leading-relaxed inline-block max-w-full text-[15px] border border-cream/[0.08]">
                   {msg.content}
                 </div>
               ) : (
@@ -160,7 +160,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
       </div>
 
       {/* Input Area Fixed at Bottom */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-forest via-forest/95 to-transparent pt-12 pb-6 px-4 z-40 w-full flex justify-center">
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-forest via-forest/95 to-transparent pt-12 pb-6 px-4 z-40 w-full flex justify-center chat-surface">
         
         <div className="w-full max-w-3xl relative">
           
@@ -184,7 +184,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
             </div>
           )}
 
-          <div className="flex items-end gap-2 bg-moss border border-cream/10 rounded-3xl p-2 w-full focus-within:border-emerald-accent/50 focus-within:bg-moss/90 transition-colors shadow-xl">
+          <div className="chat-input-surface flex items-end gap-2 bg-moss border border-cream/[0.08] rounded-3xl p-2 w-full focus-within:border-emerald-accent/50 transition-colors shadow-xl">
             {/* Hidden file input */}
             <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.txt,.doc,.docx" onChange={handleFileSelect} className="hidden" />
             

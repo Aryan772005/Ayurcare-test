@@ -272,7 +272,7 @@ export default function ShopPage({ user, onLogin }: { user: FirebaseUser | null,
   return (
     <div className="min-h-screen pt-20 pb-10 md:pt-24 md:pb-20 px-4 md:px-6 relative overflow-hidden">
       <div className="fixed inset-0 -z-10 bg-cover bg-center bg-scroll bg-no-repeat" style={{ backgroundImage: "url('/bg-page-shop.png')" }}>
-        <div className="absolute inset-0" style={{ background: 'rgba(10,15,13,0.88)' }} />
+        <div className="absolute inset-0 page-bg-overlay" />
       </div>
 
       {/* ── Checkout Confirmation Modal ── */}
