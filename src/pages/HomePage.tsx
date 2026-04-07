@@ -1,341 +1,386 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Sparkles, Heart, Calendar, ChevronRight, Star, Users, Award, Leaf, Quote, Shield, ShoppingBag, ExternalLink } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import {
+  Sparkles, Heart, Calendar, ChevronRight, Star, Users, Award,
+  Leaf, Quote, Shield, ShoppingBag, ExternalLink, ArrowRight,
+  Brain, Camera, Stethoscope, Zap, Play, Volume2, VolumeX
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function HomePage({ onLogin, user }: { onLogin: () => void, user: any }) {
-  return (
-    <div className="min-h-screen bg-forest overflow-hidden relative">
-      {/* Decorative background */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.08, 0.15, 0.08] }}
-          transition={{ duration: 10, repeat: Infinity }}
-          className="absolute -top-1/4 -left-1/4 w-full h-full bg-emerald-accent/10 rounded-full blur-[120px]" 
-        />
-        <motion.div 
-          animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.1, 0.05] }}
-          transition={{ duration: 14, repeat: Infinity, delay: 3 }}
-          className="absolute -bottom-1/4 -right-1/4 w-3/4 h-3/4 bg-emerald-accent/5 rounded-full blur-[150px]" 
-        />
-      </div>
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const [muted, setMuted] = useState(true);
 
-      {/* Hero Section */}
-      <section className="relative pt-20 pb-10 md:pt-28 md:pb-28 px-4 md:px-6">
-        <div className="max-w-7xl mx-auto text-center">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-emerald-accent/10 text-emerald-accent text-xs md:text-sm font-bold mb-6 md:mb-8 border border-emerald-accent/20"
+  const { scrollYProgress } = useScroll({ target: heroRef });
+  const heroOpacity  = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
+  const heroScale    = useTransform(scrollYProgress, [0, 0.55], [1, 1.1]);
+  const heroTextY    = useTransform(scrollYProgress, [0, 0.4],  [0, -50]);
+
+  const toggleMute = () => {
+    setMuted(m => {
+      const next = !m;
+      if (videoRef.current) videoRef.current.muted = next;
+      return next;
+    });
+  };
+
+  const tools = [
+    { to: '/diagnosis',    label: 'AI Diagnosis',   icon: Sparkles,    color: '#10B981', glow: 'rgba(16,185,129,0.25)',  desc: 'Symptom & dosha analysis' },
+    { to: '/health-coach', label: 'Health Coach',   icon: Brain,       color: '#A78BFA', glow: 'rgba(167,139,250,0.25)', desc: '13-section wellness report' },
+    { to: '/meal-analysis',label: 'Meal Analyser',  icon: Camera,      color: '#F97316', glow: 'rgba(249,115,22,0.25)',  desc: 'Scan & analyse your food' },
+    { to: '/doctors',      label: 'Expert Doctors', icon: Stethoscope, color: '#60A5FA', glow: 'rgba(96,165,250,0.25)',  desc: 'Consult Ayurvedic doctors for ₹1' },
+    { to: '/chat',         label: 'Ayurcare Chat',  icon: Leaf,        color: '#34D399', glow: 'rgba(52,211,153,0.25)',  desc: 'Ask anything about your health' },
+    { to: '/shop',         label: 'Herbal Shop',    icon: ShoppingBag, color: '#FBBF24', glow: 'rgba(251,191,36,0.25)',  desc: 'Trusted Ayurvedic products' },
+  ];
+
+  const herbs = [
+    { name: 'Ashwagandha', benefit: 'Stress Relief',     emoji: '🌿', image: '/ashwagandha.png' },
+    { name: 'Turmeric',    benefit: 'Anti-inflammatory', emoji: '🟡', image: '/turmeric.png'    },
+    { name: 'Tulsi',       benefit: 'Immunity Boost',    emoji: '🍃', image: '/tulsi.png'       },
+    { name: 'Triphala',    benefit: 'Digestive Health',  emoji: '🫐', image: '/triphala.png'    },
+    { name: 'Brahmi',      benefit: 'Brain & Memory',    emoji: '🧠', image: '/brahmi.png'      },
+  ];
+
+  return (
+    <div className="min-h-screen bg-forest text-cream overflow-x-hidden">
+
+      {/* ════════════════════════════════════════
+          CINEMATIC HERO — Full-bleed video
+      ════════════════════════════════════════ */}
+      <section ref={heroRef} className="relative h-screen min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
+
+        {/* Video layer with scroll-zoom  */}
+        <motion.div style={{ scale: heroScale, opacity: heroOpacity }} className="absolute inset-0 z-0">
+          <video
+            ref={videoRef}
+            autoPlay loop muted playsInline preload="auto"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ transform: 'translateZ(0)' }}
           >
-            <Sparkles size={14} className="md:w-4 md:h-4" /> Premium Holistic Wellness
+            <source src="/hero-video.mp4" type="video/mp4" />
+          </video>
+
+          {/* Layered overlays for cinematic depth */}
+          <div className="absolute inset-0 bg-gradient-to-b from-forest/70 via-transparent to-forest" />
+          <div className="absolute inset-0 bg-gradient-to-r from-forest/40 via-transparent to-forest/40" />
+          {/* Film-grain scanline texture */}
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.05) 2px, rgba(255,255,255,0.05) 4px)',
+          }} />
+        </motion.div>
+
+        {/* Mute toggle */}
+        <button
+          onClick={toggleMute}
+          className="absolute top-24 right-5 z-30 w-10 h-10 rounded-full bg-black/30 border border-white/10 backdrop-blur-md flex items-center justify-center text-white/50 hover:text-white hover:bg-black/50 transition-all"
+        >
+          {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+        </button>
+
+        {/* Hero text overlay */}
+        <motion.div style={{ y: heroTextY }} className="relative z-10 w-full text-center px-5 pb-16 md:pb-28">
+
+          {/* Eyebrow badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-accent/30 bg-emerald-accent/10 backdrop-blur-sm text-emerald-accent text-[11px] font-bold mb-6 uppercase tracking-widest"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-accent animate-pulse" />
+            Ancient Wisdom · Modern Intelligence
           </motion.div>
-          
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-5xl md:text-8xl lg:text-9xl font-display font-bold text-gradient leading-tight mb-3 md:mb-8"
+
+          {/* Giant brand name */}
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.42, duration: 0.9 }}
+            className="font-display font-bold leading-none mb-5"
+            style={{ fontSize: 'clamp(3.5rem, 13vw, 9.5rem)', letterSpacing: '-0.025em' }}
           >
-            Ayurcare<span className="text-emerald-accent">+</span>
+            <span className="text-cream drop-shadow-2xl">Ayur</span>
+            <span style={{
+              background: 'linear-gradient(130deg, #34D399 0%, #10B981 50%, #6EE7B7 100%)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+            }}>Care+</span>
           </motion.h1>
 
-          {/* Hero Wellness Image */}
-          <motion.div
-            initial={{ opacity: 0, y: 40, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: 0.18, duration: 0.7, ease: 'easeOut' }}
-            className="relative mx-auto mb-10"
-            style={{ maxWidth: '520px' }}
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.58 }}
+            className="text-cream/55 text-base md:text-xl max-w-md md:max-w-xl mx-auto mb-10 leading-relaxed"
           >
-            {/* Glow ring */}
-            <div style={{
-              position: 'absolute', inset: '-3px',
-              background: 'linear-gradient(135deg, rgba(52,211,153,0.5) 0%, rgba(16,185,129,0.2) 50%, rgba(52,211,153,0.4) 100%)',
-              borderRadius: '28px',
-              filter: 'blur(8px)',
-              zIndex: 0,
-            }} />
-            <div style={{
-              position: 'relative', zIndex: 1,
-              borderRadius: '24px',
-              overflow: 'hidden',
-              border: '1px solid rgba(52,211,153,0.25)',
-              boxShadow: '0 24px 64px rgba(0,0,0,0.45)',
-            }}>
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-                className="w-full h-[180px] sm:h-[220px] md:h-[280px] object-cover object-center block"
-                style={{ transform: 'translateZ(0)' }}
-              >
-                <source src="/hero-video.mp4" type="video/mp4" />
-              </video>
-              {/* Gradient overlay */}
-              <div style={{
-                position: 'absolute', inset: 0,
-                background: 'linear-gradient(to top, rgba(5,27,18,0.75) 0%, rgba(5,27,18,0.1) 60%, transparent 100%)',
-              }} />
-              {/* Floating badge */}
-              <div style={{
-                position: 'absolute', bottom: '16px', left: '50%',
-                transform: 'translateX(-50%)',
-                background: 'rgba(5,27,18,0.75)',
-                backdropFilter: 'blur(12px)',
-                border: '1px solid rgba(52,211,153,0.3)',
-                borderRadius: '99px',
-                padding: '6px 20px',
-                display: 'flex', alignItems: 'center', gap: '8px',
-                whiteSpace: 'nowrap',
-              }}>
-                <span style={{ color: '#34d399', fontSize: '14px' }}>🌿</span>
-                <span style={{ color: '#ecfdf5', fontSize: '13px', fontWeight: 700, letterSpacing: '0.03em' }}>
-                  Ayurvedic Wellness Platform
-                </span>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.p 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.28 }}
-            className="max-w-2xl mx-auto text-sm sm:text-lg md:text-xl text-cream/70 mb-6 md:mb-12 leading-relaxed px-2"
-          >
-            Ancient wisdom meets modern intelligence. Consult with top Indian Ayurvedic doctors, track your vitals, and balance your life — all from one platform.
+            Consult Ayurvedic doctors, scan your meals with AI,<br className="hidden md:block" /> track your vitals — all in one platform.
           </motion.p>
 
-          {/* WOW FACTOR CARDS */}
+          {/* CTAs */}
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35, duration: 0.7, ease: 'easeOut' }}
-            className="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.72 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-3"
           >
-            {/* Feature 1: AI Diagnosis */}
-            <div 
-              onClick={() => user ? window.location.href = '/diagnosis' : onLogin()}
-              className="group relative cursor-pointer"
-            >
-              {/* Subtle Glow Behind */}
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-accent to-blue-500/50 rounded-[24px] md:rounded-[32px] blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
-              {/* Premium Glass Card */}
-              <div className="relative h-full bg-moss/70 backdrop-blur-2xl border border-white/10 p-4 sm:p-8 rounded-[24px] md:rounded-[32px] flex items-center gap-4 sm:gap-6 transform group-hover:-translate-y-2 transition-all duration-500 md:shadow-2xl md:shadow-black/50 overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                <div className="w-10 h-10 sm:w-16 sm:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br from-emerald-accent/20 to-emerald-accent/5 border border-emerald-accent/30 flex items-center justify-center flex-shrink-0 shadow-[inset_0_0_20px_rgba(52,211,153,0.1)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
-                  <Sparkles className="text-emerald-accent w-5 h-5 sm:w-8 sm:h-8" />
-                </div>
-                <div className="text-left flex-1">
-                  <h3 className="text-base sm:text-xl md:text-2xl font-display font-bold text-cream mb-0.5 md:mb-1">AI Diagnosis</h3>
-                  <p className="text-[10px] sm:text-sm text-emerald-accent/60 font-medium leading-tight md:leading-relaxed">Instant symptom analysis with intelligent dosha mapping.</p>
-                </div>
-                <ChevronRight className="text-emerald-accent/30 group-hover:text-emerald-accent transition-colors group-hover:translate-x-1.5 duration-300" size={20} />
-              </div>
-            </div>
-
-            {/* Feature 2: AI Health Checker */}
-            <div 
-              onClick={() => user ? window.location.href = '/health-coach' : onLogin()}
-              className="group relative cursor-pointer"
-            >
-              {/* Subtle Glow Behind */}
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/50 to-emerald-accent rounded-[24px] md:rounded-[32px] blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
-              {/* Premium Glass Card */}
-              <div className="relative h-full bg-moss/70 backdrop-blur-2xl border border-white/10 p-4 sm:p-8 rounded-[24px] md:rounded-[32px] flex items-center gap-4 sm:gap-6 transform group-hover:-translate-y-2 transition-all duration-500 md:shadow-2xl md:shadow-black/50 overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                <div className="w-10 h-10 sm:w-16 sm:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br from-purple-400/20 to-emerald-accent/5 border border-purple-400/30 flex items-center justify-center flex-shrink-0 shadow-[inset_0_0_20px_rgba(192,132,252,0.1)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
-                  <Shield className="text-purple-400 w-5 h-5 sm:w-8 sm:h-8" />
-                </div>
-                <div className="text-left flex-1">
-                  <h3 className="text-base sm:text-xl md:text-2xl font-display font-bold text-cream mb-0.5 md:mb-1">AI Health Checker</h3>
-                  <p className="text-[10px] sm:text-sm text-purple-400/60 font-medium leading-tight md:leading-relaxed">Complete holistic wellness blueprint & health tracking.</p>
-                </div>
-                <ChevronRight className="text-purple-400/30 group-hover:text-purple-400 transition-colors group-hover:translate-x-1.5 duration-300" size={20} />
-              </div>
-            </div>
+            {user ? (
+              <Link to="/dashboard"
+                className="group flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm text-forest transition-all hover:scale-105 active:scale-95"
+                style={{ background: 'linear-gradient(135deg, #34D399, #10B981)', boxShadow: '0 0 50px rgba(52,211,153,0.35)' }}>
+                Go to Dashboard <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+            ) : (
+              <button onClick={onLogin}
+                className="group flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm text-forest transition-all hover:scale-105 active:scale-95"
+                style={{ background: 'linear-gradient(135deg, #34D399, #10B981)', boxShadow: '0 0 50px rgba(52,211,153,0.35)' }}>
+                Get Started Free <Zap size={16} className="group-hover:scale-125 transition-transform" />
+              </button>
+            )}
+            <Link to="/doctors"
+              className="flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm text-cream bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
+              <Play size={14} className="fill-cream" /> See How It Works
+            </Link>
           </motion.div>
-        </div>
+        </motion.div>
+
+        {/* Scroll cue */}
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3 }}
+          className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5"
+        >
+          <span className="text-cream/25 text-[9px] uppercase tracking-[0.2em]">Scroll</span>
+          <motion.div animate={{ y: [0, 7, 0] }} transition={{ duration: 1.6, repeat: Infinity }}
+            className="w-px h-8 bg-gradient-to-b from-emerald-accent/50 to-transparent" />
+        </motion.div>
       </section>
 
-      {/* Stats Bar */}
-      <section className="py-6 md:py-12 px-4 sm:px-6 bg-moss/30 border-y border-white/5">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-8 text-center">
+      {/* ════════════════════════════════════════
+          STATS BAR
+      ════════════════════════════════════════ */}
+      <section className="relative z-10 py-7 border-y border-white/5" style={{ background: 'rgba(19,28,24,0.7)', backdropFilter: 'blur(20px)' }}>
+        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 px-6 text-center">
           {[
-            { num: "8+", label: "Expert Doctors", icon: <Users size={16} className="md:w-5 md:h-5" /> },
-            { num: "Trusted", label: "Platform", icon: <Shield size={16} className="md:w-5 md:h-5" /> },
-            { num: "₹1", label: "Per Session", icon: <Award size={16} className="md:w-5 md:h-5" /> },
-            { num: "4.8★", label: "Avg. Rating", icon: <Star size={16} className="md:w-5 md:h-5" /> },
+            { num: '8+',      label: 'Expert Doctors'   },
+            { num: 'Trusted', label: 'AI Platform'      },
+            { num: '₹1',      label: 'Per Consultation' },
+            { num: '4.8★',    label: 'Average Rating'   },
           ].map((s, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.1 }}>
-              <div className="text-emerald-accent mb-1 md:mb-2 flex justify-center">{s.icon}</div>
-              <p className="text-xl md:text-3xl font-display font-bold text-cream">{s.num}</p>
-              <p className="text-[9px] md:text-xs text-emerald-accent/50 uppercase tracking-widest mt-0.5">{s.label}</p>
+            <motion.div key={i}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+              <p className="text-2xl md:text-3xl font-display font-bold text-cream mb-0.5">{s.num}</p>
+              <p className="text-[10px] uppercase tracking-widest text-emerald-accent/50">{s.label}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section className="px-4 sm:px-6 py-10 md:py-24 relative z-10 bg-[url('/bg-features.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/85 before:-z-10">
-        <h2 className="text-2xl md:text-4xl font-display font-bold text-center text-cream mb-2 md:mb-4">Everything You Need</h2>
-        <p className="text-xs md:text-base text-center text-emerald-accent/60 mb-8 md:mb-16 max-w-xl mx-auto px-2">A complete Ayurvedic wellness platform for every aspect of your health journey.</p>
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-10">
-          {[
-            { icon: <Heart className="text-rose-400 w-7 h-7 md:w-10 md:h-10" />, title: "Vitals Tracker", desc: "Monitor heart rate, BMI, and calorie intake tailored to your specific Ayurvedic Dosha." },
-            { icon: <Calendar className="text-emerald-accent w-7 h-7 md:w-10 md:h-10" />, title: "Expert Doctors", desc: "Book consultations with verified Indian Ayurvedic physicians for just ₹1." },
-            { icon: <Sparkles className="text-blue-400 w-7 h-7 md:w-10 md:h-10" />, title: "AI Diagnosis", desc: "Use text, voice, or body map to let our AI analyze symptoms." },
-            { icon: <Leaf className="text-green-400 w-7 h-7 md:w-10 md:h-10" />, title: "Herbal Guides", desc: "Explore dosha-specific diet plans, Triphala remedies, and tips." },
-            { icon: <Award className="text-purple-400 w-7 h-7 md:w-10 md:h-10" />, title: "Food Scanner", desc: "Upload meal images for instant nutritional analysis via NVIDIA AI." },
-            { icon: <Star className="text-yellow-400 w-7 h-7 md:w-10 md:h-10" />, title: "Food Database", desc: "Check calories and Ayurvedic properties of common Indian dishes." },
-          ].map((f, i) => (
-            <motion.div 
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              className="bg-moss/30 backdrop-blur-xl p-5 md:p-10 rounded-[24px] md:rounded-[40px] border border-white/5 shadow-2xl hover:border-emerald-accent/20 transition-all hover:-translate-y-1 md:hover:-translate-y-2 group"
-            >
-              <div className="mb-3 md:mb-6 group-hover:scale-110 transition-transform">{f.icon}</div>
-              <h3 className="text-lg md:text-2xl font-display font-bold mb-1 md:mb-3 text-cream">{f.title}</h3>
-              <p className="text-[11px] md:text-base text-emerald-accent/60 leading-relaxed">{f.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {/* ════════════════════════════════════════
+          AI TOOLS GRID — the OMA-style section
+      ════════════════════════════════════════ */}
+      <section className="relative z-10 px-5 md:px-8 py-24 md:py-36 overflow-hidden">
+        {/* Ambient orb */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full blur-[130px] opacity-[0.07] pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #10B981, transparent)' }} />
 
-      {/* Popular Herbs Section */}
-      <section className="px-4 sm:px-6 py-10 md:py-20 border-y border-white/5 relative z-10 bg-[url('/bg-herbs.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/90 before:-z-10">
-        <h2 className="text-2xl md:text-4xl font-display font-bold text-center text-cream mb-2 md:mb-4">Sacred Herbs of Ayurveda</h2>
-        <p className="text-xs md:text-base text-center text-emerald-accent/60 mb-8 md:mb-16 max-w-xl mx-auto px-2">Nature's most potent healing ingredients used in our treatment protocols.</p>
-        <div className="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-6">
-          {[
-            { name: "Ashwagandha", benefit: "Stress relief", emoji: "🌿", image: "/ashwagandha.png" },
-            { name: "Turmeric", benefit: "Anti-inflammatory", emoji: "🟡", image: "/turmeric.png" },
-            { name: "Tulsi", benefit: "Immunity booster", emoji: "🍃", image: "/tulsi.png" },
-            { name: "Triphala", benefit: "Digestive health", emoji: "🫐", image: "/triphala.png" },
-            { name: "Brahmi", benefit: "Brain & memory", emoji: "🧠", image: "/brahmi.png" },
-          ].map((herb, i) => (
-            <motion.div 
-              key={i}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              className="bg-forest/60 border border-white/5 rounded-[20px] md:rounded-3xl p-3 md:p-5 text-center hover:border-emerald-accent/30 transition-all hover:-translate-y-1 md:hover:-translate-y-2 cursor-default group"
-            >
-              <div className="mb-3 md:mb-4 relative rounded-xl md:rounded-2xl overflow-hidden aspect-square shadow-lg shadow-black/20">
-                <img 
-                  src={herb.image} 
-                  alt={herb.name} 
-                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-forest/90 via-forest/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
-              </div>
-              <h4 className="font-bold text-cream text-[13px] md:text-lg flex items-center justify-center gap-1 md:gap-2">
-                {herb.name} <span className="text-sm md:text-xl">{herb.emoji}</span>
-              </h4>
-              <p className="text-[10px] md:text-sm text-emerald-accent/70 mt-0.5">{herb.benefit}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="px-4 sm:px-6 py-10 md:py-24 relative z-10 bg-[url('/bg-testimonials.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/85 before:-z-10">
-        <h2 className="text-2xl md:text-4xl font-display font-bold text-center text-cream mb-2 md:mb-4">What Our Users Say</h2>
-        <p className="text-xs md:text-base text-center text-emerald-accent/60 mb-8 md:mb-16 max-w-xl mx-auto px-2">Real stories from people who transformed their health with Ayurcare+.</p>
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
-          {[
-            { name: "Meera K.", location: "Delhi", text: "The AI assistant diagnosed my digestive issues perfectly. The Ayurvedic diet plan worked wonders in just 2 weeks!", avatar: "M" },
-            { name: "Rohit S.", location: "Mumbai", text: "Booking a consultation for ₹1 was unbelievable. Dr. Vikram Singh's rejuvenation therapy changed my life completely.", avatar: "R" },
-            { name: "Anita P.", location: "Bangalore", text: "I love the BMI calculator with Dosha mapping. Finally an app that combines modern science with ancient wisdom!", avatar: "A" },
-          ].map((t, i) => (
-            <motion.div 
-              key={i}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="bg-moss/30 border border-white/5 rounded-[20px] md:rounded-3xl p-5 md:p-8 relative"
-            >
-              <Quote className="text-emerald-accent/10 absolute top-4 md:top-6 right-4 md:right-6 md:w-10 md:h-10 w-6 h-6" />
-              <p className="text-cream/80 leading-relaxed text-xs md:text-base mb-4 md:mb-6 italic">"{t.text}"</p>
-              <div className="flex items-center gap-2 md:gap-3">
-                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-emerald-accent/20 text-emerald-accent flex items-center justify-center font-bold text-xs md:text-sm">{t.avatar}</div>
-                <div>
-                  <p className="font-bold text-cream text-[11px] md:text-sm">{t.name}</p>
-                  <p className="text-[10px] md:text-xs text-emerald-accent/50">{t.location}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Medicines — Shop Promo */}
-      <section className="px-4 sm:px-6 py-10 md:py-24 border-y border-white/5 relative z-10 bg-[url('/bg-shop.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/90 before:-z-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8 md:mb-12">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-emerald-accent/10 text-emerald-accent text-[10px] md:text-xs font-bold mb-3 md:mb-4 border border-emerald-accent/20">
-                <ShoppingBag size={12} className="md:w-[14px] md:h-[14px]" /> New — Ayurvedic Shop
-              </div>
-              <h2 className="text-2xl md:text-4xl font-display font-bold text-cream mb-1 md:mb-2">Shop Trusted Medicines</h2>
-              <p className="text-xs md:text-base text-emerald-accent/60 max-w-lg">Handpicked Ayurvedic medicines from top Indian brands. Fast and trusted delivery.</p>
+        <div className="max-w-6xl mx-auto">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-accent/10 border border-emerald-accent/20 text-emerald-accent text-[11px] font-bold uppercase tracking-widest mb-6">
+              <Sparkles size={12} /> AI-Powered Suite
             </div>
-            <Link to="/shop" className="mt-4 md:mt-0 text-emerald-accent font-bold text-[11px] md:text-sm hover:underline flex items-center gap-1">
-              View All Medicines <ChevronRight size={14} className="md:w-4 md:h-4" />
+            <h2 className="font-display font-bold text-cream mb-5"
+              style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', letterSpacing: '-0.025em', lineHeight: 1.1 }}>
+              Everything in one<br />
+              <span style={{
+                background: 'linear-gradient(130deg, #34D399, #6EE7B7)',
+                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+              }}>wellness platform</span>
+            </h2>
+            <p className="text-cream/35 text-lg max-w-lg mx-auto">
+              Ancient Ayurvedic knowledge, supercharged with modern AI.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {tools.map((tool, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.07 }}>
+                <Link to={tool.to}
+                  className="group relative flex flex-col h-full p-6 rounded-3xl border border-white/[0.06] overflow-hidden transition-all duration-500 hover:-translate-y-1.5 hover:border-white/[0.12]"
+                  style={{ background: 'rgba(19,28,24,0.5)', backdropFilter: 'blur(20px)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)' }}
+                >
+                  {/* Hover radial glow */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"
+                    style={{ background: `radial-gradient(ellipse at 20% 10%, ${tool.glow} 0%, transparent 65%)` }} />
+
+                  {/* Icon */}
+                  <div className="relative w-11 h-11 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110"
+                    style={{ background: `${tool.color}18`, border: `1px solid ${tool.color}35` }}>
+                    <tool.icon size={20} style={{ color: tool.color }} />
+                  </div>
+
+                  <h3 className="font-display font-bold text-lg text-cream mb-1.5 group-hover:text-white transition-colors">{tool.label}</h3>
+                  <p className="text-cream/35 text-sm leading-relaxed flex-1">{tool.desc}</p>
+
+                  <div className="flex items-center gap-1.5 mt-5 font-bold text-sm transition-all duration-300"
+                    style={{ color: tool.color }}>
+                    Explore <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          SACRED HERBS — cinematic card grid
+      ════════════════════════════════════════ */}
+      <section className="relative z-10 py-24 md:py-32 border-y border-white/[0.06] overflow-hidden">
+        {/* Fixed parallax bg */}
+        <div className="absolute inset-0 -z-10 bg-cover bg-center bg-fixed opacity-15"
+          style={{ backgroundImage: "url('/bg-herbs.png')" }} />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-forest via-transparent to-forest" />
+
+        <div className="max-w-6xl mx-auto px-5 md:px-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            className="text-center mb-14">
+            <h2 className="font-display font-bold text-cream mb-3"
+              style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', letterSpacing: '-0.025em' }}>
+              Sacred Herbs
+            </h2>
+            <p className="text-cream/35 text-base max-w-sm mx-auto">
+              Nature's most potent healing ingredients used in our protocols.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            {herbs.map((herb, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.07 }}
+                className="group relative rounded-3xl overflow-hidden border border-white/[0.06] hover:border-emerald-accent/25 transition-all duration-500 aspect-[3/4]"
+              >
+                <img src={herb.image} alt={herb.name}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-t from-forest via-forest/30 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <p className="text-xl mb-0.5">{herb.emoji}</p>
+                  <h4 className="font-bold text-cream text-sm mb-0.5">{herb.name}</h4>
+                  <p className="text-emerald-accent/70 text-[11px]">{herb.benefit}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          TESTIMONIALS
+      ════════════════════════════════════════ */}
+      <section className="relative z-10 py-24 md:py-32 px-5 md:px-8">
+        <div className="max-w-5xl mx-auto">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            className="text-center mb-14">
+            <h2 className="font-display font-bold text-cream mb-3"
+              style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', letterSpacing: '-0.025em' }}>
+              Real Stories
+            </h2>
+            <p className="text-cream/35 text-base max-w-md mx-auto">
+              From people who transformed their health with AyurCare+.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              { name: 'Meera K.', loc: 'Delhi',     avatar: 'M', color: '#34D399',
+                text: 'The AI diagnosed my digestive issues perfectly. The Ayurvedic diet plan worked in just 2 weeks!' },
+              { name: 'Rohit S.', loc: 'Mumbai',    avatar: 'R', color: '#A78BFA',
+                text: 'Booking a consultation for ₹1 was unbelievable. Dr. Vikram\'s therapy completely changed my health.' },
+              { name: 'Anita P.', loc: 'Bangalore', avatar: 'A', color: '#F97316',
+                text: 'Finally an app that blends modern science with ancient wisdom. BMI with Dosha mapping is genius!' },
+            ].map((t, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                className="relative p-6 rounded-3xl border border-white/[0.06] overflow-hidden"
+                style={{ background: 'rgba(19,28,24,0.5)', backdropFilter: 'blur(16px)' }}
+              >
+                <Quote size={30} className="absolute top-5 right-5 text-white/[0.04]" />
+                <p className="text-cream/65 text-sm leading-relaxed mb-6 italic">"{t.text}"</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
+                    style={{ background: `${t.color}18`, color: t.color, border: `1px solid ${t.color}30` }}>
+                    {t.avatar}
+                  </div>
+                  <div>
+                    <p className="font-bold text-cream text-sm">{t.name}</p>
+                    <p className="text-[11px] text-cream/30">{t.loc}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          SHOP SECTION
+      ════════════════════════════════════════ */}
+      <section className="relative z-10 py-24 md:py-32 border-t border-white/[0.06] px-5 md:px-8 overflow-hidden">
+        <div className="absolute inset-0 -z-10 bg-cover bg-center bg-fixed opacity-[0.08]"
+          style={{ backgroundImage: "url('/bg-shop.png')" }} />
+
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
+            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-[11px] font-bold uppercase tracking-wider mb-4">
+                <ShoppingBag size={11} /> Ayurvedic Shop
+              </div>
+              <h2 className="font-display font-bold text-cream mb-2"
+                style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', letterSpacing: '-0.02em' }}>
+                Trusted Medicines
+              </h2>
+              <p className="text-cream/35 text-base max-w-md">Handpicked from top Indian brands. Fast, trusted delivery.</p>
+            </motion.div>
+            <Link to="/shop" className="mt-5 md:mt-0 flex items-center gap-1.5 text-emerald-accent font-bold text-sm hover:underline">
+              View All <ChevronRight size={16} />
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { name: "Ashwagandha KSM-66", brand: "Himalaya", price: 299, mrp: 450, image: "/med-ashwagandha.png", rating: 4.7, badge: "Bestseller", link: "https://www.1mg.com/search/all?name=ashwagandha" },
-              { name: "Chyawanprash", brand: "Dabur", price: 350, mrp: 499, image: "/med-chyawanprash.png", rating: 4.8, badge: "Most Popular", link: "https://www.1mg.com/search/all?name=chyawanprash" },
-              { name: "Shilajit Gold Resin", brand: "Zandu", price: 399, mrp: 599, image: "/med-shilajit.png", rating: 4.4, badge: "Premium", link: "https://www.1mg.com/search/all?name=shilajit" },
-              { name: "Tulsi Drops", brand: "Organic India", price: 220, mrp: 350, image: "/med-tulsi.png", rating: 4.6, link: "https://www.1mg.com/search/all?name=tulsi+drops" },
+              { name: 'Ashwagandha KSM-66', brand: 'Himalaya',      price: 299, mrp: 450, image: '/med-ashwagandha.png',  rating: 4.7, badge: 'Bestseller',   link: 'https://www.1mg.com/search/all?name=ashwagandha' },
+              { name: 'Chyawanprash',        brand: 'Dabur',         price: 350, mrp: 499, image: '/med-chyawanprash.png', rating: 4.8, badge: 'Most Popular', link: 'https://www.1mg.com/search/all?name=chyawanprash' },
+              { name: 'Shilajit Gold Resin', brand: 'Zandu',         price: 399, mrp: 599, image: '/med-shilajit.png',     rating: 4.4, badge: 'Premium',      link: 'https://www.1mg.com/search/all?name=shilajit' },
+              { name: 'Tulsi Drops',         brand: 'Organic India', price: 220, mrp: 350, image: '/med-tulsi.png',        rating: 4.6, badge: null,           link: 'https://www.1mg.com/search/all?name=tulsi+drops' },
             ].map((med, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="group bg-forest/60 border border-white/5 rounded-3xl overflow-hidden hover:border-emerald-accent/25 transition-all hover:-translate-y-2 shadow-xl"
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.09 }}
+                className="group rounded-3xl overflow-hidden border border-white/[0.06] hover:border-emerald-accent/20 transition-all duration-500 hover:-translate-y-1.5"
+                style={{ background: 'rgba(19,28,24,0.6)', backdropFilter: 'blur(16px)' }}
               >
                 <div className="relative aspect-square overflow-hidden">
-                  <img src={med.image} alt={med.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-forest/80 via-transparent to-transparent" />
+                  <img src={med.image} alt={med.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-forest/80 to-transparent" />
                   {med.badge && (
-                    <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-accent text-forest text-xs font-bold shadow-lg">{med.badge}</span>
+                    <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-accent text-forest text-[10px] font-bold">
+                      {med.badge}
+                    </span>
                   )}
-                  <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-forest/80 backdrop-blur-sm border border-white/10">
-                    <Star size={11} className="text-yellow-400 fill-yellow-400" />
-                    <span className="text-cream text-xs font-bold">{med.rating}</span>
+                  <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-sm">
+                    <Star size={10} className="text-yellow-400 fill-yellow-400" />
+                    <span className="text-cream text-[11px] font-bold">{med.rating}</span>
                   </div>
                 </div>
                 <div className="p-3 md:p-4">
-                  <p className="text-emerald-accent/50 text-[9px] md:text-[10px] font-semibold uppercase tracking-wider">{med.brand}</p>
-                  <h4 className="text-cream font-bold text-[11px] md:text-sm mb-1.5 md:mb-2 truncate">{med.name}</h4>
-                  <div className="flex items-baseline md:flex-row flex-col sm:flex-row gap-1 sm:gap-2 mb-2 md:mb-3">
-                    <span className="text-[15px] md:text-xl font-display font-bold text-cream">₹{med.price}</span>
-                    <div className="flex gap-1.5 items-center">
-                      <span className="text-[10px] md:text-xs text-cream/30 line-through">₹{med.mrp}</span>
-                      <span className="text-[8px] md:text-[10px] font-bold text-emerald-accent bg-emerald-accent/10 px-1 md:px-1.5 py-0.5 rounded-full">
-                        {Math.round((1 - med.price / med.mrp) * 100)}% OFF
-                      </span>
-                    </div>
+                  <p className="text-emerald-accent/50 text-[9px] font-bold uppercase tracking-wider mb-1">{med.brand}</p>
+                  <h4 className="text-cream font-bold text-[12px] md:text-sm mb-2 truncate">{med.name}</h4>
+                  <div className="flex items-baseline gap-1.5 mb-3">
+                    <span className="text-lg font-display font-bold text-cream">₹{med.price}</span>
+                    <span className="text-[10px] text-cream/30 line-through">₹{med.mrp}</span>
+                    <span className="text-[9px] font-bold text-emerald-accent">{Math.round((1 - med.price / med.mrp) * 100)}% OFF</span>
                   </div>
-                  <a
-                    href={med.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-2 md:py-2.5 rounded-lg md:rounded-xl bg-emerald-accent text-forest font-bold text-[10px] md:text-xs hover:bg-emerald-accent/90 transition-all flex items-center justify-center gap-1"
-                  >
-                    Buy Now <ExternalLink size={11} className="md:w-[13px] md:h-[13px]" />
+                  <a href={med.link} target="_blank" rel="noopener noreferrer"
+                    className="w-full py-2.5 rounded-xl bg-emerald-accent text-forest font-bold text-[11px] hover:bg-emerald-accent/90 transition-all flex items-center justify-center gap-1.5">
+                    Buy Now <ExternalLink size={11} />
                   </a>
                 </div>
               </motion.div>
@@ -344,25 +389,48 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="px-4 sm:px-6 py-10 md:py-20 bg-moss/30 border-t border-white/5">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl md:text-4xl font-display font-bold text-cream mb-2 md:mb-4 px-2">Start Your Healing Journey Today</h2>
-          <p className="text-xs md:text-lg text-emerald-accent/60 mb-6 md:mb-10 px-2 mt-1">Join thousands who are balancing their doshas, tracking vitals, and consulting experts.</p>
+      {/* ════════════════════════════════════════
+          FINAL CTA — Cinematic close
+      ════════════════════════════════════════ */}
+      <section className="relative z-10 py-32 md:py-44 px-5 text-center overflow-hidden">
+        {/* Large radial glow */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-[600px] h-[600px] rounded-full blur-[100px] opacity-[0.15]"
+            style={{ background: 'radial-gradient(circle, #10B981, transparent 70%)' }} />
+        </div>
+
+        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          className="relative max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-accent/10 border border-emerald-accent/20 text-emerald-accent text-[11px] font-bold uppercase tracking-widest mb-8">
+            <Leaf size={12} /> Begin Your Journey
+          </div>
+          <h2 className="font-display font-bold text-cream mb-5"
+            style={{ fontSize: 'clamp(2.5rem, 8vw, 5.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
+            Start Healing<br />
+            <span style={{
+              background: 'linear-gradient(135deg, #34D399, #6EE7B7)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+            }}>Today</span>
+          </h2>
+          <p className="text-cream/35 text-base mb-10 max-w-md mx-auto">
+            Join thousands balancing their doshas, tracking vitals, and consulting Ayurvedic experts.
+          </p>
           {user ? (
-            <Link to="/doctors" className="bg-emerald-accent text-forest px-6 py-3.5 md:px-10 md:py-5 rounded-full text-sm md:text-xl font-bold shadow-xl shadow-emerald-accent/20 hover:bg-emerald-accent/90 transition-all inline-flex items-center gap-2">
-              Browse Doctors <ChevronRight size={18} className="md:w-6 md:h-6" />
+            <Link to="/doctors"
+              className="inline-flex items-center gap-2 px-10 py-4 rounded-full font-bold text-base text-forest transition-all hover:scale-105 active:scale-95"
+              style={{ background: 'linear-gradient(135deg, #34D399, #10B981)', boxShadow: '0 0 70px rgba(52,211,153,0.4)' }}>
+              Browse Doctors <ChevronRight size={18} />
             </Link>
           ) : (
-            <button 
-              onClick={onLogin}
-              className="bg-emerald-accent text-forest px-6 py-3.5 md:px-10 md:py-5 rounded-full text-sm md:text-xl font-bold shadow-xl shadow-emerald-accent/20 hover:bg-emerald-accent/90 transition-all inline-flex items-center gap-2 mx-auto"
-            >
-              Sign Up <ChevronRight size={18} className="md:w-6 md:h-6" />
+            <button onClick={onLogin}
+              className="inline-flex items-center gap-2 px-10 py-4 rounded-full font-bold text-base text-forest transition-all hover:scale-105 active:scale-95"
+              style={{ background: 'linear-gradient(135deg, #34D399, #10B981)', boxShadow: '0 0 70px rgba(52,211,153,0.4)' }}>
+              Sign Up Free <Zap size={18} />
             </button>
           )}
-        </div>
+        </motion.div>
       </section>
+
     </div>
   );
 }
