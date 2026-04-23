@@ -1,4 +1,4 @@
-﻿import "dotenv/config";
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -31,36 +31,40 @@ app.use("/api/appointments", appointmentRoutes);
 app.use("/api/heart-rate", heartRateRoutes);
 app.use("/api/analyze-symptoms", aiRoutes);
 
-// Chat route for local development (mirrors api/chat.ts on Vercel)
+// Chat route for local development — uses Google Gemini AI
 app.post("/api/chat", async (req, res) => {
   const { message } = req.body;
   if (!message) return res.status(400).json({ error: "Missing message" });
 
-  let apiKey = process.env.NVIDIA_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: "NVIDIA_API_KEY not set" });
-  if (apiKey.startsWith('Bearer ')) apiKey = apiKey.substring(7);
+  const geminiKey = (process.env.GEMINI_API_KEY || "").trim();
+  if (!geminiKey) {
+    return res.status(500).json({
+      error: "GEMINI_API_KEY is not set in your .env file. Add it to enable the AI chatbot."
+    });
+  }
 
   try {
-    const { default: axios } = await import("axios");
-    const response = await axios.post("https://integrate.api.nvidia.com/v1/chat/completions", {
-      model: "meta/llama-3.1-8b-instruct",
-      messages: [
-        { role: "system", content: "You are a knowledgeable and compassionate Ayurvedic health assistant. Provide helpful advice based on Ayurvedic principles." },
-        { role: "user", content: message }
-      ],
-      temperature: 0.4,
-      top_p: 0.8,
-      max_tokens: 1024,
-    }, {
-      headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" }
+    const { GoogleGenAI } = await import("@google/genai");
+    const ai = new GoogleGenAI({ apiKey: geminiKey });
+
+    const systemPrompt = `You are a knowledgeable and compassionate Ayurvedic health assistant for Nexus Ayurve. 
+Provide helpful advice based on Ayurvedic principles including dosha balancing (Vata, Pitta, Kapha), herbal remedies, yoga, pranayama, and diet recommendations. 
+Always be warm, professional, and use bullet points for lists. 
+Recommend consulting a qualified Ayurvedic doctor for serious conditions.`;
+
+    const result = await ai.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: `${systemPrompt}\n\nUser query: ${message}\n\nRespond helpfully with Ayurvedic guidance.`,
     });
-    const aiText = response.data.choices?.[0]?.message?.content || "No response";
+
+    const aiText = result.text || "I couldn't generate a response. Please try again.";
     res.json({ reply: aiText });
   } catch (error: any) {
-    console.error("Chat error:", error.response?.data || error.message);
-    res.status(500).json({ error: error.response?.data?.detail || error.message });
+    console.error("Gemini chat error:", error?.message || error);
+    res.status(500).json({ error: error?.message || "AI service error. Please try again." });
   }
 });
+
 
 // Food Analyze route for local development
 app.post("/api/food-analyze", async (req, res) => {

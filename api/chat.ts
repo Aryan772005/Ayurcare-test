@@ -1,4 +1,4 @@
-﻿import type { IncomingMessage, ServerResponse } from 'http';
+import type { IncomingMessage, ServerResponse } from 'http';
 
 export default async function handler(req: any, res: any) {
   // CORS headers
@@ -14,28 +14,12 @@ export default async function handler(req: any, res: any) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Read API key inside handler. Check for common typos the user might have made in Vercel.
-  let rawKey = process.env.NVIDIA_API_KEY || process.env.NIVIDIA_API_KEY || process.env.NVIDIA_KEY || process.env.NVIDIA_PI_KEY || '';
-  let apiKey = rawKey.trim();
+  const geminiKey = (process.env.GEMINI_API_KEY || '').trim();
 
-  // Strip 'Bearer ' if the user accidentally included it natively or via copy-paste
-  if (apiKey.startsWith('Bearer ')) {
-    apiKey = apiKey.substring(7).trim();
-  }
-  
-  // Strip enclosing quotes that sometimes happen with env var misconfigurations
-  apiKey = apiKey.replace(/^["']|["']$/g, '');
-
-  if (!apiKey) {
-    console.error("NVIDIA_API_KEY is not set in environment variables");
-    // Try to find the user's typo. Filter out common system variables to just show custom ones.
-    const ignorePrefixes = ['npm_', 'VERCEL_', 'AWS_', 'NODE_', 'XDG_', 'LANG', 'HOME', 'PATH', 'PWD', 'USER', 'SHLVL', '_', 'LOGNAME', 'TZ', 'TERM'];
-    const customKeys = Object.keys(process.env).filter(k => !ignorePrefixes.some(p => k.startsWith(p)));
-    const foundStr = customKeys.length > 0 ? customKeys.join(', ') : "No custom keys found";
-    const isVercel = process.env.VERCEL === '1' ? 'Yes' : 'No';
-    
-    return res.status(500).json({ 
-      error: `Server config error: Key missing. (Vercel=${isVercel}, Custom_Keys=[${foundStr}])`,
+  if (!geminiKey) {
+    console.error('GEMINI_API_KEY is not set in environment variables');
+    return res.status(500).json({
+      error: 'Server config error: GEMINI_API_KEY missing. Add it in Vercel Environment Variables.',
     });
   }
 
@@ -46,43 +30,24 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const prompt = `As an Ayurvedic health assistant for Nexus Ayurve, analyze the following query and provide a helpful, detailed response. If the user describes symptoms, suggest possible Ayurvedic conditions, remedies, herbs, diet changes, and precautions. If the user asks about diet, yoga, or lifestyle, give Ayurvedic recommendations. Always be compassionate and professional.
+    const { GoogleGenAI } = await import('@google/genai');
+    const ai = new GoogleGenAI({ apiKey: geminiKey });
 
-User query: ${message}
+    const systemPrompt = `You are a knowledgeable and compassionate Ayurvedic health assistant for Nexus Ayurve.
+Provide helpful advice based on Ayurvedic principles including dosha balancing (Vata, Pitta, Kapha), herbal remedies, yoga, pranayama, and diet recommendations.
+Always be warm, professional, and use bullet points for lists.
+Recommend consulting a qualified Ayurvedic doctor for serious conditions.`;
 
-Respond in a friendly, informative way. Use bullet points for lists.`;
-
-    const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "meta/llama-3.1-8b-instruct",
-        messages: [
-          { role: "system", content: "You are a knowledgeable and compassionate Ayurvedic health assistant. Provide helpful advice based on Ayurvedic principles including dosha balancing, herbal remedies, yoga, pranayama, and diet recommendations. Always recommend consulting a qualified Ayurvedic doctor for serious conditions." },
-          { role: "user", content: prompt }
-        ],
-        temperature: 0.4,
-        top_p: 0.8,
-        max_tokens: 1024,
-      })
+    const result = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: `${systemPrompt}\n\nUser query: ${message}\n\nRespond helpfully with Ayurvedic guidance.`,
     });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error("NVIDIA API Error:", response.status, errText);
-      return res.status(500).json({ error: `NVIDIA API error: ${response.status}`, details: errText });
-    }
-
-    const data = await response.json();
-    const aiText = data.choices?.[0]?.message?.content || "I couldn't generate a response.";
-
+    const aiText = result.text || "I couldn't generate a response.";
     return res.status(200).json({ reply: aiText });
+
   } catch (error: any) {
-    console.error("Chat handler error:", error);
-    return res.status(500).json({ error: error.message || "Internal server error" });
+    console.error('Gemini API Error:', error?.message || error);
+    return res.status(500).json({ error: error?.message || 'Internal server error' });
   }
 }
-
