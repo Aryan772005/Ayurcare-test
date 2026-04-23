@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Leaf, X, MessageCircle } from 'lucide-react';
 
@@ -80,7 +80,7 @@ export default function FloatingChatButton() {
               letterSpacing: '0.01em',
             }}
           >
-            Ayurcare Chat
+            Nexus Ayurve Chat
           </span>
           <span
             style={{
@@ -140,7 +140,7 @@ export default function FloatingChatButton() {
         }}
         onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
         onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-        title="Ayurcare Chat"
+        title="Nexus Ayurve Chat"
       >
         <MessageCircle style={{ color: '#052e16', width: '24px', height: '24px' }} />
       </button>

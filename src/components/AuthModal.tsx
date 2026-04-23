@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { X, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import { loginWithGoogle, signUpWithEmail, loginWithEmail } from '../lib/firebase';
 
@@ -18,7 +18,7 @@ const VideoPanel = React.memo(() => (
     {/* Branding overlay */}
     <div className="absolute bottom-0 left-0 right-0 p-6">
       <p className="text-white/90 font-display text-lg font-bold leading-tight">
-        AyurCare+
+        Nexus Ayurve
       </p>
       <p className="text-white/50 text-xs mt-1">
         Your Ayurvedic wellness companion

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
 const WhatsAppIcon = ({ size = 22 }: { size?: number }) => (
@@ -8,7 +8,7 @@ const WhatsAppIcon = ({ size = 22 }: { size?: number }) => (
   </svg>
 );
 
-const WA_URL = `https://wa.me/919475002048?text=Hello%20AyurCare%2B%2C%20I%20need%20support.`;
+const WA_URL = `https://wa.me/919475002048?text=Hello%20Nexus Ayurve%2B%2C%20I%20need%20support.`;
 
 export default function FloatingWhatsAppButton() {
   const [visible, setVisible] = useState(false);

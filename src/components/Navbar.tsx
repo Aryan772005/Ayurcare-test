@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   Leaf, LogOut, Sun, Moon, Activity, Ribbon, Heart, Scale,
@@ -34,7 +34,7 @@ const TOOL_GROUPS = [
       { to: '/health-coach', label: 'AI Health Coach',   icon: Brain,         tag: 'AI',   tagColor: '#A78BFA', desc: '13-section wellness report' },
       { to: '/diagnosis',    label: 'AI Diagnosis',      icon: Sparkles,      tag: 'AI',   tagColor: '#A78BFA', desc: 'Symptom & dosha analysis' },
       { to: '/meal-analysis', label: 'AI Analyse Meal',   icon: Camera,        tag: 'AI',   tagColor: '#F97316', desc: 'Scan & analyse your meal' },
-      { to: '/chat',         label: 'Ayurcare Chat',           icon: MessageSquare, tag: 'Live', tagColor: '#10B981', desc: 'Ask anything about health' },
+      { to: '/chat',         label: 'Nexus Ayurve Chat',           icon: MessageSquare, tag: 'Live', tagColor: '#10B981', desc: 'Ask anything about health' },
     ],
   },
   {
@@ -137,7 +137,7 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
                 <div className="bg-emerald-accent p-2 rounded-xl group-hover:scale-110 transition-transform shadow-lg shadow-emerald-accent/20">
                   <Leaf className="text-forest w-5 h-5" />
                 </div>
-                <span className="text-xl font-display font-bold text-gradient hidden sm:block">AyurCare+</span>
+                <span className="text-xl font-display font-bold text-gradient hidden sm:block">Nexus Ayurve</span>
               </Link>
             </div>
 
@@ -147,7 +147,7 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
                 { to: '/dashboard',    label: 'Dashboard',    icon: LayoutDashboard },
                 { to: '/doctors',      label: 'Consult',      icon: Stethoscope     },
                 { to: '/shop',         label: 'Shop',         icon: ShoppingBag     },
-                { to: '/chat',         label: 'Ayurcare Chat',      icon: MessageSquare   },
+                { to: '/chat',         label: 'Nexus Ayurve Chat',      icon: MessageSquare   },
                 { to: '/health-coach', label: 'Health Coach', icon: Brain           },
                 { to: '/diagnosis',    label: 'AI Diagnosis', icon: Sparkles        },
               ].map(link => (
@@ -244,7 +244,7 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
                     <Leaf size={20} className="text-white" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-display font-bold text-cream leading-tight tracking-wide">AyurCare+</h2>
+                    <h2 className="text-lg font-display font-bold text-cream leading-tight tracking-wide">Nexus Ayurve</h2>
                     <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-accent">Wellness Hub</p>
                   </div>
                 </div>
@@ -337,7 +337,7 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
                 <div className="mb-5 space-y-2">
                   <div className="flex items-center gap-2 mb-1 opacity-70">
                     <Leaf size={16} className="text-emerald-accent" />
-                    <span className="font-display font-bold text-sm text-cream">Ayurcare+</span>
+                    <span className="font-display font-bold text-sm text-cream">Nexus Ayurve</span>
                   </div>
                   <p className="text-[11px] text-cream/60 flex items-center gap-1.5"><strong className="text-emerald-accent">CEO:</strong> Aryan Singh Tariani</p>
                   <p className="text-[11px] text-cream/40">Desh Bhagat University, Mandi Govindgarh</p>
@@ -352,7 +352,7 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
                     onClick={() => { onLogin(); setShowPanel(false); }}
                     className="w-full py-3.5 rounded-xl bg-emerald-accent text-forest text-[13px] font-bold hover:bg-emerald-accent/90 transition-all shadow-lg shadow-emerald-accent/20 flex items-center justify-center gap-2"
                   >
-                    Sign In to AyurCare+ <Zap size={14} />
+                    Sign In to Nexus Ayurve <Zap size={14} />
                   </button>
                 ) : (
                   <button

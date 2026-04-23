@@ -1,4 +1,4 @@
-import axios from "axios";
+﻿import axios from "axios";
 
 export const analyzeSymptoms = async (symptoms: string) => {
   let apiKey = process.env.NVIDIA_API_KEY?.trim();
@@ -14,7 +14,7 @@ export const analyzeSymptoms = async (symptoms: string) => {
   
   apiKey = apiKey.replace(/^["']|["']$/g, '');
 
-  const prompt = `As an Ayurvedic assistant for Ayurcare+, analyze the following symptoms and provide a structured response in JSON format.
+  const prompt = `As an Ayurvedic assistant for Nexus Ayurve, analyze the following symptoms and provide a structured response in JSON format.
   Symptoms: ${symptoms}
   
   Expected JSON structure:

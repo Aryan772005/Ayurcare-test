@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+﻿import React, { useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import {
   Sparkles, Heart, Calendar, ChevronRight, Star, Users, Award,
@@ -30,7 +30,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
     { to: '/health-coach', label: 'Health Coach',   icon: Brain,       color: '#A78BFA', glow: 'rgba(167,139,250,0.25)', desc: '13-section wellness report' },
     { to: '/meal-analysis',label: 'Meal Analyser',  icon: Camera,      color: '#F97316', glow: 'rgba(249,115,22,0.25)',  desc: 'Scan & analyse your food' },
     { to: '/doctors',      label: 'Expert Doctors', icon: Stethoscope, color: '#60A5FA', glow: 'rgba(96,165,250,0.25)',  desc: 'Consult Ayurvedic doctors for ₹1' },
-    { to: '/chat',         label: 'Ayurcare Chat',  icon: Leaf,        color: '#34D399', glow: 'rgba(52,211,153,0.25)',  desc: 'Ask anything about your health' },
+    { to: '/chat',         label: 'Nexus Ayurve Chat',  icon: Leaf,        color: '#34D399', glow: 'rgba(52,211,153,0.25)',  desc: 'Ask anything about your health' },
     { to: '/shop',         label: 'Herbal Shop',    icon: ShoppingBag, color: '#FBBF24', glow: 'rgba(251,191,36,0.25)',  desc: 'Trusted Ayurvedic products' },
   ];
 
@@ -281,7 +281,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
               Real Stories
             </h2>
             <p className="text-cream/35 text-base max-w-md mx-auto">
-              From people who transformed their health with AyurCare+.
+              From people who transformed their health with Nexus Ayurve.
             </p>
           </motion.div>
 

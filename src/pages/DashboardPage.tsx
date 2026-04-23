@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User as FirebaseUser } from 'firebase/auth';
 import {
@@ -68,7 +68,7 @@ function generateInvoicePDF(inv: DashInvoice, userName: string) {
     <div>
       <div class="brand-name">🌿 Ayur<span>Care</span><sup style="font-size:12px;color:#10B981">+</sup></div>
       <div class="brand-sub">Holistic Ayurvedic Health & Wellness Platform</div>
-      <div class="brand-sub">support@ayurcare.health | www.ayurcare.health</div>
+      <div class="brand-sub">support@Nexus Ayurve.health | www.Nexus Ayurve.health</div>
     </div>
     <div style="text-align:right">
       <div class="inv-id">INV-${inv.id.slice(0, 8).toUpperCase()}</div>
@@ -80,7 +80,7 @@ function generateInvoicePDF(inv: DashInvoice, userName: string) {
     <div class="billing-box">
       <div class="billing-label">Billed To</div>
       <div class="billing-name">${userName || 'Valued Customer'}</div>
-      <div class="billing-detail">AyurCare+ Member</div>
+      <div class="billing-detail">Nexus Ayurve Member</div>
     </div>
     <div class="billing-box">
       <div class="billing-label">Service</div>
@@ -96,8 +96,8 @@ function generateInvoicePDF(inv: DashInvoice, userName: string) {
     </tbody>
   </table>
   <div class="footer">
-    <p>Thank you for choosing AyurCare+. Computer-generated invoice — no signature required.</p>
-    <p style="margin-top:6px">Queries: support@ayurcare.health | +91 1800-AYUR-CARE</p>
+    <p>Thank you for choosing Nexus Ayurve. Computer-generated invoice — no signature required.</p>
+    <p style="margin-top:6px">Queries: support@Nexus Ayurve.health | +91 1800-AYUR-CARE</p>
   </div>
 </body>
 </html>`;
@@ -490,7 +490,7 @@ export default function DashboardPage({ user }: { user: FirebaseUser | null }) {
                   <>
                     <div className="text-center mb-6">
                       <p className="text-4xl font-bold text-cream">₹{totalSpendVal.toLocaleString()}</p>
-                      <p className="text-xs text-cream/30 mt-1">Total lifetime spend on AyurCare+</p>
+                      <p className="text-xs text-cream/30 mt-1">Total lifetime spend on Nexus Ayurve</p>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="p-3 rounded-xl bg-forest/40 border border-white/5">
@@ -527,7 +527,7 @@ export default function DashboardPage({ user }: { user: FirebaseUser | null }) {
               {[
                 { label: 'Total Spend',    value: `₹${totalSpendVal.toLocaleString()}`,   iconEl: <IndianRupee size={16} />, iconColor: '#34D399', bg: 'rgba(16,185,129,0.1)',   desc: 'Lifetime',    trend: stats.totalSpend > 0 ? 'From real data' : 'No spend yet',   delay: 0 },
                 { label: 'Consultations',  value: `${sessionCountVal}`,                    iconEl: <Stethoscope size={16} />, iconColor: '#60A5FA', bg: 'rgba(96,165,250,0.1)',   desc: 'All time',    trend: stats.totalAppointments > 0 ? 'Paid & Confirmed' : 'Book one!', delay: 0.06 },
-                { label: 'Orders',         value: `${orderCountVal}`,                      iconEl: <Package size={16} />,     iconColor: '#FBBF24', bg: 'rgba(245,158,11,0.1)',   desc: 'Purchased',   trend: stats.totalOrders > 0 ? 'Via AyurCare+' : 'Shop now',         delay: 0.12 },
+                { label: 'Orders',         value: `${orderCountVal}`,                      iconEl: <Package size={16} />,     iconColor: '#FBBF24', bg: 'rgba(245,158,11,0.1)',   desc: 'Purchased',   trend: stats.totalOrders > 0 ? 'Via Nexus Ayurve' : 'Shop now',         delay: 0.12 },
                 { label: 'Wellness Score', value: `${wellnessScore}/100`,                  iconEl: <TrendingUp size={16} />,  iconColor: '#A78BFA', bg: 'rgba(167,139,250,0.1)', desc: 'Computed',    trend: wellnessScore >= 60 ? '↑ Good' : '↑ Improve',                  delay: 0.18 },
               ].map((c, i) => (
                 <motion.div key={i} {...fadeUp(c.delay)} className="lg:col-span-3 stat-widget">
@@ -824,7 +824,7 @@ export default function DashboardPage({ user }: { user: FirebaseUser | null }) {
                       {/* Header */}
                       <div className="px-8 py-6 border-b border-white/5 flex justify-between items-start">
                         <div>
-                          <p className="text-xl font-display font-bold text-cream">🌿 AyurCare<span className="text-emerald-accent">+</span></p>
+                          <p className="text-xl font-display font-bold text-cream">🌿 Nexus Ayurve<span className="text-emerald-accent">+</span></p>
                           <p className="text-[11px] text-cream/40 mt-1">Holistic Ayurvedic Health & Wellness</p>
                         </div>
                         <div className="text-right">

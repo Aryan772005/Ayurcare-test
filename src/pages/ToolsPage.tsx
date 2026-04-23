@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -131,10 +131,10 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
       icon: MessageCircle,
       color: '#25D366',
       glow: 'rgba(37,211,102,0.2)',
-      desc: 'Chat directly with AyurCare+ support on WhatsApp',
+      desc: 'Chat directly with Nexus Ayurve support on WhatsApp',
       tag: 'Support',
       to: null,
-      action: () => window.open('https://wa.me/919475002048?text=Hello%20AyurCare%2B', '_blank', 'noopener,noreferrer'),
+      action: () => window.open('https://wa.me/919475002048?text=Hello%20Nexus Ayurve%2B', '_blank', 'noopener,noreferrer'),
     },
   ] as const;
 

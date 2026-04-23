@@ -1,8 +1,8 @@
-# Ayurcare
+﻿# Nexus Ayurve
 
 A comprehensive Ayurveda healthcare application built with TypeScript and modern web technologies.
 
-**Live Demo:** https://ayurcare-test.vercel.app
+**Live Demo:** https://Nexus Ayurve-test.vercel.app
 
 ## Getting Started
 

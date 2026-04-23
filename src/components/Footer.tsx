@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Leaf, MapPin, Phone, Users, Mail } from 'lucide-react';
 
 // WhatsApp SVG logo inline (official green brand)
@@ -14,7 +14,7 @@ export default function Footer() {
     <footer className="bg-forest border-t border-white/5 py-8 mt-auto">
       <div className="max-w-7xl mx-auto px-6 text-center">
         <p className="text-sm font-medium text-cream/70 tracking-wide">
-          &copy; 2026 Ayurcare+. All rights reserved.
+          &copy; 2026 Nexus Ayurve. All rights reserved.
         </p>
       </div>
     </footer>

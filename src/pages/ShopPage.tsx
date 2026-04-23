@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Star, ExternalLink, Search, Filter, X, Check, Minus, Plus, Package, Truck, Shield, Sparkles } from 'lucide-react';
 import { User as FirebaseUser } from 'firebase/auth';
@@ -322,7 +322,7 @@ export default function ShopPage({ user, onLogin }: { user: FirebaseUser | null,
                   <>
                     <h2 style={{ fontSize: 20, fontWeight: 800, color: '#ecfdf5', marginBottom: 4 }}>Confirm Order</h2>
                     <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, marginBottom: 20 }}>
-                      This will save the order to your AyurCare+ dashboard and open 1mg.com for payment.
+                      This will save the order to your Nexus Ayurve dashboard and open 1mg.com for payment.
                     </p>
                     {/* Items summary */}
                     <div style={{ background: 'rgba(0,0,0,0.25)', borderRadius: 12, padding: 14, marginBottom: 16, border: '1px solid rgba(52,211,153,0.1)' }}>

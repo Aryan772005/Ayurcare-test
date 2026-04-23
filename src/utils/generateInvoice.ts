@@ -1,4 +1,4 @@
-import { jsPDF } from 'jspdf';
+﻿import { jsPDF } from 'jspdf';
 
 interface InvoiceData {
   patientName: string;
@@ -39,7 +39,7 @@ export function generateConsultationInvoice(data: InvoiceData): void {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(22);
   doc.setTextColor(52, 211, 153);
-  doc.text('AyurCare+', 35, 22);
+  doc.text('Nexus Ayurve', 35, 22);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
@@ -153,18 +153,18 @@ export function generateConsultationInvoice(data: InvoiceData): void {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8);
   doc.setTextColor(52, 211, 153);
-  doc.text('AyurCare+ company By Aryan', pageW / 2, pageH - 13, { align: 'center' });
+  doc.text('Nexus Ayurve company By Aryan', pageW / 2, pageH - 13, { align: 'center' });
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7);
   doc.setTextColor(100, 160, 130);
   doc.text(
-    'ayurcare.app · support: aryansinghtariani@gmail.com · This is a computer-generated invoice',
+    'Nexus Ayurve.app · support: aryansinghtariani@gmail.com · This is a computer-generated invoice',
     pageW / 2, pageH - 7, { align: 'center' }
   );
 
   // ─── Download ─────────────────────────────────────────────────────
-  const fileName = `AyurCare_Invoice_${data.bookingId}.pdf`;
+  const fileName = `Nexus Ayurve_Invoice_${data.bookingId}.pdf`;
   doc.save(fileName);
 }
 

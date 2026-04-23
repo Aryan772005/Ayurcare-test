@@ -1,4 +1,4 @@
-import type { IncomingMessage, ServerResponse } from 'http';
+﻿import type { IncomingMessage, ServerResponse } from 'http';
 
 export default async function handler(req: any, res: any) {
   // CORS headers
@@ -46,7 +46,7 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const prompt = `As an Ayurvedic health assistant for Ayurcare+, analyze the following query and provide a helpful, detailed response. If the user describes symptoms, suggest possible Ayurvedic conditions, remedies, herbs, diet changes, and precautions. If the user asks about diet, yoga, or lifestyle, give Ayurvedic recommendations. Always be compassionate and professional.
+    const prompt = `As an Ayurvedic health assistant for Nexus Ayurve, analyze the following query and provide a helpful, detailed response. If the user describes symptoms, suggest possible Ayurvedic conditions, remedies, herbs, diet changes, and precautions. If the user asks about diet, yoga, or lifestyle, give Ayurvedic recommendations. Always be compassionate and professional.
 
 User query: ${message}
 

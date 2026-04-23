@@ -1,4 +1,4 @@
-import "dotenv/config";
+﻿import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -21,7 +21,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.get("/api/health", (req, res) => {
   res.json({ 
     status: "ok", 
-    message: "Ayurcare+ Backend is running",
+    message: "Nexus Ayurve Backend is running",
     nvidiaKeySet: !!process.env.NVIDIA_API_KEY
   });
 });

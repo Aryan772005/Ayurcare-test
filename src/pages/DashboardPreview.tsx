@@ -1,10 +1,10 @@
-import React from 'react';
+﻿import React from 'react';
 import DashboardPage from './DashboardPage';
 
 // Preview wrapper that provides a mock user to bypass auth
 const mockUser = {
   displayName: 'Aryan',
-  email: 'aryan@ayurcare.com',
+  email: 'aryan@Nexus Ayurve.com',
   uid: 'preview-user',
   photoURL: null,
 } as any;

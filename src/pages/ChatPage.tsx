@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { Send, Sparkles, User as UserIcon, Paperclip, Image, X, FileText } from 'lucide-react';
 import { User as FirebaseUser } from 'firebase/auth';
 
@@ -93,7 +93,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
       <header className="chat-header w-full shrink-0 flex items-center justify-center py-4 border-b border-cream/[0.08] bg-forest/90 backdrop-blur-md z-40 relative">
         <div className="flex flex-col items-center gap-1">
            <h1 className="text-xl font-bold font-display tracking-wide text-cream flex items-center gap-2">
-             <Sparkles size={18} className="text-emerald-accent" /> Ayurcare Chat
+             <Sparkles size={18} className="text-emerald-accent" /> Nexus Ayurve Chat
            </h1>
            <p className="text-[10px] text-emerald-accent/60 uppercase tracking-widest">Powered by AI Health Coach</p>
         </div>
@@ -200,7 +200,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }}}
-              placeholder="Message Ayurcare Chat..."
+              placeholder="Message Nexus Ayurve Chat..."
               className="flex-1 bg-transparent border-none p-3 text-[15px] text-cream outline-none resize-none min-h-[46px] max-h-[150px] overflow-y-auto placeholder-cream/50"
               rows={1}
               style={{
@@ -223,7 +223,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
           </div>
           
           <p className="text-center text-[10px] text-cream/40 mt-3 hidden md:block">
-            Ayurcare Chat can make mistakes. Consider verifying important Ayurvedic and medical advice.
+            Nexus Ayurve Chat can make mistakes. Consider verifying important Ayurvedic and medical advice.
           </p>
 
         </div>
